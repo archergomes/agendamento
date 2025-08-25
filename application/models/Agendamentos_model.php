@@ -24,6 +24,18 @@ class Agendamentos_model extends CI_Model {
         $query = $this->db->get();
         return $query->row_array();
     }
+/**
+ * Recupera uma lista de pacientes do banco de dados.
+ *
+ * Se um termo de busca for fornecido, filtra os pacientes pelo nome completo
+ * (Nome + Sobrenome) ou pelo número do BI.
+ *
+ * @param string $query Termo de busca opcional para filtrar pacientes por nome ou BI.
+ * @return array Retorna um array com os pacientes encontrados, contendo:
+ *               - 'id': ID do paciente
+ *               - 'name': Nome completo (Nome + Sobrenome)
+ *               - 'bi': Número do BI
+ */
 
     public function get_patients($query = '') {
         $this->db->select('ID_Paciente as id, CONCAT(Nome, " ", Sobrenome) as name, BI as bi');
