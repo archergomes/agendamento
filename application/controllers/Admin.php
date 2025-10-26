@@ -8,10 +8,6 @@ class Admin extends CI_Controller
 	{
 		parent::__construct();
 		$this->load->model('Admin_model');
-		// Adicione autenticação, se necessário (ex.: ion_auth)
-		// if (!$this->ion_auth->logged_in()) {
-		//     redirect('login');
-		// }
 	}
 
 	public function index()
@@ -59,6 +55,16 @@ class Admin extends CI_Controller
 		$this->load->view('admin/cad_medico');
 	}
 
+	public function relatorios()
+	{
+		$this->load->view('admin/relatorios');
+	}
+
+	public function configuracoes()
+	{
+		$this->load->view('admin/config');
+	}
+
 	public function cad_agendamento()
 	{
 		$data['medicos'] = $this->Admin_model->get_medicos();
@@ -72,46 +78,59 @@ class Admin extends CI_Controller
 		$this->load->view('admin/disponibilidade', $data);
 	}
 
-	/*	public function index()
-		{
-			$this->load->view('admin/dashboard');
+	public function cancel_appointment()
+	{
+		// Force JSON output header sempre, antes de qualquer coisa
+		$this->output->set_content_type('application/json');
+
+		if ($this->input->method() !== 'post') {
+			$this->output->set_status_header(405)->set_output(json_encode(['error' => 'Método não permitido']));
+			return;
 		}
 
-		public function pacientes()
-		{
-			$this->load->view('admin/pacientes');
+		// ... resto do código igual ...
+
+		// No else do result:
+		// Já tem set_content_type, mas garanta:
+		$this->output
+			->set_status_header(500)
+			->set_output(json_encode(['error' => 'Erro ao cancelar agendamento']));
+	}
+
+	// Assuming you also need delete_appointment if not already implemented
+	public function delete_appointment()
+	{
+		if ($this->input->method() !== 'post') {
+			show_error('Método não permitido', 405);
 		}
 
-		public function medicos()
-		{
-			$this->load->view('admin/medicos');
-		}
-		public function secretatios()
-		{
-			$this->load->view('admin/secretarios');
-		}
-		public function agendamentos()
-		{
-			$this->load->view('admin/agendamentos');
+		// Parse JSON input
+		$headers = $this->input->request_headers();
+		if (isset($headers['Content-Type']) && strpos($headers['Content-Type'], 'application/json') !== false) {
+			$input = json_decode($this->input->raw_input_stream, true);
+		} else {
+			$input = $this->input->post();
 		}
 
-		public function cad_paciente()
-		{
-			$this->load->view('admin/cad_paciente');
+		$id = $input['id'] ?? null;
+		if (!$id) {
+			$this->output
+				->set_content_type('application/json')
+				->set_status_header(400)
+				->set_output(json_encode(['error' => 'ID do agendamento não fornecido']));
+			return;
 		}
 
-		public function cad_secretario()
-		{
-			$this->load->view('admin/cad_secretario');
+		$result = $this->Admin_model->delete_appointment($id);
+		if ($result) {
+			$this->output
+				->set_content_type('application/json')
+				->set_output(json_encode(['success' => 'Agendamento excluído com sucesso']));
+		} else {
+			$this->output
+				->set_content_type('application/json')
+				->set_status_header(500)
+				->set_output(json_encode(['error' => 'Erro ao excluir agendamento']));
 		}
-		public function cad_medico()
-		{
-			$this->load->view('admin/cad_medico');
-		}
-
-		public function cad_agendamento(){
-			$this->load->view('admin/cad_agendamentos');
-		}*/
-
-
+	}
 }

@@ -17,6 +17,7 @@
             overflow-x: hidden;
             max-width: 100vw;
             position: relative;
+            background-color: #f8fafc;
         }
         #notification {
             display: none;
@@ -25,9 +26,10 @@
             right: 1rem;
             z-index: 1000;
             padding: 1rem;
-            border-radius: 0.25rem;
+            border-radius: 0.5rem;
             color: white;
             max-width: 300px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
         #notification.error {
             background-color: #ef4444;
@@ -39,7 +41,20 @@
             background-color: #3b82f6;
         }
         #notification.show {
-            display: block;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideIn 0.3s ease-out;
+        }
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
         }
         .sidebar {
             position: fixed;
@@ -112,6 +127,7 @@
             width: 100%;
             z-index: 800;
             background-color: #2563eb;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
         .page-wrapper {
             position: relative;
@@ -262,19 +278,94 @@
             position: relative;
             margin-left: 0;
         }
+        
+        /* Estilos aprimorados para o formulário - mais compacto */
         .form-container {
             background-color: white;
             border-radius: 0.5rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             padding: 1.5rem;
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
         }
-        .form-btn {
-            padding: 0.75rem 1.5rem;
+        .form-title {
+            color: #1e40af;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 1.5rem;
+        }
+        .form-subtitle {
+            color: #6b7280;
+            margin-bottom: 1.25rem;
+            font-size: 0.9rem;
+        }
+        .form-group {
+            margin-bottom: 1rem;
+        }
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.375rem;
+            font-size: 0.875rem;
+        }
+        .form-label.required::after {
+            content: " *";
+            color: #ef4444;
+        }
+        .form-input {
+            width: 100%;
+            padding: 0.625rem;
+            border: 1px solid #d1d5db;
             border-radius: 0.375rem;
-            font-size: 0.95rem;
-            transition: background-color 0.2s;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-size: 0.875rem;
+        }
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        }
+        .form-input.error {
+            border-color: #ef4444;
+        }
+        .form-input.success {
+            border-color: #10b981;
+        }
+        .form-input:read-only {
+            background-color: #f9fafb;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+        .form-hint {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+        .form-error {
+            font-size: 0.75rem;
+            color: #ef4444;
+            margin-top: 0.25rem;
+            display: none;
+        }
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
+        }
+        @media (min-width: 640px) {
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+        .form-btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
         }
         .save-btn {
             background-color: #3b82f6;
@@ -284,11 +375,29 @@
             background-color: #2563eb;
         }
         .cancel-btn {
-            background-color: #d1d5db;
+            background-color: #f3f4f6;
             color: #374151;
         }
         .cancel-btn:hover {
-            background-color: #9ca3af;
+            background-color: #e5e7eb;
+        }
+        .form-actions {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1.5rem;
+        }
+        .form-actions .form-btn {
+            flex: 1;
+        }
+        .card-header {
+            background-color: #f8fafc;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem 0.5rem 0 0;
+            margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+        }
+        .card-body {
+            padding: 0;
         }
     </style>
 </head>
@@ -297,7 +406,7 @@
         <!-- Notification -->
         <div id="notification" role="alert">
             <span id="notification-message"></span>
-            <button id="notification-close" class="ml-2 text-white hover:text-gray-200">×</button>
+            <button id="notification-close" class="ml-4 text-white hover:text-gray-200 text-xl font-bold">×</button>
         </div>
 
         <!-- Sidebar Overlay -->
@@ -366,7 +475,7 @@
 
         <!-- Header -->
         <header class="bg-blue-600 text-white shadow-lg">
-            <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="container mx-auto px-4 py-3 flex items-center justify-between">
                 <div class="flex items-center gap-2">
                     <button id="mobile-menu-btn" class="md:hidden text-white hover:text-blue-200" aria-label="Abrir menu">
                         <i class="fas fa-bars text-2xl"></i>
@@ -379,79 +488,94 @@
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="container mx-auto px-4 py-8">
+            <div class="container mx-auto px-4 py-6">
                 <div class="mb-6 text-center">
-                    <h2 class="text-2xl font-semibold text-gray-800 mb-2" id="form-title">Cadastrar Novo Paciente</h2>
-                    <p class="text-gray-600">Preencha os dados abaixo para cadastrar ou editar um paciente.</p>
+                    <h2 class="form-title" id="form-title">Cadastrar Novo Paciente</h2>
+                    <p class="form-subtitle">Preencha os dados abaixo para cadastrar ou editar um paciente.</p>
                 </div>
 
                 <!-- Patient Form -->
                 <div class="form-container">
-                    <div class="mb-4">
-                        <label for="patient-name" class="block text-sm font-medium text-gray-700">Nome</label>
-                        <input type="text" id="patient-name" class="w-full p-2 border rounded-lg" required>
+                    <div class="card-header">
+                        <h3 class="text-lg font-semibold text-gray-800">Dados Pessoais</h3>
                     </div>
-                    <div class="mb-4">
-                        <label for="patient-phone" class="block text-sm font-medium text-gray-700">Telefone</label>
-                        <input type="tel" id="patient-phone" class="w-full p-2 border rounded-lg" required>
-                    </div>
-                    <div class="mb-4">
-                        <label for="patient-bi" class="block text-sm font-medium text-gray-700">BI</label>
-                        <input type="text" id="patient-bi" class="w-full p-2 border rounded-lg" required>
-                    </div>
-                    <div class="mb-4">
-                        <label for="patient-email" class="block text-sm font-medium text-gray-700">Email (opcional)</label>
-                        <input type="email" id="patient-email" class="w-full p-2 border rounded-lg">
-                    </div>
-                    <div class="mb-4">
-                        <label for="patient-birthday" class="block text-sm font-medium text-gray-700">Data de Nascimento (opcional)</label>
-                        <input type="date" id="patient-birthday" class="w-full p-2 border rounded-lg">
-                    </div>
-                    <div class="mb-4">
-                        <label for="patient-gender" class="block text-sm font-medium text-gray-700">Gênero (opcional)</label>
-                        <select id="patient-gender" class="w-full p-2 border rounded-lg">
-                            <option value="">Selecione o gênero</option>
-                            <option value="Masculino">Masculino</option>
-                            <option value="Feminino">Feminino</option>
-                            <option value="Outro">Outro</option>
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <label for="patient-address" class="block text-sm font-medium text-gray-700">Endereço (opcional)</label>
-                        <input type="text" id="patient-address" class="w-full p-2 border rounded-lg">
-                    </div>
-                    <div class="flex space-x-2">
-                        <button id="save-btn" class="form-btn save-btn flex-1">Salvar</button>
-                        <button id="cancel-btn" class="form-btn cancel-btn flex-1">Cancelar</button>
+                    <div class="card-body">
+                        <div class="form-grid">
+                            <div class="form-group">
+                                <label for="patient-name" class="form-label required">Nome Completo</label>
+                                <input type="text" id="patient-name" class="form-input" required>
+                                <div class="form-error" id="name-error">Por favor, insira um nome válido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="patient-phone" class="form-label required">Telefone</label>
+                                <input type="tel" id="patient-phone" class="form-input" required>
+                                <div class="form-error" id="phone-error">Por favor, insira um telefone válido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="patient-bi" class="form-label required">BI</label>
+                                <input type="text" id="patient-bi" class="form-input" required>
+                                <div class="form-error" id="bi-error">Por favor, insira um BI válido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="patient-email" class="form-label">Email</label>
+                                <input type="email" id="patient-email" class="form-input">
+                                <div class="form-hint">Opcional</div>
+                                <div class="form-error" id="email-error">Por favor, insira um email válido</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="patient-birthday" class="form-label">Data de Nascimento</label>
+                                <input type="date" id="patient-birthday" class="form-input">
+                                <div class="form-hint">Opcional</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="patient-gender" class="form-label">Gênero</label>
+                                <select id="patient-gender" class="form-input">
+                                    <option value="">Selecione o gênero</option>
+                                    <option value="Masculino">Masculino</option>
+                                    <option value="Feminino">Feminino</option>
+                                    <option value="Outro">Outro</option>
+                                </select>
+                                <div class="form-hint">Opcional</div>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <label for="patient-address" class="form-label">Endereço</label>
+                            <input type="text" id="patient-address" class="form-input">
+                            <div class="form-hint">Opcional</div>
+                        </div>
+                        <div class="form-actions">
+                            <button id="save-btn" class="form-btn save-btn">Salvar</button>
+                            <button id="cancel-btn" class="form-btn cancel-btn">Cancelar</button>
+                        </div>
                     </div>
                 </div>
             </div>
         </main>
 
         <!-- Footer -->
-        <footer class="bg-gray-800 text-white py-8">
+        <footer class="bg-gray-800 text-white py-6">
             <div class="container mx-auto px-4">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                        <h3 class="text-lg font-medium mb-4">Hospital Matlhovele</h3>
-                        <p class="text-gray-300">Av. 25 de Setembro, Maputo</p>
-                        <p class="text-gray-300">Telefone: +258 84 123 4567</p>
+                        <h3 class="text-lg font-medium mb-3">Hospital Matlhovele</h3>
+                        <p class="text-gray-300 text-sm">Av. 25 de Setembro, Maputo</p>
+                        <p class="text-gray-300 text-sm">Telefone: +258 84 123 4567</p>
                     </div>
                     <div>
-                        <h3 class="text-lg font-medium mb-4">Horário de Funcionamento</h3>
-                        <p class="text-gray-300">Segunda a Sexta: 7h30 - 16h30</p>
-                        <p class="text-gray-300">Sábado: 8h00 - 12h00</p>
+                        <h3 class="text-lg font-medium mb-3">Horário de Funcionamento</h3>
+                        <p class="text-gray-300 text-sm">Segunda a Sexta: 7h30 - 16h30</p>
+                        <p class="text-gray-300 text-sm">Sábado: 8h00 - 12h00</p>
                     </div>
                     <div>
-                        <h3 class="text-lg font-medium mb-4">Links Rápidos</h3>
-                        <ul class="space-y-2">
-                            <li><a href="/sobre" class="text-gray-300 hover:text-white">Sobre Nós</a></li>
-                            <li><a href="/servicos" class="text-gray-300 hover:text-white">Serviços</a></li>
-                            <li><a href="/contactos" class="text-gray-300 hover:text-white">Contactos</a></li>
+                        <h3 class="text-lg font-medium mb-3">Links Rápidos</h3>
+                        <ul class="space-y-1">
+                            <li><a href="/sobre" class="text-gray-300 hover:text-white text-sm">Sobre Nós</a></li>
+                            <li><a href="/servicos" class="text-gray-300 hover:text-white text-sm">Serviços</a></li>
+                            <li><a href="/contactos" class="text-gray-300 hover:text-white text-sm">Contactos</a></li>
                         </ul>
                     </div>
                 </div>
-                <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+                <div class="border-t border-gray-700 mt-6 pt-4 text-center text-gray-400 text-sm">
                     <p>© 2025 Hospital Público de Matlhovele. Todos os direitos reservados.</p>
                 </div>
             </div>
@@ -498,8 +622,70 @@
             }
         }
 
+        // Form validation
+        function validateForm() {
+            let isValid = true;
+            
+            // Name validation
+            const nameInput = document.getElementById('patient-name');
+            const nameError = document.getElementById('name-error');
+            if (!nameInput.value.trim()) {
+                nameInput.classList.add('error');
+                nameError.style.display = 'block';
+                isValid = false;
+            } else {
+                nameInput.classList.remove('error');
+                nameError.style.display = 'none';
+            }
+            
+            // Phone validation
+            const phoneInput = document.getElementById('patient-phone');
+            const phoneError = document.getElementById('phone-error');
+            const phoneRegex = /^[0-9+\-\s()]{8,}$/;
+            if (!phoneInput.value.trim() || !phoneRegex.test(phoneInput.value)) {
+                phoneInput.classList.add('error');
+                phoneError.style.display = 'block';
+                isValid = false;
+            } else {
+                phoneInput.classList.remove('error');
+                phoneError.style.display = 'none';
+            }
+            
+            // BI validation
+            const biInput = document.getElementById('patient-bi');
+            const biError = document.getElementById('bi-error');
+            if (!biInput.value.trim()) {
+                biInput.classList.add('error');
+                biError.style.display = 'block';
+                isValid = false;
+            } else {
+                biInput.classList.remove('error');
+                biError.style.display = 'none';
+            }
+            
+            // Email validation (if provided)
+            const emailInput = document.getElementById('patient-email');
+            const emailError = document.getElementById('email-error');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (emailInput.value.trim() && !emailRegex.test(emailInput.value)) {
+                emailInput.classList.add('error');
+                emailError.style.display = 'block';
+                isValid = false;
+            } else {
+                emailInput.classList.remove('error');
+                emailError.style.display = 'none';
+            }
+            
+            return isValid;
+        }
+
         // Save or update patient
         async function savePatient() {
+            if (!validateForm()) {
+                showNotification('Por favor, corrija os erros no formulário.', 'error');
+                return;
+            }
+
             const nameInput = document.getElementById('patient-name');
             const phoneInput = document.getElementById('patient-phone');
             const biInput = document.getElementById('patient-bi');
@@ -507,10 +693,6 @@
             const birthdayInput = document.getElementById('patient-birthday');
             const genderInput = document.getElementById('patient-gender');
             const addressInput = document.getElementById('patient-address');
-            if (!nameInput || !phoneInput || !biInput || !emailInput || !birthdayInput || !genderInput || !addressInput) {
-                console.error('Form elements not found:', { nameInput, phoneInput, biInput, emailInput, birthdayInput, genderInput, addressInput });
-                return;
-            }
 
             const name = nameInput.value.trim();
             const phone = phoneInput.value.trim();
@@ -520,16 +702,6 @@
             const gender = genderInput.value || null;
             const address = addressInput.value.trim() || null;
             const isEditMode = biInput.hasAttribute('readonly');
-
-            if (!name || !phone || !bi) {
-                showNotification('Nome, telefone e BI são obrigatórios.', 'error');
-                return;
-            }
-
-            if (email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-                showNotification('Email inválido.', 'error');
-                return;
-            }
 
             const patient = { bi, name, phone, email, birthday, gender, address };
             const endpoint = isEditMode ? '<?php echo site_url('api/update_patient'); ?>' : '<?php echo site_url('api/create_patient'); ?>';
@@ -706,6 +878,17 @@
             saveBtn.addEventListener('click', savePatient);
             cancelBtn.addEventListener('click', () => {
                 window.location.href = '<?php echo site_url('admin/pacientes'); ?>';
+            });
+
+            // Real-time validation
+            const inputs = [nameInput, phoneInput, biInput, emailInput];
+            inputs.forEach(input => {
+                input.addEventListener('blur', validateForm);
+                input.addEventListener('input', function() {
+                    this.classList.remove('error');
+                    const errorElement = document.getElementById(`${this.id}-error`);
+                    if (errorElement) errorElement.style.display = 'none';
+                });
             });
 
             // Logout

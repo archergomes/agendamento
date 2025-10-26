@@ -4,8 +4,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Pacientes - Administrador - Hospital Matlhovele</title>
-    <meta name="description" content="Gerenciar pacientes no Hospital Público de Matlhovele">
+    <title>Secretários - Administrador - Hospital Matlhovele</title>
+    <meta name="description" content="Gerenciar secretários no Hospital Público de Matlhovele">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -269,6 +269,38 @@
             color: #6b7280;
             font-style: italic;
         }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 2rem;
+            gap: 0.5rem;
+        }
+
+        .pagination button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            background-color: white;
+            color: #374151;
+            border-radius: 0.25rem;
+            transition: background-color 0.2s;
+        }
+
+        .pagination button:hover {
+            background-color: #eff6ff;
+        }
+
+        .pagination button.active {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
     </style>
 </head>
 <body class="bg-gray-50">
@@ -299,7 +331,7 @@
                         <i class="fas fa-tachometer-alt"></i>
                         <span class="sidebar-text">Dashboard</span>
                     </a>
-                    <a href="<?php echo site_url('admin/pacientes'); ?>" class="block text-gray-700 active">
+                    <a href="<?php echo site_url('admin/pacientes'); ?>" class="block text-gray-700">
                         <i class="fas fa-users"></i>
                         <span class="sidebar-text">Pacientes</span>
                     </a>
@@ -307,7 +339,7 @@
                         <i class="fas fa-user-md"></i>
                         <span class="sidebar-text">Médicos</span>
                     </a>
-                    <a href="<?php echo site_url('admin/secretarios'); ?>" class="block text-gray-700">
+                    <a href="<?php echo site_url('admin/secretarios'); ?>" class="block text-gray-700 active">
                         <i class="fas fa-user-tie"></i>
                         <span class="sidebar-text">Secretários</span>
                     </a>
@@ -364,9 +396,9 @@
         <main class="main-content">
             <div class="container mx-auto px-4 py-8">
                 <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-800">Lista de Pacientes</h2>
-                    <a href="<?php echo site_url('admin/cad_paciente'); ?>" class="create-btn">
-                        <i class="fas fa-user-plus mr-2"></i> Cadastrar Novo Paciente
+                    <h2 class="text-2xl font-semibold text-gray-800">Lista de Secretários</h2>
+                    <a href="<?php echo site_url('admin/cad_secretario'); ?>" class="create-btn">
+                        <i class="fas fa-user-plus mr-2"></i> Cadastrar Novo Secretário
                     </a>
                 </div>
 
@@ -376,7 +408,7 @@
                     <button id="search-btn" class="search-btn"><i class="fas fa-search"></i></button>
                 </div>
 
-                <!-- Patients Table -->
+                <!-- Secretaries Table -->
                 <div class="table-container">
                     <table class="table-auto w-full text-left">
                         <thead>
@@ -385,65 +417,38 @@
                                 <th class="px-4 py-2">Telefone</th>
                                 <th class="px-4 py-2">BI</th>
                                 <th class="px-4 py-2">Email</th>
-                                <th class="px-4 py-2">Data de Nascimento</th>
-                                <th class="px-4 py-2">Género</th>
-                                <th class="px-4 py-2">Endereço</th>
+                                <th class="px-4 py-2">Cargo</th>
                                 <th class="px-4 py-2">Ações</th>
                             </tr>
                         </thead>
-                        <tbody id="patients-table">
-                            <?php if (empty($pacientes ?? [])): ?>
-                                <tr>
-                                    <td colspan="8" class="px-4 py-2 text-center text-gray-500 empty-state">
-                                        <i class="fas fa-users text-4xl text-gray-400 mb-4"></i>
-                                        <p>Nenhum paciente encontrado. <a href="<?php echo site_url('admin/cad_paciente'); ?>" class="text-blue-600 hover:underline">Cadastre o primeiro!</a></p>
-                                    </td>
-                                </tr>
-                            <?php else: ?>
-                                <?php foreach ($pacientes as $paciente): ?>
-                                    <tr class="border-t">
-                                        <td class="px-4 py-2"><?php echo htmlspecialchars($paciente['Nome_Completo'] ?? 'N/A'); ?></td>
-                                        <td class="px-4 py-2"><?php echo htmlspecialchars($paciente['Telefone'] ?? '-'); ?></td>
-                                        <td class="px-4 py-2"><?php echo htmlspecialchars($paciente['ID_Paciente'] ?? '-'); ?></td>
-                                        <td class="px-4 py-2"><?php echo htmlspecialchars($paciente['Email'] ?? '-'); ?></td>
-                                        <td class="px-4 py-2"><?php echo htmlspecialchars($paciente['Data_Nascimento'] ?? '-'); ?></td>
-                                        <td class="px-4 py-2"><?php echo htmlspecialchars($paciente['Genero'] ?? '-'); ?></td>
-                                        <td class="px-4 py-2"><?php echo htmlspecialchars($paciente['Endereco'] ?? '-'); ?></td>
-                                        <td class="px-4 py-2">
-                                            <a href="<?php echo site_url('admin/cad_paciente?bi=' . urlencode($paciente['ID_Paciente'] ?? '')); ?>" class="action-btn edit-btn mr-2" title="Editar">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <button class="action-btn delete-btn" data-bi="<?php echo htmlspecialchars($paciente['ID_Paciente'] ?? ''); ?>" title="Excluir">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
+                        <tbody id="secretaries-table">
+                            <!-- Populated by JavaScript -->
                         </tbody>
                     </table>
-                    <p id="no-results" class="text-center text-gray-500 mt-4 hidden empty-state">Nenhum paciente encontrado para a pesquisa.</p>
+                    <p id="no-results" class="text-center text-gray-500 mt-4 hidden empty-state">Nenhum secretário encontrado para a pesquisa.</p>
+                    <div id="pagination-container" class="pagination"></div>
                 </div>
             </div>
         </main>
-
     </div>
 
     <script>
-        // Fallback se $pacientes não carregado do PHP
-        let patients = <?php echo json_encode(array_map(function($paciente) {
+        // Initial secretaries from PHP
+        let initialSecretaries = <?php echo json_encode(array_map(function($secretario) {
             return [
-                'bi' => $paciente['ID_Paciente'] ?? '',
-                'name' => $paciente['Nome_Completo'] ?? '',
-                'phone' => $paciente['Telefone'] ?? '',
-                'email' => $paciente['Email'] ?? null,
-                'birthday' => $paciente['Data_Nascimento'] ?? null,
-                'gender' => $paciente['Genero'] ?? null,
-                'address' => $paciente['Endereco'] ?? null
+                'bi' => $secretario['ID_Secretario'] ?? '',
+                'name' => trim(($secretario['Nome'] ?? '') . ' ' . ($secretario['Sobrenome'] ?? '')),
+                'phone' => $secretario['Telefone'] ?? '',
+                'email' => $secretario['Email'] ?? null,
+                'cargo' => $secretario['Cargo'] ?? null
             ];
-        }, $pacientes ?? [])); ?>;
+        }, $secretarios ?? [])); ?>;
 
-        console.log('Dados iniciais de pacientes (PHP):', patients);
+        let allSecretaries = initialSecretaries;
+        let currentPage = 1;
+        const secretariesPerPage = 10;
+
+        console.log('Dados iniciais de secretários (PHP):', initialSecretaries);
 
         // Show notification
         function showNotification(message, type = 'info') {
@@ -460,46 +465,94 @@
             }, 5000);
         }
 
-        // Render patients table
-        function renderTable(patientsList) {
-            const tableBody = document.getElementById('patients-table');
+        // Render pagination controls
+        function renderPagination(totalPages) {
+            const container = document.getElementById('pagination-container');
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            // Previous button
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = 'Anterior';
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderTable(allSecretaries);
+                }
+            });
+            container.appendChild(prevBtn);
+
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.classList.toggle('active', i === currentPage);
+                btn.addEventListener('click', () => {
+                    currentPage = i;
+                    renderTable(allSecretaries);
+                });
+                container.appendChild(btn);
+            }
+
+            // Next button
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = 'Próxima';
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderTable(allSecretaries);
+                }
+            });
+            container.appendChild(nextBtn);
+        }
+
+        // Render secretaries table
+        function renderTable(secretariesList) {
+            const tableBody = document.getElementById('secretaries-table');
             const noResults = document.getElementById('no-results');
-            if (!tableBody || !noResults) {
+            const paginationContainer = document.getElementById('pagination-container');
+            if (!tableBody || !noResults || !paginationContainer) {
                 console.error('Table elements not found');
                 return;
             }
 
+            const startIndex = (currentPage - 1) * secretariesPerPage;
+            const endIndex = startIndex + secretariesPerPage;
+            const paginatedSecretaries = secretariesList.slice(startIndex, endIndex);
+
             tableBody.innerHTML = '';
-            if (patientsList.length === 0) {
+            if (secretariesList.length === 0) {
                 tableBody.innerHTML = `
                     <tr>
-                        <td colspan="8" class="px-4 py-2 text-center text-gray-500 empty-state">
-                            <i class="fas fa-users text-4xl text-gray-400 mb-4"></i>
-                            <p>Nenhum paciente encontrado para a pesquisa.</p>
+                        <td colspan="6" class="px-4 py-2 text-center text-gray-500 empty-state">
+                            <i class="fas fa-user-tie text-4xl text-gray-400 mb-4"></i>
+                            <p>Nenhum secretário encontrado. <a href="<?php echo site_url('admin/cad_secretario'); ?>" class="text-blue-600 hover:underline">Cadastre o primeiro!</a></p>
                         </td>
                     </tr>
                 `;
                 noResults.classList.remove('hidden');
+                paginationContainer.innerHTML = '';
                 return;
             }
 
             noResults.classList.add('hidden');
-            patientsList.forEach(patient => {
+            paginatedSecretaries.forEach(secretary => {
                 const row = document.createElement('tr');
                 row.className = 'border-t';
                 row.innerHTML = `
-                    <td class="px-4 py-2">${patient.name || 'N/A'}</td>
-                    <td class="px-4 py-2">${patient.phone || '-'}</td>
-                    <td class="px-4 py-2">${patient.bi || '-'}</td>
-                    <td class="px-4 py-2">${patient.email || '-'}</td>
-                    <td class="px-4 py-2">${patient.birthday || '-'}</td>
-                    <td class="px-4 py-2">${patient.gender || '-'}</td>
-                    <td class="px-4 py-2">${patient.address || '-'}</td>
+                    <td class="px-4 py-2">${secretary.name || 'N/A'}</td>
+                    <td class="px-4 py-2">${secretary.phone || '-'}</td>
+                    <td class="px-4 py-2">${secretary.bi || '-'}</td>
+                    <td class="px-4 py-2">${secretary.email || '-'}</td>
+                    <td class="px-4 py-2">${secretary.cargo || '-'}</td>
                     <td class="px-4 py-2">
-                        <a href="<?php echo site_url('admin/cad_paciente?bi='); ?>${patient.bi}" class="action-btn edit-btn mr-2" title="Editar">
+                        <a href="<?php echo site_url('admin/cad_secretario?bi='); ?>${secretary.bi}" class="action-btn edit-btn mr-2" title="Editar">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <button class="action-btn delete-btn" data-bi="${patient.bi}" title="Excluir">
+                        <button class="action-btn delete-btn" data-bi="${secretary.bi}" title="Excluir">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
@@ -507,14 +560,17 @@
                 tableBody.appendChild(row);
             });
 
+            const totalPages = Math.ceil(secretariesList.length / secretariesPerPage);
+            renderPagination(totalPages);
+
             // Attach delete event listeners
             document.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', async () => {
                     const bi = btn.getAttribute('data-bi');
                     console.log('Tentando deletar BI:', bi);
-                    if (confirm(`Tem certeza que deseja excluir o paciente com BI ${bi}?`)) {
+                    if (confirm(`Tem certeza que deseja excluir o secretário com BI ${bi}?`)) {
                         try {
-                            const response = await fetch('<?php echo site_url('admin/delete_patient'); ?>', {
+                            const response = await fetch('<?php echo site_url('admin/delete_secretary'); ?>', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
@@ -527,16 +583,38 @@
                                 showNotification(result.error, 'error');
                             } else {
                                 showNotification(result.success, 'success');
-                                patients = patients.filter(patient => patient.bi !== bi);
-                                renderTable(patients);
+                                allSecretaries = allSecretaries.filter(secretary => secretary.bi !== bi);
+                                if (allSecretaries.length === 0) {
+                                    currentPage = 1;
+                                } else if (endIndex > allSecretaries.length) {
+                                    currentPage = Math.ceil(allSecretaries.length / secretariesPerPage);
+                                }
+                                renderTable(allSecretaries);
                             }
                         } catch (error) {
                             console.error('Erro delete:', error);
-                            showNotification('Erro ao excluir paciente: ' + error.message, 'error');
+                            showNotification('Erro ao excluir secretário: ' + error.message, 'error');
                         }
                     }
                 });
             });
+        }
+
+        // Handle search - client-side filtering
+        function handleSearch(query) {
+            console.log('Buscando com query:', query);
+            if (query === '') {
+                currentPage = 1;
+                renderTable(allSecretaries);
+            } else {
+                const lowerQuery = query.toLowerCase();
+                const filtered = allSecretaries.filter(secretary => 
+                    (secretary.name && secretary.name.toLowerCase().includes(lowerQuery)) ||
+                    (secretary.bi && secretary.bi.toLowerCase().includes(lowerQuery))
+                );
+                currentPage = 1;
+                renderTable(filtered);
+            }
         }
 
         // Initialization
@@ -557,40 +635,20 @@
                 return;
             }
 
-            // Render initial table with PHP data
-            renderTable(patients);
+            // Initial render with PHP data
+            renderTable(allSecretaries);
 
             // Search functionality
-            const handleSearch = async () => {
+            searchBtn.addEventListener('click', () => {
                 const query = searchInput.value.trim();
-                console.log('Buscando com query:', query);
-                try {
-                    const url = `<?php echo site_url('admin/get_patients'); ?>${query ? `?query=${encodeURIComponent(query)}` : ''}`;
-                    console.log('URL fetch:', url);
-                    const response = await fetch(url);
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                    const result = await response.json();
-                    console.log('Resultado search:', result);
-                    if (result.error) {
-                        showNotification(result.error, 'error');
-                        renderTable([]);
-                    } else {
-                        patients = result;
-                        renderTable(patients);
-                    }
-                } catch (error) {
-                    console.error('Erro fetch:', error);
-                    showNotification('Erro ao buscar pacientes: ' + error.message, 'error');
-                    renderTable([]);
-                }
-            };
-
-            searchBtn.addEventListener('click', handleSearch);
+                handleSearch(query);
+            });
 
             // Search on Enter key
             searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
-                    handleSearch();
+                    const query = searchInput.value.trim();
+                    handleSearch(query);
                 }
             });
 

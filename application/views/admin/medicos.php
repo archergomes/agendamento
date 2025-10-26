@@ -14,10 +14,8 @@
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            overflow-x: hidden;
-            max-width: 100vw;
-            position: relative;
         }
+
         #notification {
             display: none;
             position: fixed;
@@ -29,70 +27,88 @@
             color: white;
             max-width: 300px;
         }
-        #notification.error {
-            background-color: #ef4444;
-        }
-        #notification.success {
-            background-color: #10b981;
-        }
-        #notification.info {
-            background-color: #3b82f6;
-        }
-        #notification.show {
-            display: block;
-        }
+
+        #notification.error { background-color: #ef4444; }
+        #notification.success { background-color: #10b981; }
+        #notification.info { background-color: #3b82f6; }
+        #notification.show { display: block; }
+
         .sidebar {
             position: fixed;
             top: 0;
-            height: 100%;
-            width: 250px;
+            left: 0;
+            height: 100vh;
+            width: 80px;
             background-color: white;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
             z-index: 900;
-            display: none;
+            display: flex;
             flex-direction: column;
         }
+
         .sidebar.show {
-            display: flex;
             transform: translateX(0);
         }
-        .sidebar.mobile {
-            left: 0;
-        }
-        .sidebar.mobile:not(.show) {
-            transform: translateX(-100%);
-        }
+
         .sidebar.desktop {
-            left: 0;
-            display: flex;
             transform: translateX(0);
         }
-        .sidebar.desktop.collapsed {
-            width: 60px;
+
+        .sidebar.desktop.expanded {
+            width: 250px;
         }
-        .sidebar.desktop.collapsed .sidebar-text {
+
+        .sidebar.desktop .sidebar-text {
             display: none;
         }
-        .sidebar.desktop.collapsed .sidebar-header {
+
+        .sidebar.desktop.expanded .sidebar-text {
+            display: inline;
+        }
+
+        .sidebar.desktop .sidebar-header {
             justify-content: center;
             padding: 1rem;
         }
-        .sidebar.desktop.collapsed .close-sidebar-btn {
-            display: none;
-        }
-        .sidebar.mobile .sidebar-text {
-            display: inline;
-        }
-        .sidebar.mobile .sidebar-header {
+
+        .sidebar.desktop.expanded .sidebar-header {
             justify-content: space-between;
             padding: 1rem;
         }
-        .sidebar.mobile .sidebar-nav a,
-        .sidebar.mobile .sidebar-nav button {
-            justify-content: flex-start;
-            padding: 8px 16px;
+
+        /* Header com largura total e centralizado */
+        header {
+            position: relative;
+            z-index: 800;
+            background-color: #2563eb;
+            width: 100%;
+            margin-left: 0;
         }
+
+        /* NOVA ESTRUTURA: PAGE WRAPPER */
+        .page-wrapper {
+            margin-left: 80px;
+            transition: margin-left 0.3s ease-in-out;
+            width: calc(100% - 80px);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .page-wrapper.expanded {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+        }
+
+        /* Main Content - CORRIGIDO */
+        .main-content {
+            flex: 1;
+            width: 100%;
+            padding: 1rem;
+            min-height: calc(100vh - 80px);
+        }
+
         .sidebar-overlay {
             display: none;
             position: fixed;
@@ -103,132 +119,58 @@
             background-color: rgba(0, 0, 0, 0.5);
             z-index: 899;
         }
-        .sidebar-overlay.show {
-            display: block;
-        }
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 800;
-            background-color: #2563eb;
-        }
-        .page-wrapper {
-            position: relative;
-            width: 100%;
-            max-width: 100vw;
-            overflow-x: hidden;
-        }
-        .main-content {
-            margin-left: 60px;
-            margin-top: 64px;
-            padding: 1rem;
-            transition: margin-left 0.3s ease-in-out;
-            min-height: calc(100vh - 64px - 128px);
-            width: calc(100% - 60px);
-        }
-        .main-content.expanded {
-            margin-left: 250px;
-            width: calc(100% - 250px);
-        }
-        @media (max-width: 767px) {
-            .sidebar {
-                width: 250px;
-                transform: translateX(-100%);
-                display: none;
-            }
-            .sidebar.show {
-                display: flex;
-                transform: translateX(0);
-            }
-            .sidebar.desktop {
-                display: none;
-            }
-            .sidebar.mobile {
-                display: none;
-                left: 0;
-            }
-            .sidebar.mobile.show {
-                display: flex;
-            }
-            .sidebar.mobile .sidebar-text {
-                display: inline !important;
-            }
-            .sidebar.mobile .sidebar-header {
-                justify-content: space-between !important;
-                padding: 1rem !important;
-            }
-            .sidebar.mobile .sidebar-nav a,
-            .sidebar.mobile .sidebar-nav button {
-                justify-content: flex-start !important;
-                padding: 8px 16px !important;
-            }
-            .main-content {
-                margin-left: 0;
-                margin-top: 64px;
-                width: 100%;
-            }
-            .main-content.expanded {
-                margin-left: 0;
-                width: 100%;
-            }
-            #toggle-sidebar-btn {
-                display: none !important;
-            }
-            #mobile-menu-btn {
-                display: block;
-                margin-right: 1rem;
-            }
-            #close-sidebar-btn {
-                display: block;
-            }
-            .header-content {
-                justify-content: space-between;
-                align-items: center;
-            }
-        }
+
+        .sidebar-overlay.show { display: block; }
+
         @media (min-width: 768px) {
             #mobile-menu-btn {
                 display: none;
             }
-            #close-sidebar-btn {
-                display: none;
-            }
             .sidebar.desktop {
                 display: flex;
             }
-            .sidebar.mobile {
+        }
+
+        @media (max-width: 767px) {
+            .sidebar.desktop {
                 display: none;
             }
-            .header-content {
-                justify-content: flex-start;
+            .sidebar {
+                transform: translateX(-100%);
+                width: 250px;
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            .page-wrapper {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+            .page-wrapper.expanded {
+                margin-left: 0 !important;
+                width: 100% !important;
             }
         }
+
         .sidebar-nav {
             display: flex;
             flex-direction: column;
             height: calc(100% - 64px);
             padding: 0.5rem;
         }
+
         .main-menu {
             overflow-y: auto;
             flex-grow: 1;
             scrollbar-width: thin;
             scrollbar-color: #3b82f6 #e5e7eb;
         }
-        .main-menu::-webkit-scrollbar {
-            width: 6px;
-        }
-        .main-menu::-webkit-scrollbar-track {
-            background: #e5e7eb;
-        }
-        .main-menu::-webkit-scrollbar-thumb {
-            background: #3b82f6;
-            border-radius: 3px;
-        }
-        .sidebar-nav a,
-        .sidebar-nav button {
+
+        .main-menu::-webkit-scrollbar { width: 6px; }
+        .main-menu::-webkit-scrollbar-track { background: #e5e7eb; }
+        .main-menu::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 3px; }
+        
+        .sidebar-nav a, .sidebar-nav button {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -238,35 +180,41 @@
             transition: background-color 0.2s, color 0.2s;
             font-size: 0.95rem;
         }
-        .sidebar-nav a:hover,
-        .sidebar-nav button:hover {
+        
+        .sidebar-nav a:hover, .sidebar-nav button:hover {
             background-color: #eff6ff;
             color: #1e40af;
         }
+        
         .sidebar-nav a.active {
             background-color: #3b82f6;
             color: white;
         }
+        
         .sidebar-nav i {
             font-size: 1.5rem;
             width: 28px;
             text-align: center;
         }
-        .sidebar.desktop.collapsed .sidebar-nav a,
-        .sidebar.desktop.collapsed .sidebar-nav button {
+
+        .sidebar.desktop .sidebar-nav a, 
+        .sidebar.desktop .sidebar-nav button {
             justify-content: center;
             padding: 8px;
         }
+
+        .sidebar.desktop.expanded .sidebar-nav a,
+        .sidebar.desktop.expanded .sidebar-nav button {
+            justify-content: flex-start;
+            padding: 8px 16px;
+        }
+
         .sidebar-nav .logout {
             margin-top: 0.5rem;
             border-top: 1px solid #e5e7eb;
             padding-top: 0.5rem;
         }
-        footer {
-            width: 100%;
-            position: relative;
-            margin-left: 0;
-        }
+
         .table-container {
             background-color: white;
             border-radius: 0.5rem;
@@ -274,24 +222,19 @@
             padding: 1.5rem;
             overflow-x: auto;
         }
+
         .action-btn {
             padding: 0.5rem;
             border-radius: 0.25rem;
             color: white;
             transition: background-color 0.2s;
         }
-        .edit-btn {
-            background-color: #3b82f6;
-        }
-        .edit-btn:hover {
-            background-color: #2563eb;
-        }
-        .delete-btn {
-            background-color: #ef4444;
-        }
-        .delete-btn:hover {
-            background-color: #dc2626;
-        }
+
+        .edit-btn { background-color: #3b82f6; }
+        .edit-btn:hover { background-color: #2563eb; }
+        .delete-btn { background-color: #ef4444; }
+        .delete-btn:hover { background-color: #dc2626; }
+        
         .create-btn {
             background-color: #10b981;
             color: white;
@@ -299,9 +242,9 @@
             border-radius: 0.375rem;
             transition: background-color 0.2s;
         }
-        .create-btn:hover {
-            background-color: #059669;
-        }
+        
+        .create-btn:hover { background-color: #059669; }
+        
         .search-input {
             padding: 0.5rem;
             border: 1px solid #d1d5db;
@@ -309,6 +252,7 @@
             flex-grow: 1;
             max-width: 300px;
         }
+        
         .search-btn {
             background-color: #3b82f6;
             color: white;
@@ -316,8 +260,46 @@
             border-radius: 0.25rem;
             transition: background-color 0.2s;
         }
-        .search-btn:hover {
-            background-color: #2563eb;
+        
+        .search-btn:hover { background-color: #2563eb; }
+        
+        .empty-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            margin-top: 2rem;
+            gap: 0.5rem;
+        }
+
+        .pagination button {
+            padding: 0.5rem 1rem;
+            border: 1px solid #d1d5db;
+            background-color: white;
+            color: #374151;
+            border-radius: 0.25rem;
+            transition: background-color 0.2s;
+        }
+
+        .pagination button:hover {
+            background-color: #eff6ff;
+        }
+
+        .pagination button.active {
+            background-color: #3b82f6;
+            color: white;
+            border-color: #3b82f6;
+        }
+
+        .pagination button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
         }
     </style>
 </head>
@@ -333,7 +315,7 @@
         <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
         <!-- Left Sidebar -->
-        <div id="sidebar-menu" class="sidebar bg-white shadow-lg">
+        <div id="sidebar-menu" class="sidebar bg-white shadow-lg desktop">
             <div class="sidebar-header flex justify-between items-center p-4 border-b">
                 <h2 class="text-lg font-semibold text-gray-700 sidebar-text">Menu do Administrador</h2>
                 <button id="toggle-sidebar-btn" class="text-gray-700 hover:text-gray-900" aria-label="Alternar menu">
@@ -365,17 +347,21 @@
                         <i class="fas fa-calendar-check"></i>
                         <span class="sidebar-text">Agendamentos</span>
                     </a>
-                    <a href="<?php echo site_url('admin/cad_pacientes'); ?>" class="block text-gray-700">
+                    <a href="<?php echo site_url('admin/cad_paciente'); ?>" class="block text-gray-700">
                         <i class="fas fa-user-plus"></i>
                         <span class="sidebar-text">Cadastrar Paciente</span>
                     </a>
-                    <a href="<?php echo site_url('admin/cad_secretarios'); ?>" class="block text-gray-700">
+                    <a href="<?php echo site_url('admin/cad_secretario'); ?>" class="block text-gray-700">
                         <i class="fas fa-user-plus"></i>
                         <span class="sidebar-text">Cadastrar Secretário</span>
                     </a>
-                    <a href="<?php echo site_url('admin/cad_medicos'); ?>" class="block text-gray-700">
+                    <a href="<?php echo site_url('admin/cad_medico'); ?>" class="block text-gray-700">
                         <i class="fas fa-user-plus"></i>
                         <span class="sidebar-text">Cadastrar Médico</span>
+                    </a>
+                    <a href="<?php echo site_url('admin/disponibilidade'); ?>" class="block text-gray-700">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span class="sidebar-text">Disponibilidade</span>
                     </a>
                     <a href="<?php echo site_url('admin/relatorios'); ?>" class="block text-gray-700">
                         <i class="fas fa-chart-bar"></i>
@@ -395,14 +381,14 @@
 
         <!-- Header -->
         <header class="bg-blue-600 text-white shadow-lg">
-            <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
                 <div class="flex items-center gap-2">
-                    <button id="mobile-menu-btn" class="md:hidden text-white hover:text-blue-200" aria-label="Abrir menu">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
                     <i class="fas fa-hospital-alt text-2xl" aria-hidden="true"></i>
                     <h1 class="text-xl font-bold">Hospital Matlhovele</h1>
                 </div>
+                <button id="mobile-menu-btn" class="md:hidden text-white hover:text-blue-200" aria-label="Abrir menu">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
             </div>
         </header>
 
@@ -411,13 +397,13 @@
             <div class="container mx-auto px-4 py-8">
                 <div class="flex justify-between items-center mb-6">
                     <h2 class="text-2xl font-semibold text-gray-800">Lista de Médicos</h2>
-                    <a href="<?php echo site_url('admin/cad_medicos'); ?>" class="create-btn">
+                    <a href="<?php echo site_url('admin/cad_medico'); ?>" class="create-btn">
                         <i class="fas fa-user-plus mr-2"></i> Cadastrar Novo Médico
                     </a>
                 </div>
 
                 <!-- Search Bar -->
-                <div class="mb-4 flex space-x-2 justify-center">
+                <div class="mb-4 flex space-x-2">
                     <input type="text" id="search-input" class="search-input" placeholder="Pesquisar por nome, BI ou número da licença...">
                     <button id="search-btn" class="search-btn"><i class="fas fa-search"></i></button>
                 </div>
@@ -440,48 +426,26 @@
                             <!-- Populated by JavaScript -->
                         </tbody>
                     </table>
-                    <p id="no-results" class="text-center text-gray-500 mt-4 hidden">Nenhum médico encontrado.</p>
+                    <p id="no-results" class="text-center text-gray-500 mt-4 hidden empty-state">Nenhum médico encontrado para a pesquisa.</p>
+                    <div id="pagination-container" class="pagination"></div>
                 </div>
             </div>
         </main>
-
-        <!-- Footer -->
-        <footer class="bg-gray-800 text-white py-8">
-            <div class="container mx-auto px-4">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div>
-                        <h3 class="text-lg font-medium mb-4">Hospital Matlhovele</h3>
-                        <p class="text-gray-300">Av. 25 de Setembro, Maputo</p>
-                        <p class="text-gray-300">Telefone: +258 84 123 4567</p>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-medium mb-4">Horário de Funcionamento</h3>
-                        <p class="text-gray-300">Segunda a Sexta: 7h30 - 16h30</p>
-                        <p class="text-gray-300">Sábado: 8h00 - 12h00</p>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-medium mb-4">Links Rápidos</h3>
-                        <ul class="space-y-2">
-                            <li><a href="/sobre" class="text-gray-300 hover:text-white">Sobre Nós</a></li>
-                            <li><a href="/servicos" class="text-gray-300 hover:text-white">Serviços</a></li>
-                            <li><a href="/contactos" class="text-gray-300 hover:text-white">Contactos</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
-                    <p>© 2025 Hospital Público de Matlhovele. Todos os direitos reservados.</p>
-                </div>
-            </div>
-        </footer>
     </div>
 
     <script>
+        let allDoctors = [];
+        let filteredDoctors = [];
+        let currentPage = 1;
+        const doctorsPerPage = 10;
+        let isSearching = false;
+
         // Show notification
         function showNotification(message, type = 'info') {
             const notification = document.getElementById('notification');
             const messageEl = document.getElementById('notification-message');
             if (!notification || !messageEl) {
-                console.error('Notification elements not found:', { notification, messageEl });
+                console.error('Notification elements not found');
                 return;
             }
             messageEl.textContent = message;
@@ -494,12 +458,14 @@
         // Fetch doctors from backend
         async function fetchDoctors(query = '') {
             try {
-                const response = await fetch(`<?php echo site_url('api/get_doctors'); ?>${query ? `?query=${encodeURIComponent(query)}` : ''}`, {
+                const url = `<?php echo site_url('api/get_doctors'); ?>${query ? `?query=${encodeURIComponent(query)}` : ''}`;
+                const response = await fetch(url, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 });
+                if (!response.ok) throw new Error(`HTTP ${response.status}`);
                 const data = await response.json();
                 return data;
             } catch (error) {
@@ -509,35 +475,98 @@
             }
         }
 
+        // Render pagination controls
+        function renderPagination(totalPages) {
+            const container = document.getElementById('pagination-container');
+            if (!container) return;
+
+            container.innerHTML = '';
+
+            // Previous button
+            const prevBtn = document.createElement('button');
+            prevBtn.textContent = 'Anterior';
+            prevBtn.disabled = currentPage === 1;
+            prevBtn.addEventListener('click', () => {
+                if (currentPage > 1) {
+                    currentPage--;
+                    renderCurrentList();
+                }
+            });
+            container.appendChild(prevBtn);
+
+            // Page numbers
+            for (let i = 1; i <= totalPages; i++) {
+                const btn = document.createElement('button');
+                btn.textContent = i;
+                btn.classList.toggle('active', i === currentPage);
+                btn.addEventListener('click', () => {
+                    currentPage = i;
+                    renderCurrentList();
+                });
+                container.appendChild(btn);
+            }
+
+            // Next button
+            const nextBtn = document.createElement('button');
+            nextBtn.textContent = 'Próxima';
+            nextBtn.disabled = currentPage === totalPages;
+            nextBtn.addEventListener('click', () => {
+                if (currentPage < totalPages) {
+                    currentPage++;
+                    renderCurrentList();
+                }
+            });
+            container.appendChild(nextBtn);
+        }
+
+        // Render the current list (either all or filtered)
+        function renderCurrentList() {
+            const doctorsList = isSearching ? filteredDoctors : allDoctors;
+            renderTable(doctorsList);
+        }
+
         // Render doctors table
-        async function renderDoctors(query = '') {
+        function renderTable(doctorsList) {
             const tableBody = document.getElementById('doctors-table');
             const noResults = document.getElementById('no-results');
-            if (!tableBody || !noResults) {
-                console.error('Table elements not found:', { tableBody, noResults });
+            const paginationContainer = document.getElementById('pagination-container');
+            if (!tableBody || !noResults || !paginationContainer) {
+                console.error('Table elements not found');
                 return;
             }
 
-            tableBody.innerHTML = '';
-            const doctors = await fetchDoctors(query);
+            const startIndex = (currentPage - 1) * doctorsPerPage;
+            const endIndex = startIndex + doctorsPerPage;
+            const paginatedDoctors = doctorsList.slice(startIndex, endIndex);
 
-            if (doctors.length === 0) {
+            tableBody.innerHTML = '';
+            if (doctorsList.length === 0) {
+                tableBody.innerHTML = `
+                    <tr>
+                        <td colspan="7" class="px-4 py-2 text-center text-gray-500 empty-state">
+                            <i class="fas fa-user-md text-4xl text-gray-400 mb-4"></i>
+                            <p>Nenhum médico encontrado. <a href="<?php echo site_url('admin/cad_medico'); ?>" class="text-blue-600 hover:underline">Cadastre o primeiro!</a></p>
+                        </td>
+                    </tr>
+                `;
                 noResults.classList.remove('hidden');
+                paginationContainer.innerHTML = '';
                 return;
             }
 
             noResults.classList.add('hidden');
-            doctors.forEach(doctor => {
+            paginatedDoctors.forEach(doctor => {
                 const row = document.createElement('tr');
+                row.className = 'border-t';
                 row.innerHTML = `
-                    <td class="px-4 py-2 border">${doctor.name}</td>
-                    <td class="px-4 py-2 border">${doctor.phone}</td>
-                    <td class="px-4 py-2 border">${doctor.bi}</td>
-                    <td class="px-4 py-2 border">${doctor.email || '-'}</td>
-                    <td class="px-4 py-2 border">${doctor.specialty}</td>
-                    <td class="px-4 py-2 border">${doctor.licenseNumber || '-'}</td>
-                    <td class="px-4 py-2 border">
-                        <a href="<?php echo site_url('admin/cad_medicos'); ?>?bi=${doctor.bi}" class="action-btn edit-btn mr-2" title="Editar">
+                    <td class="px-4 py-2">${doctor.name || 'N/A'}</td>
+                    <td class="px-4 py-2">${doctor.phone || '-'}</td>
+                    <td class="px-4 py-2">${doctor.bi || '-'}</td>
+                    <td class="px-4 py-2">${doctor.email || '-'}</td>
+                    <td class="px-4 py-2">${doctor.specialty || '-'}</td>
+                    <td class="px-4 py-2">${doctor.licenseNumber || '-'}</td>
+                    <td class="px-4 py-2">
+                        <a href="<?php echo site_url('admin/cad_medico?bi='); ?>${doctor.bi}" class="action-btn edit-btn mr-2" title="Editar">
                             <i class="fas fa-edit"></i>
                         </a>
                         <button class="action-btn delete-btn" data-bi="${doctor.bi}" title="Excluir">
@@ -548,10 +577,14 @@
                 tableBody.appendChild(row);
             });
 
+            const totalPages = Math.ceil(doctorsList.length / doctorsPerPage);
+            renderPagination(totalPages);
+
             // Attach delete event listeners
             document.querySelectorAll('.delete-btn').forEach(btn => {
                 btn.addEventListener('click', async () => {
                     const bi = btn.getAttribute('data-bi');
+                    console.log('Tentando deletar BI:', bi);
                     if (confirm(`Tem certeza que deseja excluir o médico com BI ${bi}?`)) {
                         try {
                             const response = await fetch('<?php echo site_url('api/delete_doctor'); ?>', {
@@ -563,55 +596,88 @@
                                 body: JSON.stringify({ bi })
                             });
                             const result = await response.json();
+                            console.log('Resultado delete:', result);
                             if (result.error) {
                                 showNotification(result.error, 'error');
                             } else {
                                 showNotification(result.success, 'success');
-                                renderDoctors(query); // Refresh table
+                                // Refresh current view
+                                const searchInput = document.getElementById('search-input');
+                                const currentQuery = searchInput.value.trim();
+                                if (currentQuery === '') {
+                                    fetchDoctors('').then(data => {
+                                        allDoctors = data;
+                                        currentPage = 1;
+                                        renderCurrentList();
+                                    });
+                                } else {
+                                    fetchDoctors(currentQuery).then(data => {
+                                        filteredDoctors = data;
+                                        currentPage = 1;
+                                        renderCurrentList();
+                                    });
+                                }
                             }
                         } catch (error) {
-                            showNotification('Erro ao excluir médico.', 'error');
-                            console.error('Erro:', error);
+                            console.error('Erro delete:', error);
+                            showNotification('Erro ao excluir médico: ' + error.message, 'error');
                         }
                     }
                 });
             });
         }
 
+        // Handle search
+        async function handleSearch(query) {
+            console.log('Buscando com query:', query);
+            if (query === '') {
+                isSearching = false;
+                currentPage = 1;
+                renderCurrentList();
+            } else {
+                isSearching = true;
+                const data = await fetchDoctors(query);
+                filteredDoctors = data;
+                currentPage = 1;
+                renderCurrentList();
+            }
+        }
+
         // Initialization
-        document.addEventListener('DOMContentLoaded', () => {
+        document.addEventListener('DOMContentLoaded', function () {
             const notificationClose = document.getElementById('notification-close');
             const mobileMenuBtn = document.getElementById('mobile-menu-btn');
             const sidebarMenu = document.getElementById('sidebar-menu');
             const closeSidebarBtn = document.getElementById('close-sidebar-btn');
             const toggleSidebarBtn = document.getElementById('toggle-sidebar-btn');
-            const mainContent = document.querySelector('.main-content');
+            const pageWrapper = document.querySelector('.page-wrapper');
             const sidebarOverlay = document.getElementById('sidebar-overlay');
-            const searchBtn = document.getElementById('search-btn');
             const searchInput = document.getElementById('search-input');
+            const searchBtn = document.getElementById('search-btn');
 
             if (!notificationClose || !mobileMenuBtn || !sidebarMenu || !closeSidebarBtn || !toggleSidebarBtn ||
-                !mainContent || !sidebarOverlay || !searchBtn || !searchInput) {
-                console.error('DOM elements not found:', {
-                    notificationClose, mobileMenuBtn, sidebarMenu, closeSidebarBtn, toggleSidebarBtn,
-                    mainContent, sidebarOverlay, searchBtn, searchInput
-                });
+                !pageWrapper || !sidebarOverlay || !searchInput || !searchBtn) {
+                console.error('DOM elements not found');
                 return;
             }
 
-            // Initial render
-            renderDoctors();
+            // Initial load: fetch all doctors
+            fetchDoctors('').then(data => {
+                allDoctors = data;
+                renderCurrentList();
+            });
 
             // Search functionality
             searchBtn.addEventListener('click', () => {
                 const query = searchInput.value.trim();
-                renderDoctors(query);
+                handleSearch(query);
             });
 
+            // Search on Enter key
             searchInput.addEventListener('keypress', (e) => {
                 if (e.key === 'Enter') {
                     const query = searchInput.value.trim();
-                    renderDoctors(query);
+                    handleSearch(query);
                 }
             });
 
@@ -620,41 +686,32 @@
                 document.getElementById('notification').classList.remove('show');
             });
 
-            // Sidebar behavior
-            if (window.innerWidth >= 768) {
-                sidebarMenu.classList.add('desktop', 'collapsed');
-                sidebarMenu.classList.remove('mobile', 'show');
-                mainContent.classList.remove('expanded');
-            } else {
-                sidebarMenu.classList.add('mobile');
-                sidebarMenu.classList.remove('desktop', 'collapsed');
-                mainContent.classList.remove('expanded');
-            }
-
+            // Sidebar handlers - ATUALIZADO
             mobileMenuBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 sidebarMenu.classList.add('show');
                 sidebarMenu.classList.remove('collapsed');
                 sidebarOverlay.classList.add('show');
+                pageWrapper.classList.add('expanded');
             });
 
             closeSidebarBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 sidebarMenu.classList.remove('show');
                 sidebarOverlay.classList.remove('show');
+                pageWrapper.classList.remove('expanded');
             });
 
             toggleSidebarBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                if (window.innerWidth >= 768) {
-                    sidebarMenu.classList.toggle('collapsed');
-                    mainContent.classList.toggle('expanded');
-                }
+                sidebarMenu.classList.toggle('expanded');
+                pageWrapper.classList.toggle('expanded');
             });
 
-            sidebarOverlay.addEventListener('click', () => {
+            sidebarOverlay.addEventListener('click', (e) => {
                 sidebarMenu.classList.remove('show');
                 sidebarOverlay.classList.remove('show');
+                pageWrapper.classList.remove('expanded');
             });
 
             document.addEventListener('click', (e) => {
@@ -664,45 +721,7 @@
                 if (!isClickInsideSidebar && !isClickOnMenuBtn && isSidebarOpen && window.innerWidth < 768) {
                     sidebarMenu.classList.remove('show');
                     sidebarOverlay.classList.remove('show');
-                }
-            });
-
-            let touchStartX = 0;
-            let touchEndX = 0;
-            let isTouchingSidebar = false;
-
-            document.addEventListener('touchstart', (e) => {
-                touchStartX = e.changedTouches[0].screenX;
-                isTouchingSidebar = sidebarMenu.contains(e.target);
-            });
-
-            document.addEventListener('touchend', (e) => {
-                touchEndX = e.changedTouches[0].screenX;
-                if (window.innerWidth < 768) {
-                    const deltaX = touchEndX - touchStartX;
-                    if (!sidebarMenu.classList.contains('show') && touchStartX < 50 && deltaX > 100) {
-                        sidebarMenu.classList.add('show');
-                        sidebarOverlay.classList.add('show');
-                    }
-                    if (isTouchingSidebar && sidebarMenu.classList.contains('show') && deltaX < -100) {
-                        sidebarMenu.classList.remove('show');
-                        sidebarOverlay.classList.remove('show');
-                    }
-                }
-            });
-
-            window.addEventListener('resize', () => {
-                if (window.innerWidth >= 768) {
-                    sidebarMenu.classList.add('desktop');
-                    sidebarMenu.classList.remove('mobile', 'show');
-                    sidebarOverlay.classList.remove('show');
-                    if (!sidebarMenu.classList.contains('collapsed')) {
-                        mainContent.classList.add('expanded');
-                    }
-                } else {
-                    sidebarMenu.classList.add('mobile');
-                    sidebarMenu.classList.remove('desktop', 'collapsed');
-                    mainContent.classList.remove('expanded');
+                    pageWrapper.classList.remove('expanded');
                 }
             });
 
@@ -711,10 +730,10 @@
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', () => {
                     showNotification('Sessão encerrada com sucesso!', 'success');
-                    sidebarMenu.classList.remove('show', 'desktop', 'collapsed', 'mobile');
-                    mainContent.classList.remove('expanded');
+                    sidebarMenu.classList.remove('show', 'expanded');
+                    pageWrapper.classList.remove('expanded');
                     sidebarOverlay.classList.remove('show');
-                    // window.location.href = '<?php echo site_url('auth/logout'); ?>';
+                    window.location.href = '<?php echo site_url('login'); ?>';
                 });
             }
         });

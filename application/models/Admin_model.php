@@ -146,35 +146,172 @@ class Admin_model extends CI_Model
         return $this->db->update('Medicos', $update_data);
     }
 
-    public function get_pacientes()
+    // public function get_pacientes()
+    // {
+    //     $this->db->select('ID_Paciente, CONCAT(Nome, " ", Sobrenome) AS Nome_Completo, Telefone, Email, Data_Nascimento, Genero, Endereco');
+    //     return $this->db->get('Pacientes')->result_array();
+    // }
+
+    // public function get_medicos()
+    // {
+    //     $this->db->select('m.ID_Medico, CONCAT(m.Nome, " ", m.Sobrenome) AS Nome_Completo, m.Especialidade, m.Telefone, m.Email, m.Data_Inicio, d.Nome_Departamento');
+    //     $this->db->from('Medicos m');
+    //     $this->db->join('Departamentos d', 'm.ID_Departamento = d.ID_Departamento', 'left');
+    //     return $this->db->get()->result_array();
+    // }
+
+    // public function get_secretarios()
+    // {
+    //     $this->db->select('ID_Secretario, CONCAT(Nome, " ", Sobrenome) AS Nome_Completo, Telefone, Email');
+    //     return $this->db->get('Secretarios')->result_array();
+    // }
+
+    // public function get_agendamentos()
+    // {
+    //     $this->db->select("a.ID_Agendamento, a.Data_Agendamento, a.Hora_Agendamento, a.Status, a.Motivo, 
+    //                       CONCAT(p.Nome, ' ', p.Sobrenome) AS Nome_Paciente, 
+    //                       CONCAT(m.Nome, ' ', m.Sobrenome) AS Nome_Medico");
+    //     $this->db->from('Agendamentos a');
+    //     $this->db->join('Pacientes p', 'a.ID_Paciente = p.ID_Paciente');
+    //     $this->db->join('Medicos m', 'a.ID_Medico = m.ID_Medico');
+    //     $this->db->where('a.Status !=', 'Cancelado');
+    //     return $this->db->get()->result_array();
+    // }
+
+    // Métricas para dashboard
+    // public function get_metrics()
+    // {
+    //     $metrics = [
+    //         'total_pacientes' => $this->db->count_all('Pacientes'),
+    //         'total_medicos' => $this->db->count_all('Medicos'),
+    //         'total_agendamentos' => $this->db->count_all('Agendamentos'),
+    //         'agendamentos_pendentes' => $this->db->where('Status', 'Pendente')->count_all_results('Agendamentos')
+    //     ];
+    //     log_message('debug', 'Métricas carregadas: ' . json_encode($metrics));
+    //     return $metrics;
+    // }
+
+    // Pacientes (com JOIN para Email de Usuarios — corrigido ORDER BY)
+    public function get_pacientes($query = '')
     {
-        $this->db->select('ID_Paciente, CONCAT(Nome, " ", Sobrenome) AS Nome_Completo, Telefone, Email, Data_Nascimento, Genero, Endereco');
-        return $this->db->get('Pacientes')->result_array();
+        $this->db->select('p.ID_Paciente, CONCAT(p.Nome, " ", p.Sobrenome) AS Nome_Completo, p.Telefone, u.Email, p.Data_Nascimento, p.Genero, p.Endereco');
+        $this->db->from('Pacientes p');
+        $this->db->join('Usuarios u', 'p.ID_Usuario = u.ID_Usuario', 'left');
+        if ($query) {
+            $this->db->group_start();
+            $this->db->like('CONCAT(p.Nome, " ", p.Sobrenome)', $query);
+            $this->db->or_like('p.ID_Paciente', $query);
+            $this->db->or_like('u.Email', $query);
+            $this->db->group_end();
+        }
+        // Correção: ORDER BY como raw string com aspas simples no espaço
+        $this->db->order_by("CONCAT(p.Nome, ' ', p.Sobrenome) ASC");
+        $result = $this->db->get()->result_array();
+        log_message('debug', 'Pacientes com JOIN Email: ' . count($result) . ' | Query: ' . $this->db->last_query());
+        return $result;
     }
 
-    public function get_medicos()
+    // Médicos
+    public function get_medicos($query = '')
     {
-        $this->db->select('m.ID_Medico, CONCAT(m.Nome, " ", m.Sobrenome) AS Nome_Completo, m.Especialidade, m.Telefone, m.Email, m.Data_Inicio, d.Nome_Departamento');
-        $this->db->from('Medicos m');
-        $this->db->join('Departamentos d', 'm.ID_Departamento = d.ID_Departamento', 'left');
-        return $this->db->get()->result_array();
+        $this->db->select('ID_Medico, Nome, Sobrenome, Especialidade, Telefone, Email');
+        $this->db->from('Medicos');
+        if ($query) {
+            $this->db->group_start();
+            $this->db->like('CONCAT(Nome, " ", Sobrenome)', $query);
+            $this->db->or_like('Especialidade', $query);
+            $this->db->group_end();
+        }
+        $this->db->order_by('Nome', 'ASC');
+        $result = $this->db->get()->result_array();
+        log_message('debug', 'Médicos carregados: ' . count($result));
+        return $result;
     }
 
-    public function get_secretarios()
+    // Secretários (assuma tabela Secretarios similar a Pacientes, ajuste colunas)
+    public function get_secretarios($query = '')
     {
-        $this->db->select('ID_Secretario, CONCAT(Nome, " ", Sobrenome) AS Nome_Completo, Telefone, Email');
-        return $this->db->get('Secretarios')->result_array();
+        $this->db->select('*');  // Ajuste campos: ID_Secretario, Nome_Completo, etc.
+        $this->db->from('Secretarios');
+        if ($query) {
+            $this->db->like('Nome', $query);
+        }
+        $this->db->order_by('Nome', 'ASC');
+        $result = $this->db->get()->result_array();
+        log_message('debug', 'Secretários carregados: ' . count($result));
+        return $result;
     }
 
-    public function get_agendamentos()
+    // Agendamentos
+    public function get_agendamentos($query = '')
     {
-        $this->db->select("a.ID_Agendamento, a.Data_Agendamento, a.Hora_Agendamento, a.Status, a.Motivo, 
-                          CONCAT(p.Nome, ' ', p.Sobrenome) AS Nome_Paciente, 
-                          CONCAT(m.Nome, ' ', m.Sobrenome) AS Nome_Medico");
+        $this->db->select('a.ID_Agendamento, a.Data_Agendamento, a.Hora_Agendamento, a.Status, a.Motivo, p.Nome as paciente_nome, m.Nome as medico_nome');
         $this->db->from('Agendamentos a');
         $this->db->join('Pacientes p', 'a.ID_Paciente = p.ID_Paciente');
         $this->db->join('Medicos m', 'a.ID_Medico = m.ID_Medico');
-        $this->db->where('a.Status !=', 'Cancelado');
-        return $this->db->get()->result_array();
+        if ($query) {
+            $this->db->group_start();
+            $this->db->like('p.Nome_Completo', $query);
+            $this->db->or_like('m.Nome', $query);
+            $this->db->group_end();
+        }
+        $this->db->order_by('a.Data_Agendamento', 'DESC');
+        $result = $this->db->get()->result_array();
+        log_message('debug', 'Agendamentos carregados: ' . count($result));
+        return $result;
+    }
+
+    // CRUD para pacientes (para AJAX delete, etc.)
+    public function delete_paciente($id_paciente)
+    {
+        $this->db->where('ID_Paciente', $id_paciente);
+        if ($this->db->delete('Pacientes')) {
+            return ['success' => 'Paciente excluído com sucesso'];
+        } else {
+            return ['error' => 'Erro ao excluir: ' . $this->db->error()['message']];
+        }
+    }
+
+    public function cancel_appointment($id)
+    {
+        log_message('debug', 'Iniciando cancel_appointment para ID: ' . $id);  // Log no CI
+
+        if (!$id || !is_numeric($id)) {
+            log_message('error', 'ID inválido: ' . $id);
+            return false;
+        }
+
+        $this->db->where('ID_Agendamento', $id);
+        $update_data = [
+            'Status' => 'Cancelado',
+            'Data_Cancelamento' => date('Y-m-d H:i:s')  // Verifique se esta coluna existe!
+        ];
+
+        $result = $this->db->update('Agendamentos', $update_data);  // Nota: Tabela é 'Agendamentos' (plural?)
+
+        $affected = $this->db->affected_rows();
+        log_message('debug', 'Update result: ' . ($result ? 'TRUE' : 'FALSE') . ', Affected rows: ' . $affected);
+
+        // Se falhou, logue o erro do DB
+        if (!$result) {
+            log_message('error', 'DB Error: ' . $this->db->last_query());  // Query executada
+            log_message('error', 'DB Error Details: ' . $this->db->error()['message']);  // Erro específico
+        }
+
+        return $result;
+    }
+
+    public function delete_appointment($id)
+    {
+        // Similar para delete, se precisar
+        log_message('debug', 'Deletando ID: ' . $id);
+        $this->db->where('ID_Agendamento', $id);
+        $result = $this->db->delete('Agendamentos');
+        $affected = $this->db->affected_rows();
+        log_message('debug', 'Delete result: ' . ($result ? 'TRUE' : 'FALSE') . ', Affected: ' . $affected);
+        if (!$result) {
+            log_message('error', 'DB Error: ' . $this->db->error()['message']);
+        }
+        return $result;
     }
 }

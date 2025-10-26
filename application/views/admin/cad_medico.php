@@ -14,10 +14,8 @@
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            overflow-x: hidden;
-            max-width: 100vw;
-            position: relative;
         }
+
         #notification {
             display: none;
             position: fixed;
@@ -29,69 +27,85 @@
             color: white;
             max-width: 300px;
         }
-        #notification.error {
-            background-color: #ef4444;
-        }
-        #notification.success {
-            background-color: #10b981;
-        }
-        #notification.info {
-            background-color: #3b82f6;
-        }
-        #notification.show {
-            display: block;
-        }
+
+        #notification.error { background-color: #ef4444; }
+        #notification.success { background-color: #10b981; }
+        #notification.info { background-color: #3b82f6; }
+        #notification.show { display: block; }
+
         .sidebar {
             position: fixed;
             top: 0;
-            height: 100%;
-            width: 250px;
+            left: 0;
+            height: 100vh;
+            width: 80px;
             background-color: white;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
             z-index: 900;
-            display: none;
+            display: flex;
             flex-direction: column;
         }
+
         .sidebar.show {
-            display: flex;
             transform: translateX(0);
         }
-        .sidebar.mobile {
-            left: 0;
-        }
-        .sidebar.mobile:not(.show) {
-            transform: translateX(-100%);
-        }
+
         .sidebar.desktop {
-            left: 0;
-            display: flex;
             transform: translateX(0);
         }
-        .sidebar.desktop.collapsed {
-            width: 60px;
+
+        .sidebar.desktop.expanded {
+            width: 250px;
         }
-        .sidebar.desktop.collapsed .sidebar-text {
+
+        .sidebar.desktop .sidebar-text {
             display: none;
         }
-        .sidebar.desktop.collapsed .sidebar-header {
+
+        .sidebar.desktop.expanded .sidebar-text {
+            display: inline;
+        }
+
+        .sidebar.desktop .sidebar-header {
             justify-content: center;
             padding: 1rem;
         }
-        .sidebar.desktop.collapsed .close-sidebar-btn {
-            display: none;
-        }
-        .sidebar.mobile .sidebar-text {
-            display: inline;
-        }
-        .sidebar.mobile .sidebar-header {
+
+        .sidebar.desktop.expanded .sidebar-header {
             justify-content: space-between;
             padding: 1rem;
         }
-        .sidebar.mobile .sidebar-nav a, .sidebar.mobile .sidebar-nav button {
-            justify-content: flex-start;
-            padding: 8px 16px;
+
+        header {
+            position: relative;
+            z-index: 800;
+            background-color: #2563eb;
+            width: 100%;
+            margin-left: 0;
         }
+
+        .page-wrapper {
+            margin-left: 80px;
+            transition: margin-left 0.3s ease-in-out;
+            width: calc(100% - 80px);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .page-wrapper.expanded {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+        }
+
+        .main-content {
+            flex: 1;
+            width: 100%;
+            padding: 1rem;
+            min-height: calc(100vh - 80px);
+        }
+
         .sidebar-overlay {
             display: none;
             position: fixed;
@@ -102,129 +116,57 @@
             background-color: rgba(0, 0, 0, 0.5);
             z-index: 899;
         }
-        .sidebar-overlay.show {
-            display: block;
-        }
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 800;
-            background-color: #2563eb;
-        }
-        .page-wrapper {
-            position: relative;
-            width: 100%;
-            max-width: 100vw;
-            overflow-x: hidden;
-        }
-        .main-content {
-            margin-left: 60px;
-            margin-top: 64px;
-            padding: 1rem;
-            transition: margin-left 0.3s ease-in-out;
-            min-height: calc(100vh - 64px - 128px);
-            width: calc(100% - 60px);
-        }
-        .main-content.expanded {
-            margin-left: 250px;
-            width: calc(100% - 250px);
-        }
-        @media (max-width: 767px) {
-            .sidebar {
-                width: 250px;
-                transform: translateX(-100%);
-                display: none;
-            }
-            .sidebar.show {
-                display: flex;
-                transform: translateX(0);
-            }
-            .sidebar.desktop {
-                display: none;
-            }
-            .sidebar.mobile {
-                display: none;
-                left: 0;
-            }
-            .sidebar.mobile.show {
-                display: flex;
-            }
-            .sidebar.mobile .sidebar-text {
-                display: inline !important;
-            }
-            .sidebar.mobile .sidebar-header {
-                justify-content: space-between !important;
-                padding: 1rem !important;
-            }
-            .sidebar.mobile .sidebar-nav a, .sidebar.mobile .sidebar-nav button {
-                justify-content: flex-start !important;
-                padding: 8px 16px !important;
-            }
-            .main-content {
-                margin-left: 0;
-                margin-top: 64px;
-                width: 100%;
-            }
-            .main-content.expanded {
-                margin-left: 0;
-                width: 100%;
-            }
-            #toggle-sidebar-btn {
-                display: none !important;
-            }
-            #mobile-menu-btn {
-                display: block;
-                margin-right: 1rem;
-            }
-            #close-sidebar-btn {
-                display: block;
-            }
-            .header-content {
-                justify-content: space-between;
-                align-items: center;
-            }
-        }
+
+        .sidebar-overlay.show { display: block; }
+
         @media (min-width: 768px) {
             #mobile-menu-btn {
                 display: none;
             }
-            #close-sidebar-btn {
-                display: none;
-            }
             .sidebar.desktop {
                 display: flex;
             }
-            .sidebar.mobile {
+        }
+
+        @media (max-width: 767px) {
+            .sidebar.desktop {
                 display: none;
             }
-            .header-content {
-                justify-content: flex-start;
+            .sidebar {
+                transform: translateX(-100%);
+                width: 250px;
+            }
+            .sidebar.show {
+                transform: translateX(0);
+            }
+            .page-wrapper {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+            .page-wrapper.expanded {
+                margin-left: 0 !important;
+                width: 100% !important;
             }
         }
+
         .sidebar-nav {
             display: flex;
             flex-direction: column;
             height: calc(100% - 64px);
             padding: 0.5rem;
         }
+
         .main-menu {
             overflow-y: auto;
             flex-grow: 1;
             scrollbar-width: thin;
             scrollbar-color: #3b82f6 #e5e7eb;
         }
-        .main-menu::-webkit-scrollbar {
-            width: 6px;
-        }
-        .main-menu::-webkit-scrollbar-track {
-            background: #e5e7eb;
-        }
-        .main-menu::-webkit-scrollbar-thumb {
-            background: #3b82f6;
-            border-radius: 3px;
-        }
+
+        .main-menu::-webkit-scrollbar { width: 6px; }
+        .main-menu::-webkit-scrollbar-track { background: #e5e7eb; }
+        .main-menu::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 3px; }
+        
         .sidebar-nav a, .sidebar-nav button {
             display: flex;
             align-items: center;
@@ -235,60 +177,228 @@
             transition: background-color 0.2s, color 0.2s;
             font-size: 0.95rem;
         }
+        
         .sidebar-nav a:hover, .sidebar-nav button:hover {
             background-color: #eff6ff;
             color: #1e40af;
         }
+        
         .sidebar-nav a.active {
             background-color: #3b82f6;
             color: white;
         }
+        
         .sidebar-nav i {
             font-size: 1.5rem;
             width: 28px;
             text-align: center;
         }
-        .sidebar.desktop.collapsed .sidebar-nav a, .sidebar.desktop.collapsed .sidebar-nav button {
+
+        .sidebar.desktop .sidebar-nav a, 
+        .sidebar.desktop .sidebar-nav button {
             justify-content: center;
             padding: 8px;
         }
+
+        .sidebar.desktop.expanded .sidebar-nav a,
+        .sidebar.desktop.expanded .sidebar-nav button {
+            justify-content: flex-start;
+            padding: 8px 16px;
+        }
+
         .sidebar-nav .logout {
             margin-top: 0.5rem;
             border-top: 1px solid #e5e7eb;
             padding-top: 0.5rem;
         }
+
         footer {
             width: 100%;
             position: relative;
             margin-left: 0;
         }
+
         .form-container {
             background-color: white;
             border-radius: 0.5rem;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
             padding: 1.5rem;
-            max-width: 500px;
+            max-width: 600px;
             margin: 0 auto;
         }
-        .form-btn {
-            padding: 0.75rem 1.5rem;
-            border-radius: 0.375rem;
-            font-size: 0.95rem;
-            transition: background-color 0.2s;
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 1rem;
         }
-        .save-btn {
+
+        @media (min-width: 768px) {
+            .form-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+            .form-full-width {
+                grid-column: 1 / -1;
+            }
+        }
+
+        .form-group {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .form-label {
+            display: block;
+            margin-bottom: 0.5rem;
+            font-weight: 500;
+            color: #374151;
+            font-size: 0.875rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-input:disabled {
+            background-color: #f9fafb;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+
+        .form-select {
+            width: 100%;
+            padding: 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            background-color: white;
+            transition: all 0.2s;
+        }
+
+        .form-select:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-actions {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: flex-end;
+            margin-top: 1.5rem;
+            padding-top: 1.5rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            gap: 0.5rem;
+        }
+
+        .btn-primary {
             background-color: #3b82f6;
             color: white;
         }
-        .save-btn:hover {
+
+        .btn-primary:hover {
             background-color: #2563eb;
         }
-        .cancel-btn {
-            background-color: #d1d5db;
-            color: #374151;
+
+        .btn-secondary {
+            background-color: #6b7280;
+            color: white;
         }
-        .cancel-btn:hover {
-            background-color: #9ca3af;
+
+        .btn-secondary:hover {
+            background-color: #4b5563;
+        }
+
+        .btn-outline {
+            background-color: white;
+            color: #374151;
+            border: 1px solid #d1d5db;
+        }
+
+        .btn-outline:hover {
+            background-color: #f9fafb;
+            border-color: #9ca3af;
+        }
+
+        .required-field::after {
+            content: " *";
+            color: #ef4444;
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 2rem;
+            color: #6b7280;
+        }
+
+        .loading {
+            display: inline-block;
+            width: 1rem;
+            height: 1rem;
+            border: 2px solid #ffffff;
+            border-radius: 50%;
+            border-top-color: transparent;
+            animation: spin 1s ease-in-out infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        /* CORREÇÃO: Header centralizado igual ao de pacientes */
+        .page-header {
+            display: flex;
+            justify-content: center; /* Centraliza o título */
+            align-items: center;
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .page-title {
+            text-align: center;
+        }
+
+        .back-button {
+            position: absolute;
+            right: 0;
+            top: 50%;
+            transform: translateY(-50%);
+        }
+
+        @media (max-width: 768px) {
+            .page-header {
+                flex-direction: column;
+                gap: 1rem;
+            }
+            .back-button {
+                position: static;
+                transform: none;
+                align-self: flex-end;
+            }
         }
     </style>
 </head>
@@ -304,7 +414,7 @@
         <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
         <!-- Left Sidebar -->
-        <div id="sidebar-menu" class="sidebar bg-white shadow-lg">
+        <div id="sidebar-menu" class="sidebar bg-white shadow-lg desktop">
             <div class="sidebar-header flex justify-between items-center p-4 border-b">
                 <h2 class="text-lg font-semibold text-gray-700 sidebar-text">Menu do Administrador</h2>
                 <button id="toggle-sidebar-btn" class="text-gray-700 hover:text-gray-900" aria-label="Alternar menu">
@@ -336,17 +446,21 @@
                         <i class="fas fa-calendar-check"></i>
                         <span class="sidebar-text">Agendamentos</span>
                     </a>
-                    <a href="<?php echo site_url('admin/cad_pacientes'); ?>" class="block text-gray-700">
+                    <a href="<?php echo site_url('admin/cad_paciente'); ?>" class="block text-gray-700">
                         <i class="fas fa-user-plus"></i>
                         <span class="sidebar-text">Cadastrar Paciente</span>
                     </a>
-                    <a href="<?php echo site_url('admin/cad_secretarios'); ?>" class="block text-gray-700">
+                    <a href="<?php echo site_url('admin/cad_secretario'); ?>" class="block text-gray-700">
                         <i class="fas fa-user-plus"></i>
                         <span class="sidebar-text">Cadastrar Secretário</span>
                     </a>
-                    <a href="<?php echo site_url('admin/cad_medicos'); ?>" class="block text-gray-700 active">
+                    <a href="<?php echo site_url('admin/cad_medico'); ?>" class="block text-gray-700 active">
                         <i class="fas fa-user-plus"></i>
                         <span class="sidebar-text">Cadastrar Médico</span>
+                    </a>
+                    <a href="<?php echo site_url('admin/disponibilidade'); ?>" class="block text-gray-700">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span class="sidebar-text">Disponibilidade</span>
                     </a>
                     <a href="<?php echo site_url('admin/relatorios'); ?>" class="block text-gray-700">
                         <i class="fas fa-chart-bar"></i>
@@ -366,64 +480,96 @@
 
         <!-- Header -->
         <header class="bg-blue-600 text-white shadow-lg">
-            <div class="container mx-auto px-4 py-4 flex items-center justify-between">
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
                 <div class="flex items-center gap-2">
-                    <button id="mobile-menu-btn" class="md:hidden text-white hover:text-blue-200" aria-label="Abrir menu">
-                        <i class="fas fa-bars text-2xl"></i>
-                    </button>
                     <i class="fas fa-hospital-alt text-2xl" aria-hidden="true"></i>
                     <h1 class="text-xl font-bold">Hospital Matlhovele</h1>
                 </div>
+                <button id="mobile-menu-btn" class="md:hidden text-white hover:text-blue-200" aria-label="Abrir menu">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
             </div>
         </header>
 
         <!-- Main Content -->
         <main class="main-content">
             <div class="container mx-auto px-4 py-8">
-                <div class="mb-6 text-center">
-                    <h2 class="text-2xl font-semibold text-gray-800 mb-2" id="form-title">Cadastrar Novo Médico</h2>
-                    <p class="text-gray-600">Preencha os dados abaixo para cadastrar ou editar um médico.</p>
+                <!-- CORREÇÃO: Header centralizado -->
+                <div class="page-header">
+                    <div class="page-title">
+                        <h2 class="text-2xl font-semibold text-gray-800" id="form-title">Cadastrar Novo Médico</h2>
+                        <p class="text-gray-600 mt-2">Preencha os dados abaixo para cadastrar ou editar um médico.</p>
+                    </div>
+                    <div class="back-button">
+                        <a href="<?php echo site_url('admin/medicos'); ?>" class="btn btn-outline">
+                            <i class="fas fa-arrow-left"></i>
+                            Voltar para Lista
+                        </a>
+                    </div>
                 </div>
 
                 <!-- Doctor Form -->
                 <div class="form-container">
-                    <div class="mb-4">
-                        <label for="doctor-name" class="block text-sm font-medium text-gray-700">Nome</label>
-                        <input type="text" id="doctor-name" class="w-full p-2 border rounded-lg" required>
-                    </div>
-                    <div class="mb-4">
-                        <label for="doctor-phone" class="block text-sm font-medium text-gray-700">Telefone</label>
-                        <input type="tel" id="doctor-phone" class="w-full p-2 border rounded-lg" required>
-                    </div>
-                    <div class="mb-4">
-                        <label for="doctor-bi" class="block text-sm font-medium text-gray-700">BI</label>
-                        <input type="text" id="doctor-bi" class="w-full p-2 border rounded-lg" required>
-                    </div>
-                    <div class="mb-4">
-                        <label for="doctor-email" class="block text-sm font-medium text-gray-700">Email (opcional)</label>
-                        <input type="email" id="doctor-email" class="w-full p-2 border rounded-lg">
-                    </div>
-                    <div class="mb-4">
-                        <label for="doctor-specialty" class="block text-sm font-medium text-gray-700">Especialidade</label>
-                        <select id="doctor-specialty" class="w-full p-2 border rounded-lg" required>
-                            <option value="">Selecione uma especialidade</option>
-                            <option value="Medicina Geral">Medicina Geral</option>
-                            <option value="Cardiologia">Cardiologia</option>
-                            <option value="Pediatria">Pediatria</option>
-                            <option value="Ortopedia">Ortopedia</option>
-                            <option value="Ginecologia">Ginecologia</option>
-                            <option value="Neurologia">Neurologia</option>
-                            <option value="Cirurgia Geral">Cirurgia Geral</option>
-                        </select>
-                    </div>
-                    <div class="mb-4">
-                        <label for="doctor-license" class="block text-sm font-medium text-gray-700">Número da Licença</label>
-                        <input type="text" id="doctor-license" class="w-full p-2 border rounded-lg" required>
-                    </div>
-                    <div class="flex space-x-2">
-                        <button id="save-btn" class="form-btn save-btn flex-1">Salvar</button>
-                        <button id="cancel-btn" class="form-btn cancel-btn flex-1">Cancelar</button>
-                    </div>
+                    <form id="doctor-form">
+                        <div class="form-grid">
+                            <!-- Nome Completo -->
+                            <div class="form-group form-full-width">
+                                <label for="doctor-name" class="form-label required-field">Nome Completo</label>
+                                <input type="text" id="doctor-name" class="form-input" required>
+                            </div>
+
+                            <!-- Telefone -->
+                            <div class="form-group">
+                                <label for="doctor-phone" class="form-label required-field">Telefone</label>
+                                <input type="tel" id="doctor-phone" class="form-input" required>
+                            </div>
+
+                            <!-- BI -->
+                            <div class="form-group">
+                                <label for="doctor-bi" class="form-label required-field">Número do BI</label>
+                                <input type="text" id="doctor-bi" class="form-input" required>
+                            </div>
+
+                            <!-- Email -->
+                            <div class="form-group">
+                                <label for="doctor-email" class="form-label">Email</label>
+                                <input type="email" id="doctor-email" class="form-input">
+                            </div>
+
+                            <!-- Especialidade -->
+                            <div class="form-group">
+                                <label for="doctor-specialty" class="form-label required-field">Especialidade</label>
+                                <select id="doctor-specialty" class="form-select" required>
+                                    <option value="">Selecione uma especialidade</option>
+                                    <option value="Medicina Geral">Medicina Geral</option>
+                                    <option value="Cardiologia">Cardiologia</option>
+                                    <option value="Pediatria">Pediatria</option>
+                                    <option value="Ortopedia">Ortopedia</option>
+                                    <option value="Ginecologia">Ginecologia</option>
+                                    <option value="Neurologia">Neurologia</option>
+                                    <option value="Cirurgia Geral">Cirurgia Geral</option>
+                                </select>
+                            </div>
+
+                            <!-- Número da Licença -->
+                            <div class="form-group">
+                                <label for="doctor-license" class="form-label required-field">Número da Licença</label>
+                                <input type="text" id="doctor-license" class="form-input" required>
+                            </div>
+                        </div>
+
+                        <!-- Form Actions -->
+                        <div class="form-actions">
+                            <button type="button" id="cancel-btn" class="btn btn-outline">
+                                <i class="fas fa-times"></i>
+                                Cancelar
+                            </button>
+                            <button type="submit" id="save-btn" class="btn btn-primary">
+                                <i class="fas fa-save"></i>
+                                <span id="save-btn-text">Salvar Médico</span>
+                            </button>
+                        </div>
+                    </form>
                 </div>
             </div>
         </main>
@@ -464,7 +610,7 @@
             const notification = document.getElementById('notification');
             const messageEl = document.getElementById('notification-message');
             if (!notification || !messageEl) {
-                console.error('Notification elements not found:', { notification, messageEl });
+                console.error('Notification elements not found');
                 return;
             }
             messageEl.textContent = message;
@@ -480,80 +626,102 @@
             return urlParams.get(param);
         }
 
-        // Fetch doctor by BI
+        // Fetch doctor by BI from database
         async function fetchDoctor(bi) {
             try {
-                const response = await fetch(`<?php echo site_url('api/get_doctors'); ?>?query=${encodeURIComponent(bi)}`, {
+                const response = await fetch(`<?php echo site_url('admin/get_doctor'); ?>?bi=${encodeURIComponent(bi)}`, {
                     method: 'GET',
                     headers: {
-                        'Content-Type': 'application/json'
+                        'Content-Type': 'application/json',
+                        'X-Requested-With': 'XMLHttpRequest'
                     }
                 });
-                const data = await response.json();
-                return data.find(d => d.bi === bi) || null;
+                
+                if (!response.ok) throw new Error('Erro na requisição');
+                
+                const result = await response.json();
+                console.log('Dados do médico:', result);
+                
+                if (result.error) {
+                    showNotification(result.error, 'error');
+                    return null;
+                }
+                
+                return result.data || null;
             } catch (error) {
+                console.error('Erro ao carregar médico:', error);
                 showNotification('Erro ao carregar dados do médico.', 'error');
-                console.error('Erro:', error);
                 return null;
             }
         }
 
         // Save or update doctor
-        async function saveDoctor() {
-            const nameInput = document.getElementById('doctor-name');
-            const phoneInput = document.getElementById('doctor-phone');
-            const biInput = document.getElementById('doctor-bi');
-            const emailInput = document.getElementById('doctor-email');
-            const specialtyInput = document.getElementById('doctor-specialty');
-            const licenseInput = document.getElementById('doctor-license');
-            if (!nameInput || !phoneInput || !biInput || !emailInput || !specialtyInput || !licenseInput) {
-                console.error('Form elements not found:', { nameInput, phoneInput, biInput, emailInput, specialtyInput, licenseInput });
-                return;
-            }
+        async function saveDoctor(formData) {
+            const isEditMode = formData.get('bi_disabled') === 'true';
+            const saveBtn = document.getElementById('save-btn');
+            const saveBtnText = document.getElementById('save-btn-text');
+            const originalText = saveBtnText.textContent;
 
-            const name = nameInput.value.trim();
-            const phone = phoneInput.value.trim();
-            const bi = biInput.value.trim();
-            const email = emailInput.value.trim() || null;
-            const specialty = specialtyInput.value;
-            const licenseNumber = licenseInput.value.trim();
-            const isEditMode = biInput.hasAttribute('readonly');
-
-            if (!name || !phone || !bi || !specialty || !licenseNumber) {
-                showNotification('Nome, telefone, BI, especialidade e número da licença são obrigatórios.', 'error');
-                return;
-            }
-
-            if (email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-                showNotification('Email inválido.', 'error');
-                return;
-            }
-
-            const doctor = { bi, name, phone, email, specialty, licenseNumber };
-            const endpoint = isEditMode ? '<?php echo site_url('api/update_doctor'); ?>' : '<?php echo site_url('api/create_doctor'); ?>';
-            
             try {
+                // Show loading state
+                saveBtn.disabled = true;
+                saveBtnText.innerHTML = '<div class="loading"></div> Salvando...';
+
+                const endpoint = isEditMode ? 
+                    '<?php echo site_url('admin/update_doctor'); ?>' : 
+                    '<?php echo site_url('admin/create_doctor'); ?>';
+                
                 const response = await fetch(endpoint, {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
-                        'X-CSRF-Token': '<?php echo $this->security->get_csrf_hash(); ?>'
+                        'X-Requested-With': 'XMLHttpRequest'
                     },
-                    body: JSON.stringify(doctor)
+                    body: JSON.stringify(Object.fromEntries(formData))
                 });
+
                 const result = await response.json();
+                console.log('Resposta do servidor:', result);
+
                 if (result.error) {
                     showNotification(result.error, 'error');
                 } else {
                     showNotification(result.success, 'success');
                     setTimeout(() => {
                         window.location.href = '<?php echo site_url('admin/medicos'); ?>';
-                    }, 1000);
+                    }, 1500);
                 }
             } catch (error) {
-                showNotification(isEditMode ? 'Erro ao atualizar médico.' : 'Erro ao cadastrar médico.', 'error');
-                console.error('Erro:', error);
+                console.error('Erro ao salvar médico:', error);
+                showNotification(
+                    isEditMode ? 'Erro ao atualizar médico.' : 'Erro ao cadastrar médico.', 
+                    'error'
+                );
+            } finally {
+                // Restore button state
+                saveBtn.disabled = false;
+                saveBtnText.textContent = originalText;
             }
+        }
+
+        // Validate form
+        function validateForm(formData) {
+            const requiredFields = ['name', 'phone', 'bi', 'specialty', 'license'];
+            
+            for (let field of requiredFields) {
+                if (!formData.get(field)?.trim()) {
+                    showNotification(`O campo ${field} é obrigatório.`, 'error');
+                    return false;
+                }
+            }
+
+            const email = formData.get('email');
+            if (email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
+                showNotification('Por favor, insira um email válido.', 'error');
+                return false;
+            }
+
+            return true;
         }
 
         // Initialization
@@ -563,48 +731,39 @@
             const sidebarMenu = document.getElementById('sidebar-menu');
             const closeSidebarBtn = document.getElementById('close-sidebar-btn');
             const toggleSidebarBtn = document.getElementById('toggle-sidebar-btn');
-            const mainContent = document.querySelector('.main-content');
+            const pageWrapper = document.querySelector('.page-wrapper');
             const sidebarOverlay = document.getElementById('sidebar-overlay');
-            const saveBtn = document.getElementById('save-btn');
+            const doctorForm = document.getElementById('doctor-form');
             const cancelBtn = document.getElementById('cancel-btn');
-            const nameInput = document.getElementById('doctor-name');
-            const phoneInput = document.getElementById('doctor-phone');
-            const biInput = document.getElementById('doctor-bi');
-            const emailInput = document.getElementById('doctor-email');
-            const specialtyInput = document.getElementById('doctor-specialty');
-            const licenseInput = document.getElementById('doctor-license');
             const formTitle = document.getElementById('form-title');
-
-            if (!notificationClose || !mobileMenuBtn || !sidebarMenu || !closeSidebarBtn || !toggleSidebarBtn ||
-                !mainContent || !sidebarOverlay || !saveBtn || !cancelBtn || !nameInput || !phoneInput || !biInput ||
-                !emailInput || !specialtyInput || !licenseInput || !formTitle) {
-                console.error('DOM elements not found:', {
-                    notificationClose, mobileMenuBtn, sidebarMenu, closeSidebarBtn, toggleSidebarBtn,
-                    mainContent, sidebarOverlay, saveBtn, cancelBtn, nameInput, phoneInput, biInput,
-                    emailInput, specialtyInput, licenseInput, formTitle
-                });
-                return;
-            }
 
             // Check for edit mode
             const bi = getQueryParam('bi');
+            let isEditMode = false;
+
             if (bi) {
+                isEditMode = true;
                 formTitle.textContent = 'Editar Médico';
+                document.getElementById('save-btn-text').textContent = 'Atualizar Médico';
+                
+                console.log('Modo edição - BI:', bi);
+                
                 const doctor = await fetchDoctor(bi);
                 if (doctor) {
-                    nameInput.value = doctor.name;
-                    phoneInput.value = doctor.phone;
-                    biInput.value = doctor.bi;
-                    biInput.setAttribute('readonly', 'true');
-                    emailInput.value = doctor.email || '';
-                    specialtyInput.value = doctor.specialty;
-                    licenseInput.value = doctor.licenseNumber || '';
+                    console.log('Médico carregado:', doctor);
+                    document.getElementById('doctor-name').value = doctor.Nome_Completo || doctor.nome || '';
+                    document.getElementById('doctor-phone').value = doctor.Telefone || doctor.phone || '';
+                    document.getElementById('doctor-bi').value = doctor.ID_Medico || doctor.bi || '';
+                    document.getElementById('doctor-bi').setAttribute('readonly', 'true');
+                    document.getElementById('doctor-email').value = doctor.Email || doctor.email || '';
+                    document.getElementById('doctor-specialty').value = doctor.Especialidade || doctor.specialty || '';
+                    document.getElementById('doctor-license').value = doctor.Numero_Licenca || doctor.licenseNumber || '';
                 } else {
-                    showNotification('Médico não encontrado.', 'error');
+                    showNotification('Médico não encontrado. Redirecionando...', 'error');
+                    setTimeout(() => {
+                        window.location.href = '<?php echo site_url('admin/medicos'); ?>';
+                    }, 2000);
                 }
-            } else {
-                formTitle.textContent = 'Cadastrar Novo Médico';
-                biInput.removeAttribute('readonly');
             }
 
             // Notification close
@@ -612,41 +771,32 @@
                 document.getElementById('notification').classList.remove('show');
             });
 
-            // Sidebar behavior
-            if (window.innerWidth >= 768) {
-                sidebarMenu.classList.add('desktop', 'collapsed');
-                sidebarMenu.classList.remove('mobile', 'show');
-                mainContent.classList.remove('expanded');
-            } else {
-                sidebarMenu.classList.add('mobile');
-                sidebarMenu.classList.remove('desktop', 'collapsed');
-                mainContent.classList.remove('expanded');
-            }
-
+            // Sidebar handlers
             mobileMenuBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 sidebarMenu.classList.add('show');
                 sidebarMenu.classList.remove('collapsed');
                 sidebarOverlay.classList.add('show');
+                pageWrapper.classList.add('expanded');
             });
 
             closeSidebarBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 sidebarMenu.classList.remove('show');
                 sidebarOverlay.classList.remove('show');
+                pageWrapper.classList.remove('expanded');
             });
 
             toggleSidebarBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                if (window.innerWidth >= 768) {
-                    sidebarMenu.classList.toggle('collapsed');
-                    mainContent.classList.toggle('expanded');
-                }
+                sidebarMenu.classList.toggle('expanded');
+                pageWrapper.classList.toggle('expanded');
             });
 
-            sidebarOverlay.addEventListener('click', () => {
+            sidebarOverlay.addEventListener('click', (e) => {
                 sidebarMenu.classList.remove('show');
                 sidebarOverlay.classList.remove('show');
+                pageWrapper.classList.remove('expanded');
             });
 
             document.addEventListener('click', (e) => {
@@ -656,50 +806,29 @@
                 if (!isClickInsideSidebar && !isClickOnMenuBtn && isSidebarOpen && window.innerWidth < 768) {
                     sidebarMenu.classList.remove('show');
                     sidebarOverlay.classList.remove('show');
+                    pageWrapper.classList.remove('expanded');
                 }
             });
 
-            let touchStartX = 0;
-            let touchEndX = 0;
-            let isTouchingSidebar = false;
+            // Form submission
+            doctorForm.addEventListener('submit', async (e) => {
+                e.preventDefault();
+                
+                const formData = new FormData();
+                formData.append('name', document.getElementById('doctor-name').value.trim());
+                formData.append('phone', document.getElementById('doctor-phone').value.trim());
+                formData.append('bi', document.getElementById('doctor-bi').value.trim());
+                formData.append('email', document.getElementById('doctor-email').value.trim());
+                formData.append('specialty', document.getElementById('doctor-specialty').value);
+                formData.append('licenseNumber', document.getElementById('doctor-license').value.trim());
+                formData.append('bi_disabled', isEditMode.toString());
 
-            document.addEventListener('touchstart', (e) => {
-                touchStartX = e.changedTouches[0].screenX;
-                isTouchingSidebar = sidebarMenu.contains(e.target);
-            });
-
-            document.addEventListener('touchend', (e) => {
-                touchEndX = e.changedTouches[0].screenX;
-                if (window.innerWidth < 768) {
-                    const deltaX = touchEndX - touchStartX;
-                    if (!sidebarMenu.classList.contains('show') && touchStartX < 50 && deltaX > 100) {
-                        sidebarMenu.classList.add('show');
-                        sidebarOverlay.classList.add('show');
-                    }
-                    if (isTouchingSidebar && sidebarMenu.classList.contains('show') && deltaX < -100) {
-                        sidebarMenu.classList.remove('show');
-                        sidebarOverlay.classList.remove('show');
-                    }
+                if (validateForm(formData)) {
+                    await saveDoctor(formData);
                 }
             });
 
-            window.addEventListener('resize', () => {
-                if (window.innerWidth >= 768) {
-                    sidebarMenu.classList.add('desktop');
-                    sidebarMenu.classList.remove('mobile', 'show');
-                    sidebarOverlay.classList.remove('show');
-                    if (!sidebarMenu.classList.contains('collapsed')) {
-                        mainContent.classList.add('expanded');
-                    }
-                } else {
-                    sidebarMenu.classList.add('mobile');
-                    sidebarMenu.classList.remove('desktop', 'collapsed');
-                    mainContent.classList.remove('expanded');
-                }
-            });
-
-            // Form events
-            saveBtn.addEventListener('click', saveDoctor);
+            // Cancel button
             cancelBtn.addEventListener('click', () => {
                 window.location.href = '<?php echo site_url('admin/medicos'); ?>';
             });
@@ -709,12 +838,20 @@
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', () => {
                     showNotification('Sessão encerrada com sucesso!', 'success');
-                    sidebarMenu.classList.remove('show', 'desktop', 'collapsed', 'mobile');
-                    mainContent.classList.remove('expanded');
+                    sidebarMenu.classList.remove('show', 'expanded');
+                    pageWrapper.classList.remove('expanded');
                     sidebarOverlay.classList.remove('show');
-                    // window.location.href = '<?php echo site_url('auth/logout'); ?>';
+                    window.location.href = '<?php echo site_url('login'); ?>';
                 });
             }
+
+            // Responsive sidebar on resize
+            window.addEventListener('resize', () => {
+                if (window.innerWidth >= 768) {
+                    sidebarMenu.classList.remove('show');
+                    sidebarOverlay.classList.remove('show');
+                }
+            });
         });
     </script>
 </body>

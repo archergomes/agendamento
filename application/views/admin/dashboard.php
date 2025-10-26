@@ -1,4 +1,4 @@
-<?php defined('BASEPATH') OR exit('No direct script access allowed'); ?>
+<?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <!DOCTYPE html>
 <html lang="pt">
 
@@ -15,9 +15,6 @@
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
-            overflow-x: hidden;
-            max-width: 100vw;
-            position: relative;
         }
 
         #notification {
@@ -51,65 +48,77 @@
         .sidebar {
             position: fixed;
             top: 0;
-            height: 100%;
-            width: 250px;
+            left: 0;
+            height: 100vh;
+            width: 80px;
             background-color: white;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
             z-index: 900;
-            display: none;
+            display: flex;
             flex-direction: column;
         }
 
         .sidebar.show {
-            display: flex;
             transform: translateX(0);
-        }
-
-        .sidebar.mobile {
-            left: 0;
-        }
-
-        .sidebar.mobile:not(.show) {
-            transform: translateX(-100%);
         }
 
         .sidebar.desktop {
-            left: 0;
-            display: flex;
             transform: translateX(0);
         }
 
-        .sidebar.desktop.collapsed {
-            width: 60px;
+        .sidebar.desktop.expanded {
+            width: 250px;
         }
 
-        .sidebar.desktop.collapsed .sidebar-text {
+        .sidebar.desktop .sidebar-text {
             display: none;
         }
 
-        .sidebar.desktop.collapsed .sidebar-header {
+        .sidebar.desktop.expanded .sidebar-text {
+            display: inline;
+        }
+
+        .sidebar.desktop .sidebar-header {
             justify-content: center;
             padding: 1rem;
         }
 
-        .sidebar.desktop.collapsed .close-sidebar-btn {
-            display: none;
-        }
-
-        .sidebar.mobile .sidebar-text {
-            display: inline;
-        }
-
-        .sidebar.mobile .sidebar-header {
+        .sidebar.desktop.expanded .sidebar-header {
             justify-content: space-between;
             padding: 1rem;
         }
 
-        .sidebar.mobile .sidebar-nav a,
-        .sidebar.mobile .sidebar-nav button {
-            justify-content: flex-start;
-            padding: 8px 16px;
+        /* Header com largura total e centralizado */
+        header {
+            position: relative;
+            z-index: 800;
+            background-color: #2563eb;
+            width: 100%;
+            margin-left: 0;
+        }
+
+        /* NOVA ESTRUTURA: PAGE WRAPPER */
+        .page-wrapper {
+            margin-left: 80px;
+            transition: margin-left 0.3s ease-in-out;
+            width: calc(100% - 80px);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .page-wrapper.expanded {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+        }
+
+        /* Main Content - CORRIGIDO */
+        .main-content {
+            flex: 1;
+            width: 100%;
+            padding: 1rem;
+            min-height: calc(100vh - 80px);
         }
 
         .sidebar-overlay {
@@ -127,125 +136,38 @@
             display: block;
         }
 
-        header {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            z-index: 800;
-            background-color: #2563eb;
-        }
-
-        .page-wrapper {
-            position: relative;
-            width: 100%;
-            max-width: 100vw;
-            overflow-x: hidden;
-        }
-
-        .main-content {
-            margin-left: 60px;
-            margin-top: 64px;
-            padding: 1rem;
-            transition: margin-left 0.3s ease-in-out;
-            min-height: calc(100vh - 64px - 128px);
-            width: calc(100% - 60px);
-        }
-
-        .main-content.expanded {
-            margin-left: 250px;
-            width: calc(100% - 250px);
-        }
-
-        @media (max-width: 767px) {
-            .sidebar {
-                width: 250px;
-                transform: translateX(-100%);
-                display: none;
-            }
-
-            .sidebar.show {
-                display: flex;
-                transform: translateX(0);
-            }
-
-            .sidebar.desktop {
-                display: none;
-            }
-
-            .sidebar.mobile {
-                display: none;
-                left: 0;
-            }
-
-            .sidebar.mobile.show {
-                display: flex;
-            }
-
-            .sidebar.mobile .sidebar-text {
-                display: inline !important;
-            }
-
-            .sidebar.mobile .sidebar-header {
-                justify-content: space-between !important;
-                padding: 1rem !important;
-            }
-
-            .sidebar.mobile .sidebar-nav a,
-            .sidebar.mobile .sidebar-nav button {
-                justify-content: flex-start !important;
-                padding: 8px 16px !important;
-            }
-
-            .main-content {
-                margin-left: 0;
-                margin-top: 64px;
-                width: 100%;
-            }
-
-            .main-content.expanded {
-                margin-left: 0;
-                width: 100%;
-            }
-
-            #toggle-sidebar-btn {
-                display: none !important;
-            }
-
-            #mobile-menu-btn {
-                display: block;
-                margin-right: 1rem;
-            }
-
-            #close-sidebar-btn {
-                display: block;
-            }
-
-            .header-content {
-                justify-content: space-between;
-                align-items: center;
-            }
-        }
-
         @media (min-width: 768px) {
             #mobile-menu-btn {
                 display: none;
             }
 
-            #close-sidebar-btn {
-                display: none;
-            }
-
             .sidebar.desktop {
                 display: flex;
             }
+        }
 
-            .sidebar.mobile {
+        @media (max-width: 767px) {
+            .sidebar.desktop {
                 display: none;
             }
 
-            .header-content {
-                justify-content: flex-start;
+            .sidebar {
+                transform: translateX(-100%);
+                width: 250px;
+            }
+
+            .sidebar.show {
+                transform: translateX(0);
+            }
+
+            .page-wrapper {
+                margin-left: 0 !important;
+                width: 100% !important;
+            }
+
+            .page-wrapper.expanded {
+                margin-left: 0 !important;
+                width: 100% !important;
             }
         }
 
@@ -305,10 +227,16 @@
             text-align: center;
         }
 
-        .sidebar.desktop.collapsed .sidebar-nav a,
-        .sidebar.desktop.collapsed .sidebar-nav button {
+        .sidebar.desktop .sidebar-nav a,
+        .sidebar.desktop .sidebar-nav button {
             justify-content: center;
             padding: 8px;
+        }
+
+        .sidebar.desktop.expanded .sidebar-nav a,
+        .sidebar.desktop.expanded .sidebar-nav button {
+            justify-content: flex-start;
+            padding: 8px 16px;
         }
 
         .sidebar-nav .logout {
@@ -345,12 +273,6 @@
             box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
         }
 
-        footer {
-            width: 100%;
-            position: relative;
-            margin-left: 0;
-        }
-
         .metric-card {
             background-color: white;
             border-radius: 0.5rem;
@@ -373,7 +295,7 @@
         <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
         <!-- Left Sidebar -->
-        <div id="sidebar-menu" class="sidebar bg-white shadow-lg">
+        <div id="sidebar-menu" class="sidebar bg-white shadow-lg desktop">
             <div class="sidebar-header flex justify-between items-center p-4 border-b">
                 <h2 class="text-lg font-semibold text-gray-700 sidebar-text">Menu do Administrador</h2>
                 <button id="toggle-sidebar-btn" class="text-gray-700 hover:text-gray-900" aria-label="Alternar menu">
@@ -436,14 +358,14 @@
 
         <!-- Header/Navbar -->
         <header class="bg-blue-600 text-white shadow-lg">
-            <div class="container mx-auto px-4 py-4 flex header-content">
-                <button id="mobile-menu-btn" class="md:hidden text-white hover:text-blue-200" aria-label="Abrir menu">
-                    <i class="fas fa-bars text-2xl"></i>
-                </button>
+            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
                 <div class="flex items-center gap-2">
                     <i class="fas fa-hospital-alt text-2xl" aria-label="Ícone do Hospital Matlhovele"></i>
                     <h1 class="text-xl font-bold">Hospital Matlhovele</h1>
                 </div>
+                <button id="mobile-menu-btn" class="md:hidden text-white hover:text-blue-200" aria-label="Abrir menu">
+                    <i class="fas fa-bars text-2xl"></i>
+                </button>
             </div>
         </header>
 
@@ -568,35 +490,6 @@
                 </div>
             </div>
         </div>
-
-        <!-- Footer -->
-        <footer class="bg-gray-800 text-white py-8">
-            <div class="container mx-auto px-4">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-                    <div>
-                        <h3 class="text-lg font-medium mb-4">Hospital Matlhovele</h3>
-                        <p class="text-gray-300">Av. 25 de Setembro, Maputo</p>
-                        <p class="text-gray-300">Telefone: +258 84 123 4567</p>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-medium mb-4">Horário de Funcionamento</h3>
-                        <p class="text-gray-300">Segunda a Sexta: 7h30 - 16h30</p>
-                        <p class="text-gray-300">Sábado: 8h00 - 12h00</p>
-                    </div>
-                    <div>
-                        <h3 class="text-lg font-medium mb-4">Links Rápidos</h3>
-                        <ul class="space-y-2">
-                            <li><a href="/sobre" class="text-gray-300 hover:text-white">Sobre Nós</a></li>
-                            <li><a href="/servicos" class="text-gray-300 hover:text-white">Serviços</a></li>
-                            <li><a href="/contactos" class="text-gray-300 hover:text-white">Contactos</a></li>
-                        </ul>
-                    </div>
-                </div>
-                <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
-                    <p>© 2025 Hospital Público de Matlhovele. Todos os direitos reservados.</p>
-                </div>
-            </div>
-        </footer>
     </div>
 
     <script>
@@ -605,7 +498,10 @@
             const notification = document.getElementById('notification');
             const messageEl = document.getElementById('notification-message');
             if (!notification || !messageEl) {
-                console.error('Elementos de notificação não encontrados:', { notification, messageEl });
+                console.error('Elementos de notificação não encontrados:', {
+                    notification,
+                    messageEl
+                });
                 return;
             }
             messageEl.textContent = message;
@@ -621,7 +517,11 @@
             const totalDoctorsEl = document.getElementById('total-doctors');
             const upcomingAppointmentsEl = document.getElementById('upcoming-appointments');
             if (!totalPatientsEl || !totalDoctorsEl || !upcomingAppointmentsEl) {
-                console.error('Elementos de métricas não encontrados:', { totalPatientsEl, totalDoctorsEl, upcomingAppointmentsEl });
+                console.error('Elementos de métricas não encontrados:', {
+                    totalPatientsEl,
+                    totalDoctorsEl,
+                    upcomingAppointmentsEl
+                });
                 return;
             }
 
@@ -681,7 +581,7 @@
 
                 // Adicionar eventos aos botões de edição
                 document.querySelectorAll('.edit-btn').forEach(button => {
-                    button.addEventListener('click', function () {
+                    button.addEventListener('click', function() {
                         const bi = this.dataset.bi;
                         const type = this.dataset.type;
                         if (type === 'patient') {
@@ -705,7 +605,13 @@
             const biInput = document.getElementById('edit-patient-bi');
             const emailInput = document.getElementById('edit-patient-email');
             if (!modal || !nameInput || !phoneInput || !biInput || !emailInput) {
-                console.error('Elementos do modal de paciente não encontrados:', { modal, nameInput, phoneInput, biInput, emailInput });
+                console.error('Elementos do modal de paciente não encontrados:', {
+                    modal,
+                    nameInput,
+                    phoneInput,
+                    biInput,
+                    emailInput
+                });
                 return;
             }
 
@@ -742,8 +648,15 @@
                     try {
                         const response = await fetch('<?php echo site_url('api/update_patient'); ?>', {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ bi, name, phone, email })
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                bi,
+                                name,
+                                phone,
+                                email
+                            })
                         });
                         const result = await response.json();
                         if (result.error) {
@@ -780,7 +693,14 @@
             const emailInput = document.getElementById('edit-doctor-email');
             const biInput = document.getElementById('edit-doctor-bi');
             if (!modal || !nameInput || !specialtyInput || !phoneInput || !emailInput || !biInput) {
-                console.error('Elementos do modal de médico não encontrados:', { modal, nameInput, specialtyInput, phoneInput, emailInput, biInput });
+                console.error('Elementos do modal de médico não encontrados:', {
+                    modal,
+                    nameInput,
+                    specialtyInput,
+                    phoneInput,
+                    emailInput,
+                    biInput
+                });
                 return;
             }
 
@@ -819,8 +739,16 @@
                     try {
                         const response = await fetch('<?php echo site_url('api/update_doctor'); ?>', {
                             method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ bi, name, specialty, phone, email })
+                            headers: {
+                                'Content-Type': 'application/json'
+                            },
+                            body: JSON.stringify({
+                                bi,
+                                name,
+                                specialty,
+                                phone,
+                                email
+                            })
                         });
                         const result = await response.json();
                         if (result.error) {
@@ -849,10 +777,10 @@
         }
 
         // Inicialização
-        document.addEventListener('DOMContentLoaded', function () {
+        document.addEventListener('DOMContentLoaded', function() {
             const notificationClose = document.getElementById('notification-close');
             if (notificationClose) {
-                notificationClose.addEventListener('click', function () {
+                notificationClose.addEventListener('click', function() {
                     document.getElementById('notification').classList.remove('show');
                 });
             }
@@ -861,51 +789,49 @@
             const sidebarMenu = document.getElementById('sidebar-menu');
             const closeSidebarBtn = document.getElementById('close-sidebar-btn');
             const toggleSidebarBtn = document.getElementById('toggle-sidebar-btn');
-            const mainContent = document.querySelector('.main-content');
+            const pageWrapper = document.querySelector('.page-wrapper');
             const sidebarOverlay = document.getElementById('sidebar-overlay');
             const searchInput = document.getElementById('search-input');
 
-            if (!mobileMenuBtn || !sidebarMenu || !closeSidebarBtn || !toggleSidebarBtn || !mainContent || !sidebarOverlay || !searchInput) {
+            if (!mobileMenuBtn || !sidebarMenu || !closeSidebarBtn || !toggleSidebarBtn || !pageWrapper || !sidebarOverlay || !searchInput) {
                 console.error('Um ou mais elementos do DOM não foram encontrados:', {
-                    mobileMenuBtn, sidebarMenu, closeSidebarBtn, toggleSidebarBtn, mainContent, sidebarOverlay, searchInput
+                    mobileMenuBtn,
+                    sidebarMenu,
+                    closeSidebarBtn,
+                    toggleSidebarBtn,
+                    pageWrapper,
+                    sidebarOverlay,
+                    searchInput
                 });
                 return;
             }
 
-            if (window.innerWidth >= 768) {
-                sidebarMenu.classList.add('desktop', 'collapsed');
-                sidebarMenu.classList.remove('mobile', 'show');
-                mainContent.classList.remove('expanded');
-            } else {
-                sidebarMenu.classList.add('mobile');
-                sidebarMenu.classList.remove('desktop', 'collapsed');
-                mainContent.classList.remove('expanded');
-            }
-
+            // Sidebar handlers - ATUALIZADO
             mobileMenuBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 sidebarMenu.classList.add('show');
                 sidebarMenu.classList.remove('collapsed');
                 sidebarOverlay.classList.add('show');
+                pageWrapper.classList.add('expanded');
             });
 
             closeSidebarBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 sidebarMenu.classList.remove('show');
                 sidebarOverlay.classList.remove('show');
+                pageWrapper.classList.remove('expanded');
             });
 
             toggleSidebarBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                if (window.innerWidth >= 768) {
-                    sidebarMenu.classList.toggle('collapsed');
-                    mainContent.classList.toggle('expanded');
-                }
+                sidebarMenu.classList.toggle('expanded');
+                pageWrapper.classList.toggle('expanded');
             });
 
             sidebarOverlay.addEventListener('click', (e) => {
                 sidebarMenu.classList.remove('show');
                 sidebarOverlay.classList.remove('show');
+                pageWrapper.classList.remove('expanded');
             });
 
             document.addEventListener('click', (e) => {
@@ -916,45 +842,7 @@
                 if (!isClickInsideSidebar && !isClickOnMenuBtn && isSidebarOpen && !isModalOpen && window.innerWidth < 768) {
                     sidebarMenu.classList.remove('show');
                     sidebarOverlay.classList.remove('show');
-                }
-            });
-
-            let touchStartX = 0;
-            let touchEndX = 0;
-            let isTouchingSidebar = false;
-
-            document.addEventListener('touchstart', (e) => {
-                touchStartX = e.changedTouches[0].screenX;
-                isTouchingSidebar = sidebarMenu.contains(e.target);
-            });
-
-            document.addEventListener('touchend', (e) => {
-                touchEndX = e.changedTouches[0].screenX;
-                if (window.innerWidth < 768) {
-                    const deltaX = touchEndX - touchStartX;
-                    if (!sidebarMenu.classList.contains('show') && touchStartX < 50 && deltaX > 100) {
-                        sidebarMenu.classList.add('show');
-                        sidebarOverlay.classList.add('show');
-                    }
-                    if (isTouchingSidebar && sidebarMenu.classList.contains('show') && deltaX < -100) {
-                        sidebarMenu.classList.remove('show');
-                        sidebarOverlay.classList.remove('show');
-                    }
-                }
-            });
-
-            window.addEventListener('resize', () => {
-                if (window.innerWidth >= 768) {
-                    sidebarMenu.classList.add('desktop');
-                    sidebarMenu.classList.remove('mobile', 'show');
-                    sidebarOverlay.classList.remove('show');
-                    if (!sidebarMenu.classList.contains('collapsed')) {
-                        mainContent.classList.add('expanded');
-                    }
-                } else {
-                    sidebarMenu.classList.add('mobile');
-                    sidebarMenu.classList.remove('desktop', 'collapsed');
-                    mainContent.classList.remove('expanded');
+                    pageWrapper.classList.remove('expanded');
                 }
             });
 
@@ -971,8 +859,8 @@
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', () => {
                     showNotification('Sessão encerrada com sucesso!', 'success');
-                    sidebarMenu.classList.remove('show', 'desktop', 'collapsed', 'mobile');
-                    mainContent.classList.remove('expanded');
+                    sidebarMenu.classList.remove('show', 'expanded');
+                    pageWrapper.classList.remove('expanded');
                     sidebarOverlay.classList.remove('show');
                     window.location.href = '<?php echo site_url('login'); ?>';
                 });
