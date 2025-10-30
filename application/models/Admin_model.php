@@ -314,4 +314,123 @@ class Admin_model extends CI_Model
         }
         return $result;
     }
+
+
+     /**
+     * Buscar paciente por BI
+     */
+    public function get_patient_by_bi($bi)
+    {
+        $this->db->select('ID_Paciente, Nome, Sobrenome, Data_Nascimento, Genero, Endereco, Telefone, Contato_Emergencia, BI, Criado_Em');
+        $this->db->from('pacientes');
+        $this->db->where('BI', $bi);
+        $query = $this->db->get();
+        return $query->row();
+    }
+
+    /**
+     * Buscar pacientes (para busca)
+     */
+    public function search_patients($query)
+    {
+        $this->db->select('ID_Paciente, Nome, Sobrenome, Data_Nascimento, Genero, Endereco, Telefone, Contato_Emergencia, BI, Criado_Em');
+        $this->db->from('pacientes');
+        $this->db->group_start();
+        $this->db->like('Nome', $query);
+        $this->db->or_like('Sobrenome', $query);
+        $this->db->or_like('BI', $query);
+        $this->db->or_like('Telefone', $query);
+        $this->db->or_like('CONCAT(Nome, " ", Sobrenome)', $query);
+        $this->db->group_end();
+        $this->db->order_by('Nome', 'ASC');
+        $query = $this->db->get();
+        return $query->result();
+    }
+
+    /**
+     * Criar novo paciente
+     */
+    public function create_patient($data)
+    {
+        // Verificar se BI já existe
+        $this->db->where('BI', $data['BI']);
+        $existing = $this->db->get('pacientes')->row();
+        
+        if ($existing) {
+            return ['error' => 'Já existe um paciente com este BI.'];
+        }
+
+        // Preparar dados para inserção
+        $patient_data = [
+            'Nome' => $data['Nome'],
+            'Sobrenome' => $data['Sobrenome'],
+            'Data_Nascimento' => $data['Data_Nascimento'],
+            'Genero' => $data['Genero'],
+            'Endereco' => $data['Endereco'] ?? null,
+            'Telefone' => $data['Telefone'],
+            'Contato_Emergencia' => $data['Contato_Emergencia'] ?? null,
+            'BI' => $data['BI'],
+            'Criado_Em' => date('Y-m-d H:i:s')
+        ];
+
+        $success = $this->db->insert('pacientes', $patient_data);
+        
+        if ($success) {
+            return ['success' => 'Paciente cadastrado com sucesso!'];
+        } else {
+            return ['error' => 'Erro ao cadastrar paciente.'];
+        }
+    }
+
+    /**
+     * Atualizar paciente
+     */
+    // public function update_patient($data)
+    // {
+    //     $bi = $data['BI'];
+        
+    //     // Preparar dados para atualização
+    //     $patient_data = [
+    //         'Nome' => $data['Nome'],
+    //         'Sobrenome' => $data['Sobrenome'],
+    //         'Data_Nascimento' => $data['Data_Nascimento'],
+    //         'Genero' => $data['Genero'],
+    //         'Endereco' => $data['Endereco'] ?? null,
+    //         'Telefone' => $data['Telefone'],
+    //         'Contato_Emergencia' => $data['Contato_Emergencia'] ?? null,
+    //         'Criado_Em' => date('Y-m-d H:i:s')
+    //     ];
+
+    //     $this->db->where('BI', $bi);
+    //     $success = $this->db->update('pacientes', $patient_data);
+        
+    //     if ($success) {
+    //         return ['success' => 'Paciente atualizado com sucesso!'];
+    //     } else {
+    //         return ['error' => 'Erro ao atualizar paciente.'];
+    //     }
+    // }
+
+    /**
+     * Deletar paciente
+     */
+    public function delete_patient($bi)
+    {
+        $this->db->where('BI', $bi);
+        $success = $this->db->delete('pacientes');
+        
+        return $success;
+    }
+
+    /**
+     * Buscar paciente por ID
+     */
+    public function get_patient_by_id($id)
+    {
+        $this->db->select('ID_Paciente, Nome, Sobrenome, Data_Nascimento, Genero, Endereco, Telefone, Contato_Emergencia, BI, Criado_Em');
+        $this->db->from('pacientes');
+        $this->db->where('ID_Paciente', $id);
+        $query = $this->db->get();
+        return $query->row();
+    }
 }

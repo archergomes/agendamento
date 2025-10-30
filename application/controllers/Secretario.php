@@ -8,4 +8,19 @@ class Secretario extends CI_Controller {
 	{
 		$this->load->view('secretario/dashboard');
 	}
+
+	public function agendamentos()
+	{
+		$this->load->view('secretario/agendamentos');
+	}
+	
+	public function pacientes()
+	{
+		$this->load->view('secretario/pacientes');
+	}
+
+	public function medicos()
+	{
+		$this->load->view('secretario/medico');
+	}
 }

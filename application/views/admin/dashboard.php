@@ -10,6 +10,8 @@
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <!-- Chart.js -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <style>
         body {
             font-family: 'Roboto', sans-serif;
@@ -89,7 +91,6 @@
             padding: 1rem;
         }
 
-        /* Header com largura total e centralizado */
         header {
             position: relative;
             z-index: 800;
@@ -98,7 +99,6 @@
             margin-left: 0;
         }
 
-        /* NOVA ESTRUTURA: PAGE WRAPPER */
         .page-wrapper {
             margin-left: 80px;
             transition: margin-left 0.3s ease-in-out;
@@ -113,7 +113,6 @@
             width: calc(100% - 250px);
         }
 
-        /* Main Content - CORRIGIDO */
         .main-content {
             flex: 1;
             width: 100%;
@@ -245,8 +244,187 @@
             padding-top: 0.5rem;
         }
 
-        #edit-patient-modal,
-        #edit-doctor-modal {
+        /* NOVOS ESTILOS PARA DASHBOARD MODERNA */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .kpi-card {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 0.5rem;
+            padding: 1.5rem;
+            text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .kpi-value {
+            font-size: 2rem;
+            font-weight: bold;
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-label {
+            font-size: 0.875rem;
+            opacity: 0.9;
+        }
+
+        .trend-indicator {
+            display: inline-flex;
+            align-items: center;
+            font-size: 0.75rem;
+            margin-left: 0.5rem;
+        }
+
+        .trend-up {
+            color: #10b981;
+        }
+
+        .trend-down {
+            color: #ef4444;
+        }
+
+        .chart-container {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            height: 300px;
+        }
+
+        .quick-actions {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .quick-action-card {
+            background-color: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            padding: 1.5rem;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.2s;
+            border: 2px solid transparent;
+        }
+
+        .quick-action-card:hover {
+            border-color: #3b82f6;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        }
+
+        .quick-action-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+            color: #3b82f6;
+        }
+
+        .action-btn {
+            background-color: #3b82f6;
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 0.375rem;
+            transition: background-color 0.2s;
+            border: none;
+            cursor: pointer;
+            font-size: 0.875rem;
+        }
+
+        .action-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .action-btn.success {
+            background-color: #10b981;
+        }
+
+        .action-btn.success:hover {
+            background-color: #059669;
+        }
+
+        .action-btn.warning {
+            background-color: #f59e0b;
+        }
+
+        .action-btn.warning:hover {
+            background-color: #d97706;
+        }
+
+        .action-btn.danger {
+            background-color: #ef4444;
+        }
+
+        .action-btn.danger:hover {
+            background-color: #dc2626;
+        }
+
+        .action-btn.secondary {
+            background-color: #6b7280;
+        }
+
+        .action-btn.secondary:hover {
+            background-color: #4b5563;
+        }
+
+        .data-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 1rem;
+        }
+
+        .data-table th,
+        .data-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .data-table th {
+            background-color: #f9fafb;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .data-table tr:hover {
+            background-color: #f9fafb;
+        }
+
+        .status-badge {
+            padding: 0.25rem 0.75rem;
+            border-radius: 1rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+        }
+
+        .status-active {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-inactive {
+            background-color: #fef2f2;
+            color: #dc2626;
+        }
+
+        .status-pending {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+
+        .modal {
             display: none;
             position: fixed;
             top: 0;
@@ -254,31 +432,107 @@
             width: 100%;
             height: 100%;
             background-color: rgba(0, 0, 0, 0.5);
-            z-index: 950;
+            z-index: 1000;
             justify-content: center;
             align-items: center;
         }
 
-        #edit-patient-modal.show,
-        #edit-doctor-modal.show {
+        .modal.show {
             display: flex;
         }
 
         .modal-content {
             background-color: white;
-            padding: 1.5rem;
+            padding: 2rem;
             border-radius: 0.5rem;
-            max-width: 400px;
-            width: 90%;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            max-width: 500px;
+            width: 95%;
+            max-height: 90vh;
+            overflow-y: auto;
         }
 
-        .metric-card {
-            background-color: white;
-            border-radius: 0.5rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-            padding: 1.5rem;
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-size: 0.875rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.5rem 0.75rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
+        }
+
+        .form-input:focus {
+            outline: none;
+            ring: 2px solid #3b82f6;
+            border-color: #3b82f6;
+        }
+
+        .empty-state {
             text-align: center;
+            padding: 3rem 2rem;
+            color: #6b7280;
+        }
+
+        .empty-state i {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            color: #d1d5db;
+        }
+
+        .loading-overlay {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: rgba(255, 255, 255, 0.8);
+            justify-content: center;
+            align-items: center;
+            border-radius: 0.5rem;
+            z-index: 10;
+        }
+
+        .loading-overlay.show {
+            display: flex;
+        }
+
+        .search-container {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 0.75rem 1rem 0.75rem 2.5rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.5rem;
+            font-size: 0.875rem;
+            transition: all 0.2s;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 0.75rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6b7280;
         }
     </style>
 </head>
@@ -363,145 +617,277 @@
                     <i class="fas fa-hospital-alt text-2xl" aria-label="Ícone do Hospital Matlhovele"></i>
                     <h1 class="text-xl font-bold">Hospital Matlhovele</h1>
                 </div>
-                <button id="mobile-menu-btn" class="md:hidden text-white hover:text-blue-200" aria-label="Abrir menu">
-                    <i class="fas fa-bars text-2xl"></i>
-                </button>
+                <div class="flex items-center gap-4">
+                    <div class="text-right hidden md:block">
+                        <p class="text-sm">Administrador</p>
+                        <p class="text-xs text-blue-200">Sistema Hospitalar</p>
+                    </div>
+                    <button id="mobile-menu-btn" class="md:hidden text-white hover:text-blue-200" aria-label="Abrir menu">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
+                </div>
             </div>
         </header>
 
         <!-- Main Content -->
         <main class="main-content">
             <div class="container mx-auto px-4 py-8">
-                <div class="mb-6">
-                    <h2 class="text-2xl font-semibold text-gray-800 mb-4">Dashboard do Administrador</h2>
-                    <p class="text-gray-600">Visão geral do sistema do Hospital Matlhovele.</p>
+                <!-- Header Section -->
+                <div class="mb-8">
+                    <div class="flex justify-between items-center mb-4">
+                        <div>
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-2">Dashboard do Administrador</h2>
+                            <p class="text-gray-600">Visão geral completa do sistema do Hospital Matlhovele</p>
+                        </div>
+                        <div class="flex gap-2">
+                            <button onclick="gerarRelatorioRapido()" class="action-btn success flex items-center gap-2">
+                                <i class="fas fa-download"></i>
+                                Relatório
+                            </button>
+                            <button onclick="abrirModalConfiguracoes()" class="action-btn secondary flex items-center gap-2">
+                                <i class="fas fa-cog"></i>
+                                Configurações
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- KPI Overview -->
+                    <div class="kpi-grid">
+                        <div class="kpi-card">
+                            <div class="kpi-value" id="kpi-pacientes">0</div>
+                            <div class="kpi-label">Total de Pacientes</div>
+                            <div class="trend-indicator trend-up">
+                                <i class="fas fa-arrow-up mr-1"></i>12%
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value" id="kpi-medicos">0</div>
+                            <div class="kpi-label">Médicos Ativos</div>
+                            <div class="trend-indicator trend-up">
+                                <i class="fas fa-arrow-up mr-1"></i>5%
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value" id="kpi-agendamentos">0</div>
+                            <div class="kpi-label">Agendamentos Hoje</div>
+                            <div class="trend-indicator trend-down">
+                                <i class="fas fa-arrow-down mr-1"></i>3%
+                            </div>
+                        </div>
+                        <div class="kpi-card">
+                            <div class="kpi-value" id="kpi-ocupacao">0%</div>
+                            <div class="kpi-label">Taxa de Ocupação</div>
+                            <div class="trend-indicator trend-up">
+                                <i class="fas fa-arrow-up mr-1"></i>8%
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <!-- Metrics -->
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-                    <div class="metric-card">
-                        <h3 class="text-lg font-medium text-gray-700 mb-2">Total de Pacientes</h3>
-                        <p id="total-patients" class="text-3xl font-bold text-blue-600">0</p>
-                    </div>
-                    <div class="metric-card">
-                        <h3 class="text-lg font-medium text-gray-700 mb-2">Total de Médicos</h3>
-                        <p id="total-doctors" class="text-3xl font-bold text-blue-600">0</p>
-                    </div>
-                    <div class="metric-card">
-                        <h3 class="text-lg font-medium text-gray-700 mb-2">Agendamentos Futuros</h3>
-                        <p id="upcoming-appointments" class="text-3xl font-bold text-blue-600">0</p>
+
+                <!-- Quick Actions -->
+                <div class="bg-white rounded-lg shadow-md p-6 mb-6">
+                    <h3 class="text-lg font-medium text-gray-700 mb-4">Ações Rápidas</h3>
+                    <div class="quick-actions">
+                        <div class="quick-action-card" onclick="window.location.href='<?php echo site_url('admin/cad_paciente'); ?>'">
+                            <div class="quick-action-icon">
+                                <i class="fas fa-user-plus"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800">Novo Paciente</h4>
+                            <p class="text-sm text-gray-600 mt-2">Cadastrar novo paciente</p>
+                        </div>
+                        <div class="quick-action-card" onclick="window.location.href='<?php echo site_url('admin/cad_medico'); ?>'">
+                            <div class="quick-action-icon">
+                                <i class="fas fa-user-md"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800">Novo Médico</h4>
+                            <p class="text-sm text-gray-600 mt-2">Cadastrar novo médico</p>
+                        </div>
+                        <div class="quick-action-card" onclick="window.location.href='<?php echo site_url('admin/cad_secretario'); ?>'">
+                            <div class="quick-action-icon">
+                                <i class="fas fa-user-tie"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800">Novo Secretário</h4>
+                            <p class="text-sm text-gray-600 mt-2">Cadastrar novo secretário</p>
+                        </div>
+                        <div class="quick-action-card" onclick="window.location.href='<?php echo site_url('admin/relatorios'); ?>'">
+                            <div class="quick-action-icon">
+                                <i class="fas fa-chart-bar"></i>
+                            </div>
+                            <h4 class="font-semibold text-gray-800">Relatórios</h4>
+                            <p class="text-sm text-gray-600 mt-2">Gerar relatórios</p>
+                        </div>
                     </div>
                 </div>
-                <!-- Search Bar -->
-                <div class="mb-6">
-                    <div class="relative">
-                        <input type="text" id="search-input" class="w-full p-2 pl-10 border rounded-lg"
-                            placeholder="Pesquisar por nome ou BI (pacientes ou médicos)..." aria-label="Pesquisar">
-                        <i class="fas fa-search absolute left-3 top-3 text-gray-500"></i>
+
+                <!-- Charts Section -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
+                    <!-- Agendamentos por Status -->
+                    <div class="chart-container">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-medium text-gray-700">Agendamentos por Status</h3>
+                            <button onclick="exportChart('status-agendamentos')" class="action-btn secondary text-sm">
+                                <i class="fas fa-download mr-1"></i>Exportar
+                            </button>
+                        </div>
+                        <canvas id="statusChart"></canvas>
+                    </div>
+
+                    <!-- Consultas por Especialidade -->
+                    <div class="chart-container">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-medium text-gray-700">Consultas por Especialidade</h3>
+                            <button onclick="exportChart('consultas-especialidade')" class="action-btn secondary text-sm">
+                                <i class="fas fa-download mr-1"></i>Exportar
+                            </button>
+                        </div>
+                        <canvas id="especialidadeChart"></canvas>
                     </div>
                 </div>
-                <!-- Recent Activity -->
-                <div class="bg-white rounded-lg shadow-md p-6">
-                    <h3 class="text-lg font-medium text-gray-700 mb-4">Atividade Recente</h3>
-                    <div class="overflow-x-auto">
-                        <table class="min-w-full bg-white border rounded-lg">
-                            <thead>
-                                <tr class="bg-gray-100">
-                                    <th class="py-2 px-4 text-left text-gray-700">Tipo</th>
-                                    <th class="py-2 px-4 text-left text-gray-700">Detalhes</th>
-                                    <th class="py-2 px-4 text-left text-gray-700">Data</th>
-                                    <th class="py-2 px-4 text-left text-gray-700">Ações</th>
-                                </tr>
-                            </thead>
-                            <tbody id="activity-list"></tbody>
-                        </table>
+
+                <!-- Search and Activity Section -->
+                <div class="bg-white rounded-lg shadow-md">
+                    <div class="p-6">
+                        <div class="flex justify-between items-center mb-4">
+                            <h3 class="text-lg font-medium text-gray-700">Atividade Recente do Sistema</h3>
+                            <div class="flex items-center gap-4">
+                                <button onclick="carregarAtividade()" class="action-btn secondary text-sm">
+                                    <i class="fas fa-sync-alt mr-1"></i>Atualizar
+                                </button>
+                            </div>
+                        </div>
+
+                        <!-- Search Bar -->
+                        <div class="search-container mb-4">
+                            <i class="fas fa-search search-icon"></i>
+                            <input type="text" id="search-input" class="search-input" 
+                                   placeholder="Pesquisar por nome, BI ou tipo de atividade...">
+                        </div>
+
+                        <div class="overflow-x-auto">
+                            <table class="data-table">
+                                <thead>
+                                    <tr>
+                                        <th>Tipo</th>
+                                        <th>Detalhes</th>
+                                        <th>Usuário</th>
+                                        <th>Data/Hora</th>
+                                        <th>Ações</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="activity-list">
+                                    <!-- Atividades serão carregadas via JavaScript -->
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <!-- Loading State -->
+                        <div id="loading-state" class="text-center py-8">
+                            <i class="fas fa-spinner fa-spin text-2xl text-blue-600 mb-2"></i>
+                            <p class="text-gray-600">Carregando atividades...</p>
+                        </div>
+
+                        <!-- Empty State -->
+                        <div id="empty-state" class="empty-state hidden">
+                            <i class="fas fa-calendar-times"></i>
+                            <h3 class="text-lg font-medium text-gray-900 mb-2">Nenhuma atividade encontrada</h3>
+                            <p class="text-gray-600 mb-4">Não há atividades que correspondam aos seus critérios.</p>
+                        </div>
                     </div>
                 </div>
             </div>
         </main>
+    </div>
 
-        <!-- Modal de Edição de Paciente -->
-        <div id="edit-patient-modal">
-            <div class="modal-content">
-                <h3 class="text-lg font-medium text-gray-700 mb-4">Editar Paciente</h3>
-                <div class="mb-4">
-                    <label for="edit-patient-name" class="block text-sm font-medium text-gray-700">Nome</label>
-                    <input type="text" id="edit-patient-name" class="w-full p-2 border rounded" required>
+    <!-- Modal de Configurações Rápidas -->
+    <div id="configuracoes-modal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-medium text-gray-700">Configurações Rápidas</h3>
+                <button onclick="fecharModalConfiguracoes()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div class="form-group">
+                    <label class="form-label">Notificações por Email</label>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="notificacoes-email" class="rounded">
+                        <span class="text-sm text-gray-600">Receber notificações por email</span>
+                    </div>
                 </div>
-                <div class="mb-4">
-                    <label for="edit-patient-phone" class="block text-sm font-medium text-gray-700">Telefone</label>
-                    <input type="tel" id="edit-patient-phone" class="w-full p-2 border rounded" required>
+                <div class="form-group">
+                    <label class="form-label">Relatórios Automáticos</label>
+                    <div class="flex items-center gap-2">
+                        <input type="checkbox" id="relatorios-automaticos" class="rounded">
+                        <span class="text-sm text-gray-600">Gerar relatórios automaticamente</span>
+                    </div>
                 </div>
-                <div class="mb-4">
-                    <label for="edit-patient-bi" class="block text-sm font-medium text-gray-700">BI</label>
-                    <input type="text" id="edit-patient-bi" class="w-full p-2 border rounded" readonly>
-                </div>
-                <div class="mb-4">
-                    <label for="edit-patient-email" class="block text-sm font-medium text-gray-700">Email
-                        (opcional)</label>
-                    <input type="email" id="edit-patient-email" class="w-full p-2 border rounded">
-                </div>
-                <div class="flex space-x-2">
-                    <button id="save-patient-btn"
-                        class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition flex-1">
-                        Salvar
-                    </button>
-                    <button id="cancel-patient-btn"
-                        class="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition flex-1">
-                        Cancelar
-                    </button>
+                <div class="form-group">
+                    <label class="form-label">Fuso Horário</label>
+                    <select class="form-input" id="fuso-horario">
+                        <option value="Africa/Maputo" selected>Maputo (UTC+2)</option>
+                        <option value="UTC">UTC</option>
+                    </select>
                 </div>
             </div>
-        </div>
-
-        <!-- Modal de Edição de Médico -->
-        <div id="edit-doctor-modal">
-            <div class="modal-content">
-                <h3 class="text-lg font-medium text-gray-700 mb-4">Editar Médico</h3>
-                <div class="mb-4">
-                    <label for="edit-doctor-name" class="block text-sm font-medium text-gray-700">Nome</label>
-                    <input type="text" id="edit-doctor-name" class="w-full p-2 border rounded" required>
-                </div>
-                <div class="mb-4">
-                    <label for="edit-doctor-specialty"
-                        class="block text-sm font-medium text-gray-700">Especialidade</label>
-                    <input type="text" id="edit-doctor-specialty" class="w-full p-2 border rounded" required>
-                </div>
-                <div class="mb-4">
-                    <label for="edit-doctor-phone" class="block text-sm font-medium text-gray-700">Telefone</label>
-                    <input type="tel" id="edit-doctor-phone" class="w-full p-2 border rounded" required>
-                </div>
-                <div class="mb-4">
-                    <label for="edit-doctor-email" class="block text-sm font-medium text-gray-700">Email</label>
-                    <input type="email" id="edit-doctor-email" class="w-full p-2 border rounded">
-                </div>
-                <div class="mb-4">
-                    <label for="edit-doctor-bi" class="block text-sm font-medium text-gray-700">BI</label>
-                    <input type="text" id="edit-doctor-bi" class="w-full p-2 border rounded" readonly>
-                </div>
-                <div class="flex space-x-2">
-                    <button id="save-doctor-btn"
-                        class="bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition flex-1">
-                        Salvar
-                    </button>
-                    <button id="cancel-doctor-btn"
-                        class="bg-gray-300 text-gray-700 py-2 px-4 rounded-lg hover:bg-gray-400 transition flex-1">
-                        Cancelar
-                    </button>
-                </div>
+            <div class="flex gap-2 justify-end mt-6">
+                <button onclick="fecharModalConfiguracoes()" class="action-btn secondary">Cancelar</button>
+                <button onclick="salvarConfiguracoes()" class="action-btn success">Salvar</button>
             </div>
         </div>
     </div>
 
+    <!-- Modal de Edição de Usuário -->
+    <div id="editar-usuario-modal" class="modal">
+        <div class="modal-content">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-medium text-gray-700" id="editar-usuario-titulo">Editar Usuário</h3>
+                <button onclick="fecharModalEditarUsuario()" class="text-gray-400 hover:text-gray-600">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            <form id="form-editar-usuario">
+                <div class="space-y-4">
+                    <div class="form-group">
+                        <label class="form-label">Nome</label>
+                        <input type="text" class="form-input" id="editar-usuario-nome" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Email</label>
+                        <input type="email" class="form-input" id="editar-usuario-email">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">Telefone</label>
+                        <input type="tel" class="form-input" id="editar-usuario-telefone" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">BI/Número</label>
+                        <input type="text" class="form-input" id="editar-usuario-bi" readonly>
+                    </div>
+                    <div class="form-group" id="editar-usuario-especialidade-container" style="display: none;">
+                        <label class="form-label">Especialidade</label>
+                        <input type="text" class="form-input" id="editar-usuario-especialidade">
+                    </div>
+                </div>
+                <div class="flex gap-2 justify-end mt-6">
+                    <button type="button" onclick="fecharModalEditarUsuario()" class="action-btn secondary">Cancelar</button>
+                    <button type="submit" class="action-btn success">Salvar Alterações</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
     <script>
+        let charts = {};
+        let usuarioEditando = null;
+        let tipoUsuarioEditando = null;
+
         // Função para exibir notificações
         function showNotification(message, type = 'info') {
             const notification = document.getElementById('notification');
             const messageEl = document.getElementById('notification-message');
             if (!notification || !messageEl) {
-                console.error('Elementos de notificação não encontrados:', {
-                    notification,
-                    messageEl
-                });
+                console.error('Elementos de notificação não encontrados');
                 return;
             }
             messageEl.textContent = message;
@@ -511,268 +897,335 @@
             }, 5000);
         }
 
-        // Renderizar métricas
-        async function renderMetrics() {
-            const totalPatientsEl = document.getElementById('total-patients');
-            const totalDoctorsEl = document.getElementById('total-doctors');
-            const upcomingAppointmentsEl = document.getElementById('upcoming-appointments');
-            if (!totalPatientsEl || !totalDoctorsEl || !upcomingAppointmentsEl) {
-                console.error('Elementos de métricas não encontrados:', {
-                    totalPatientsEl,
-                    totalDoctorsEl,
-                    upcomingAppointmentsEl
-                });
-                return;
-            }
-
+        // Carregar KPIs
+        async function loadKPIs() {
             try {
-                const response = await fetch('<?php echo site_url('api/metrics'); ?>');
-                const data = await response.json();
-                if (data.error) {
-                    showNotification(data.error, 'error');
+                const response = await fetch('<?php echo site_url('api/admin/kpis'); ?>');
+                const kpis = await response.json();
+                
+                if (kpis.error) {
+                    showNotification(kpis.error, 'error');
                     return;
                 }
-                totalPatientsEl.textContent = data.total_patients || 0;
-                totalDoctorsEl.textContent = data.total_doctors || 0;
-                upcomingAppointmentsEl.textContent = data.upcoming_appointments || 0;
+
+                document.getElementById('kpi-pacientes').textContent = kpis.pacientes || 0;
+                document.getElementById('kpi-medicos').textContent = kpis.medicos || 0;
+                document.getElementById('kpi-agendamentos').textContent = kpis.agendamentos || 0;
+                document.getElementById('kpi-ocupacao').textContent = kpis.ocupacao ? kpis.ocupacao + '%' : '0%';
+
             } catch (error) {
+                console.error('Erro ao carregar KPIs:', error);
                 showNotification('Erro ao carregar métricas.', 'error');
-                console.error('Erro ao buscar métricas:', error);
             }
         }
 
-        // Renderizar atividade recente
-        async function renderActivity(searchQuery = '') {
+        // Inicializar gráficos
+        function initCharts() {
+            // Gráfico de agendamentos por status
+            const statusCtx = document.getElementById('statusChart').getContext('2d');
+            charts.statusChart = new Chart(statusCtx, {
+                type: 'doughnut',
+                data: {
+                    labels: ['Confirmados', 'Pendentes', 'Cancelados', 'Concluídos'],
+                    datasets: [{
+                        data: [45, 15, 5, 35],
+                        backgroundColor: [
+                            'rgba(16, 185, 129, 0.8)',
+                            'rgba(245, 158, 11, 0.8)',
+                            'rgba(239, 68, 68, 0.8)',
+                            'rgba(59, 130, 246, 0.8)'
+                        ],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            position: 'bottom'
+                        }
+                    }
+                }
+            });
+
+            // Gráfico de consultas por especialidade
+            const especialidadeCtx = document.getElementById('especialidadeChart').getContext('2d');
+            charts.especialidadeChart = new Chart(especialidadeCtx, {
+                type: 'bar',
+                data: {
+                    labels: ['Cardiologia', 'Pediatria', 'Dermatologia', 'Ortopedia', 'Ginecologia'],
+                    datasets: [{
+                        label: 'Consultas Realizadas',
+                        data: [25, 30, 15, 20, 18],
+                        backgroundColor: 'rgba(59, 130, 246, 0.8)',
+                        borderColor: 'rgba(59, 130, 246, 1)',
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: {
+                                stepSize: 5
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        // Carregar atividade recente
+        async function carregarAtividade(searchQuery = '') {
+            const loading = document.getElementById('loading-state');
+            const empty = document.getElementById('empty-state');
             const list = document.getElementById('activity-list');
-            if (!list) {
-                console.error('Elemento de lista de atividades não encontrado');
-                return;
-            }
+
+            if (loading) loading.classList.remove('hidden');
+            if (empty) empty.classList.add('hidden');
+            if (list) list.innerHTML = '';
 
             try {
-                const response = await fetch(`<?php echo site_url('api/activity'); ?>${searchQuery ? `?query=${encodeURIComponent(searchQuery)}` : ''}`);
-                const activities = await response.json();
-                if (activities.error) {
-                    showNotification(activities.error, 'error');
-                    list.innerHTML = '<tr><td colspan="4" class="py-2 px-4 text-gray-600 text-center">Erro ao carregar atividades.</td></tr>';
+                const params = new URLSearchParams();
+                if (searchQuery) params.append('query', searchQuery);
+
+                const response = await fetch(`<?php echo site_url('api/admin/atividade'); ?>?${params}`);
+                const atividades = await response.json();
+
+                if (loading) loading.classList.add('hidden');
+
+                if (atividades.error) {
+                    showNotification(atividades.error, 'error');
                     return;
                 }
 
-                if (activities.length === 0) {
-                    list.innerHTML = '<tr><td colspan="4" class="py-2 px-4 text-gray-600 text-center">Nenhuma atividade encontrada.</td></tr>';
-                    showNotification('Nenhuma atividade corresponde à pesquisa.', 'info');
+                if (atividades.length === 0) {
+                    if (empty) empty.classList.remove('hidden');
                     return;
                 }
 
-                list.innerHTML = activities.map(activity => `
-                    <tr class="border-t">
-                        <td class="py-2 px-4">${activity.type}</td>
-                        <td class="py-2 px-4">${activity.details}</td>
-                        <td class="py-2 px-4">${new Date(activity.date).toLocaleString('pt-PT')}</td>
-                        <td class="py-2 px-4">
-                            ${activity.action_type !== 'appointment' ? `
-                                <button class="edit-btn bg-blue-600 text-white py-1 px-2 rounded-lg hover:bg-blue-700" data-bi="${activity.bi}" data-type="${activity.action_type}">
-                                    Editar
+                renderAtividade(atividades);
+
+            } catch (error) {
+                console.error('Erro ao carregar atividades:', error);
+                showNotification('Erro ao carregar atividades.', 'error');
+                if (loading) loading.classList.add('hidden');
+            }
+        }
+
+        // Renderizar atividade
+        function renderAtividade(atividades) {
+            const list = document.getElementById('activity-list');
+            if (!list) return;
+
+            list.innerHTML = atividades.map(atividade => {
+                const tipoIcone = getTipoIcone(atividade.tipo);
+                const tipoClasse = getTipoClasse(atividade.tipo);
+
+                return `
+                    <tr>
+                        <td>
+                            <div class="flex items-center gap-2">
+                                <i class="${tipoIcone} ${tipoClasse}"></i>
+                                <span class="font-medium">${atividade.tipo}</span>
+                            </div>
+                        </td>
+                        <td>${atividade.detalhes}</td>
+                        <td>${atividade.usuario || 'Sistema'}</td>
+                        <td>${formatDateTime(atividade.data_criacao)}</td>
+                        <td>
+                            <div class="flex gap-2">
+                                ${atividade.tipo !== 'agendamento' ? `
+                                    <button class="action-btn text-sm editar-usuario-btn" 
+                                            data-bi="${atividade.bi}" 
+                                            data-tipo="${atividade.tipo_usuario}">
+                                        <i class="fas fa-edit mr-1"></i>Editar
+                                    </button>
+                                ` : ''}
+                                <button class="action-btn secondary text-sm" onclick="verDetalhes('${atividade.id}')">
+                                    <i class="fas fa-eye mr-1"></i>Ver
                                 </button>
-                            ` : '-'}
+                            </div>
                         </td>
                     </tr>
-                `).join('');
+                `;
+            }).join('');
 
-                // Adicionar eventos aos botões de edição
-                document.querySelectorAll('.edit-btn').forEach(button => {
-                    button.addEventListener('click', function() {
-                        const bi = this.dataset.bi;
-                        const type = this.dataset.type;
-                        if (type === 'patient') {
-                            showEditPatientModal(bi);
-                        } else if (type === 'doctor') {
-                            showEditDoctorModal(bi);
-                        }
-                    });
+            // Adicionar eventos aos botões de edição
+            document.querySelectorAll('.editar-usuario-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const bi = this.dataset.bi;
+                    const tipo = this.dataset.tipo;
+                    abrirModalEditarUsuario(bi, tipo);
                 });
+            });
+        }
+
+        // Funções auxiliares
+        function getTipoIcone(tipo) {
+            const iconMap = {
+                'paciente': 'fas fa-user',
+                'médico': 'fas fa-user-md',
+                'secretário': 'fas fa-user-tie',
+                'agendamento': 'fas fa-calendar-check',
+                'sistema': 'fas fa-cog'
+            };
+            return iconMap[tipo] || 'fas fa-info-circle';
+        }
+
+        function getTipoClasse(tipo) {
+            const classMap = {
+                'paciente': 'text-blue-500',
+                'médico': 'text-green-500',
+                'secretário': 'text-purple-500',
+                'agendamento': 'text-orange-500',
+                'sistema': 'text-gray-500'
+            };
+            return classMap[tipo] || 'text-gray-500';
+        }
+
+        function formatDateTime(dateString) {
+            if (!dateString) return 'N/A';
+            const date = new Date(dateString);
+            return date.toLocaleString('pt-PT');
+        }
+
+        // Funções de modal
+        function abrirModalConfiguracoes() {
+            document.getElementById('configuracoes-modal').classList.add('show');
+        }
+
+        function fecharModalConfiguracoes() {
+            document.getElementById('configuracoes-modal').classList.remove('show');
+        }
+
+        async function abrirModalEditarUsuario(bi, tipo) {
+            usuarioEditando = bi;
+            tipoUsuarioEditando = tipo;
+
+            try {
+                const response = await fetch(`<?php echo site_url('api/admin/usuario/'); ?>${bi}?tipo=${tipo}`);
+                const usuario = await response.json();
+
+                if (usuario.error) {
+                    showNotification(usuario.error, 'error');
+                    return;
+                }
+
+                document.getElementById('editar-usuario-titulo').textContent = `Editar ${tipo.charAt(0).toUpperCase() + tipo.slice(1)}`;
+                document.getElementById('editar-usuario-nome').value = usuario.nome || '';
+                document.getElementById('editar-usuario-email').value = usuario.email || '';
+                document.getElementById('editar-usuario-telefone').value = usuario.telefone || '';
+                document.getElementById('editar-usuario-bi').value = usuario.bi || '';
+
+                // Mostrar campo de especialidade apenas para médicos
+                const especialidadeContainer = document.getElementById('editar-usuario-especialidade-container');
+                const especialidadeInput = document.getElementById('editar-usuario-especialidade');
+                
+                if (tipo === 'médico') {
+                    especialidadeContainer.style.display = 'block';
+                    especialidadeInput.value = usuario.especialidade || '';
+                } else {
+                    especialidadeContainer.style.display = 'none';
+                }
+
+                document.getElementById('editar-usuario-modal').classList.add('show');
+
             } catch (error) {
-                showNotification('Erro ao carregar atividades.', 'error');
-                console.error('Erro ao buscar atividades:', error);
+                console.error('Erro ao carregar dados do usuário:', error);
+                showNotification('Erro ao carregar dados do usuário.', 'error');
             }
         }
 
-        // Exibir modal de edição de paciente
-        async function showEditPatientModal(bi) {
-            const modal = document.getElementById('edit-patient-modal');
-            const nameInput = document.getElementById('edit-patient-name');
-            const phoneInput = document.getElementById('edit-patient-phone');
-            const biInput = document.getElementById('edit-patient-bi');
-            const emailInput = document.getElementById('edit-patient-email');
-            if (!modal || !nameInput || !phoneInput || !biInput || !emailInput) {
-                console.error('Elementos do modal de paciente não encontrados:', {
-                    modal,
-                    nameInput,
-                    phoneInput,
-                    biInput,
-                    emailInput
+        function fecharModalEditarUsuario() {
+            document.getElementById('editar-usuario-modal').classList.remove('show');
+            usuarioEditando = null;
+            tipoUsuarioEditando = null;
+            document.getElementById('form-editar-usuario').reset();
+        }
+
+        // Funções de ação
+        function gerarRelatorioRapido() {
+            showNotification('Gerando relatório rápido...', 'info');
+            // Implementar geração de relatório
+        }
+
+        function exportChart(chartId) {
+            showNotification(`Exportando gráfico ${chartId}...`, 'info');
+            // Implementar exportação de gráfico
+        }
+
+        function verDetalhes(atividadeId) {
+            showNotification(`Visualizando detalhes da atividade ${atividadeId}...`, 'info');
+            // Implementar visualização de detalhes
+        }
+
+        async function salvarConfiguracoes() {
+            // Implementar salvamento de configurações
+            showNotification('Configurações salvas com sucesso!', 'success');
+            fecharModalConfiguracoes();
+        }
+
+        // Configurar eventos
+        function setupEventListeners() {
+            // Busca em tempo real
+            const searchInput = document.getElementById('search-input');
+            if (searchInput) {
+                let searchTimeout;
+                searchInput.addEventListener('input', function() {
+                    clearTimeout(searchTimeout);
+                    searchTimeout = setTimeout(() => {
+                        carregarAtividade(this.value);
+                    }, 500);
                 });
-                return;
             }
 
-            try {
-                const response = await fetch(`<?php echo site_url('api/activity'); ?>?query=${bi}`);
-                const data = await response.json();
-                const patient = data.find(item => item.action_type === 'patient' && item.bi === bi);
-                if (!patient) {
-                    showNotification('Paciente não encontrado.', 'error');
-                    return;
-                }
-                nameInput.value = patient.details.match(/Nome: (.*?)(, BI:|$)/)?.[1] || '';
-                phoneInput.value = patient.details.match(/Telefone: (\+258 \d{9})/)?.[1] || '';
-                biInput.value = bi;
-                emailInput.value = patient.details.match(/Email: (.*)/)?.[1] || '';
-                modal.classList.add('show');
+            // Formulário de edição de usuário
+            const formEditarUsuario = document.getElementById('form-editar-usuario');
+            if (formEditarUsuario) {
+                formEditarUsuario.addEventListener('submit', async function(e) {
+                    e.preventDefault();
+                    
+                    const dados = {
+                        bi: usuarioEditando,
+                        tipo: tipoUsuarioEditando,
+                        nome: document.getElementById('editar-usuario-nome').value,
+                        email: document.getElementById('editar-usuario-email').value,
+                        telefone: document.getElementById('editar-usuario-telefone').value
+                    };
 
-                const saveBtn = document.getElementById('save-patient-btn');
-                const cancelBtn = document.getElementById('cancel-patient-btn');
-
-                const saveHandler = async () => {
-                    const name = nameInput.value.trim();
-                    const phone = phoneInput.value.trim();
-                    const email = emailInput.value.trim();
-                    if (!name || !phone) {
-                        showNotification('Nome e telefone são obrigatórios.', 'error');
-                        return;
-                    }
-                    if (!phone.match(/\+258\s*[8][0-49][0-9]{7}/)) {
-                        showNotification('Número de telefone inválido. Use o formato +258 8X XXXXXXX.', 'error');
-                        return;
+                    if (tipoUsuarioEditando === 'médico') {
+                        dados.especialidade = document.getElementById('editar-usuario-especialidade').value;
                     }
 
                     try {
-                        const response = await fetch('<?php echo site_url('api/update_patient'); ?>', {
+                        const response = await fetch('<?php echo site_url('api/admin/atualizar_usuario'); ?>', {
                             method: 'POST',
                             headers: {
                                 'Content-Type': 'application/json'
                             },
-                            body: JSON.stringify({
-                                bi,
-                                name,
-                                phone,
-                                email
-                            })
+                            body: JSON.stringify(dados)
                         });
-                        const result = await response.json();
-                        if (result.error) {
-                            showNotification(result.error, 'error');
+
+                        const resultado = await response.json();
+
+                        if (resultado.error) {
+                            showNotification(resultado.error, 'error');
                             return;
                         }
-                        renderActivity(document.getElementById('search-input')?.value || '');
-                        modal.classList.remove('show');
-                        showNotification(result.success, 'success');
+
+                        showNotification('Usuário atualizado com sucesso!', 'success');
+                        fecharModalEditarUsuario();
+                        carregarAtividade(searchInput?.value || '');
+
                     } catch (error) {
-                        showNotification('Erro ao atualizar paciente.', 'error');
-                        console.error('Erro ao atualizar paciente:', error);
+                        console.error('Erro ao atualizar usuário:', error);
+                        showNotification('Erro ao atualizar usuário.', 'error');
                     }
-                    saveBtn.removeEventListener('click', saveHandler);
-                };
-
-                saveBtn.addEventListener('click', saveHandler);
-                cancelBtn.addEventListener('click', () => {
-                    modal.classList.remove('show');
-                    saveBtn.removeEventListener('click', saveHandler);
                 });
-            } catch (error) {
-                showNotification('Erro ao carregar dados do paciente.', 'error');
-                console.error('Erro ao buscar paciente:', error);
-            }
-        }
-
-        // Exibir modal de edição de médico
-        async function showEditDoctorModal(bi) {
-            const modal = document.getElementById('edit-doctor-modal');
-            const nameInput = document.getElementById('edit-doctor-name');
-            const specialtyInput = document.getElementById('edit-doctor-specialty');
-            const phoneInput = document.getElementById('edit-doctor-phone');
-            const emailInput = document.getElementById('edit-doctor-email');
-            const biInput = document.getElementById('edit-doctor-bi');
-            if (!modal || !nameInput || !specialtyInput || !phoneInput || !emailInput || !biInput) {
-                console.error('Elementos do modal de médico não encontrados:', {
-                    modal,
-                    nameInput,
-                    specialtyInput,
-                    phoneInput,
-                    emailInput,
-                    biInput
-                });
-                return;
-            }
-
-            try {
-                const response = await fetch(`<?php echo site_url('api/activity'); ?>?query=${bi}`);
-                const data = await response.json();
-                const doctor = data.find(item => item.action_type === 'doctor' && item.bi === bi);
-                if (!doctor) {
-                    showNotification('Médico não encontrado.', 'error');
-                    return;
-                }
-                nameInput.value = doctor.details.match(/Nome: (.*?)(, Especialidade:|$)/)?.[1] || '';
-                specialtyInput.value = doctor.details.match(/Especialidade: (.*?)(, BI:|$)/)?.[1] || '';
-                phoneInput.value = doctor.details.match(/Telefone: (\+258 \d{9})/)?.[1] || '';
-                emailInput.value = doctor.details.match(/Email: (.*)/)?.[1] || '';
-                biInput.value = bi;
-                modal.classList.add('show');
-
-                const saveBtn = document.getElementById('save-doctor-btn');
-                const cancelBtn = document.getElementById('cancel-doctor-btn');
-
-                const saveHandler = async () => {
-                    const name = nameInput.value.trim();
-                    const specialty = specialtyInput.value.trim();
-                    const phone = phoneInput.value.trim();
-                    const email = emailInput.value.trim();
-                    if (!name || !specialty || !phone) {
-                        showNotification('Nome, especialidade e telefone são obrigatórios.', 'error');
-                        return;
-                    }
-                    if (!phone.match(/\+258\s*[8][0-49][0-9]{7}/)) {
-                        showNotification('Número de telefone inválido. Use o formato +258 8X XXXXXXX.', 'error');
-                        return;
-                    }
-
-                    try {
-                        const response = await fetch('<?php echo site_url('api/update_doctor'); ?>', {
-                            method: 'POST',
-                            headers: {
-                                'Content-Type': 'application/json'
-                            },
-                            body: JSON.stringify({
-                                bi,
-                                name,
-                                specialty,
-                                phone,
-                                email
-                            })
-                        });
-                        const result = await response.json();
-                        if (result.error) {
-                            showNotification(result.error, 'error');
-                            return;
-                        }
-                        renderActivity(document.getElementById('search-input')?.value || '');
-                        modal.classList.remove('show');
-                        showNotification(result.success, 'success');
-                    } catch (error) {
-                        showNotification('Erro ao atualizar médico.', 'error');
-                        console.error('Erro ao atualizar médico:', error);
-                    }
-                    saveBtn.removeEventListener('click', saveHandler);
-                };
-
-                saveBtn.addEventListener('click', saveHandler);
-                cancelBtn.addEventListener('click', () => {
-                    modal.classList.remove('show');
-                    saveBtn.removeEventListener('click', saveHandler);
-                });
-            } catch (error) {
-                showNotification('Erro ao carregar dados do médico.', 'error');
-                console.error('Erro ao buscar médico:', error);
             }
         }
 
@@ -791,26 +1244,16 @@
             const toggleSidebarBtn = document.getElementById('toggle-sidebar-btn');
             const pageWrapper = document.querySelector('.page-wrapper');
             const sidebarOverlay = document.getElementById('sidebar-overlay');
-            const searchInput = document.getElementById('search-input');
 
-            if (!mobileMenuBtn || !sidebarMenu || !closeSidebarBtn || !toggleSidebarBtn || !pageWrapper || !sidebarOverlay || !searchInput) {
-                console.error('Um ou mais elementos do DOM não foram encontrados:', {
-                    mobileMenuBtn,
-                    sidebarMenu,
-                    closeSidebarBtn,
-                    toggleSidebarBtn,
-                    pageWrapper,
-                    sidebarOverlay,
-                    searchInput
-                });
+            if (!mobileMenuBtn || !sidebarMenu || !closeSidebarBtn || !toggleSidebarBtn || !pageWrapper || !sidebarOverlay) {
+                console.error('Um ou mais elementos do DOM não foram encontrados');
                 return;
             }
 
-            // Sidebar handlers - ATUALIZADO
+            // Sidebar handlers
             mobileMenuBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 sidebarMenu.classList.add('show');
-                sidebarMenu.classList.remove('collapsed');
                 sidebarOverlay.classList.add('show');
                 pageWrapper.classList.add('expanded');
             });
@@ -838,31 +1281,28 @@
                 const isClickInsideSidebar = sidebarMenu.contains(e.target);
                 const isClickOnMenuBtn = mobileMenuBtn.contains(e.target);
                 const isSidebarOpen = sidebarMenu.classList.contains('show');
-                const isModalOpen = document.querySelectorAll('#edit-patient-modal.show, #edit-doctor-modal.show').length > 0;
-                if (!isClickInsideSidebar && !isClickOnMenuBtn && isSidebarOpen && !isModalOpen && window.innerWidth < 768) {
+                if (!isClickInsideSidebar && !isClickOnMenuBtn && isSidebarOpen && window.innerWidth < 768) {
                     sidebarMenu.classList.remove('show');
                     sidebarOverlay.classList.remove('show');
                     pageWrapper.classList.remove('expanded');
                 }
             });
 
-            // Evento de busca
-            searchInput.addEventListener('input', () => {
-                renderActivity(searchInput.value);
-            });
+            // Configurar funcionalidades
+            setupEventListeners();
 
             // Carregar dados iniciais
-            renderMetrics();
-            renderActivity();
+            loadKPIs();
+            initCharts();
+            carregarAtividade();
 
             const logoutBtn = document.getElementById('logout-btn');
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', () => {
                     showNotification('Sessão encerrada com sucesso!', 'success');
-                    sidebarMenu.classList.remove('show', 'expanded');
-                    pageWrapper.classList.remove('expanded');
-                    sidebarOverlay.classList.remove('show');
-                    window.location.href = '<?php echo site_url('login'); ?>';
+                    setTimeout(() => {
+                        window.location.href = '<?php echo site_url('login'); ?>';
+                    }, 1000);
                 });
             }
         });

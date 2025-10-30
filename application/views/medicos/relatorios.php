@@ -1,11 +1,12 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Relatórios - Administrador - Hospital Matlhovele</title>
-    <meta name="description" content="Gerenciar relatórios no Hospital Público de Matlhovele">
+    <title>Relatórios - Médico - Hospital Matlhovele</title>
+    <meta name="description" content="Relatórios e estatísticas médicas do Hospital Público de Matlhovele">
     <script src="https://cdn.tailwindcss.com"></script>
     <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
@@ -639,7 +640,7 @@
         <!-- Left Sidebar -->
         <div id="sidebar-menu" class="sidebar bg-white shadow-lg desktop">
             <div class="sidebar-header flex justify-between items-center p-4 border-b">
-                <h2 class="text-lg font-semibold text-gray-700 sidebar-text">Menu do Administrador</h2>
+                <h2 class="text-lg font-semibold text-gray-700 sidebar-text">Menu do Médico</h2>
                 <button id="toggle-sidebar-btn" class="text-gray-700 hover:text-gray-900" aria-label="Alternar menu">
                     <i class="fas fa-bars text-xl"></i>
                 </button>
@@ -650,49 +651,41 @@
             </div>
             <nav class="sidebar-nav">
                 <div class="main-menu">
-                    <a href="<?php echo site_url('admin'); ?>" class="block text-gray-700">
+                    <a href="<?php echo site_url('medico'); ?>" class="block text-gray-700">
                         <i class="fas fa-tachometer-alt"></i>
                         <span class="sidebar-text">Dashboard</span>
                     </a>
-                    <a href="<?php echo site_url('admin/pacientes'); ?>" class="block text-gray-700">
-                        <i class="fas fa-users"></i>
-                        <span class="sidebar-text">Pacientes</span>
-                    </a>
-                    <a href="<?php echo site_url('admin/medicos'); ?>" class="block text-gray-700">
-                        <i class="fas fa-user-md"></i>
-                        <span class="sidebar-text">Médicos</span>
-                    </a>
-                    <a href="<?php echo site_url('admin/secretarios'); ?>" class="block text-gray-700">
-                        <i class="fas fa-user-tie"></i>
-                        <span class="sidebar-text">Secretários</span>
-                    </a>
-                    <a href="<?php echo site_url('admin/agendamentos'); ?>" class="block text-gray-700">
+                    <a href="<?php echo site_url('medico/consultas'); ?>" class="block text-gray-700">
                         <i class="fas fa-calendar-check"></i>
-                        <span class="sidebar-text">Agendamentos</span>
+                        <span class="sidebar-text">Minhas Consultas</span>
                     </a>
-                    <a href="<?php echo site_url('admin/cad_paciente'); ?>" class="block text-gray-700">
-                        <i class="fas fa-user-plus"></i>
-                        <span class="sidebar-text">Cadastrar Paciente</span>
+                    <a href="<?php echo site_url('medico/pacientes'); ?>" class="block text-gray-700">
+                        <i class="fas fa-users"></i>
+                        <span class="sidebar-text">Meus Pacientes</span>
                     </a>
-                    <a href="<?php echo site_url('admin/cad_secretario'); ?>" class="block text-gray-700">
-                        <i class="fas fa-user-plus"></i>
-                        <span class="sidebar-text">Cadastrar Secretário</span>
+                    <a href="<?php echo site_url('medico/prontuarios'); ?>" class="block text-gray-700">
+                        <i class="fas fa-file-medical"></i>
+                        <span class="sidebar-text">Prontuários</span>
                     </a>
-                    <a href="<?php echo site_url('admin/cad_medico'); ?>" class="block text-gray-700">
-                        <i class="fas fa-user-plus"></i>
-                        <span class="sidebar-text">Cadastrar Médico</span>
+                    <a href="<?php echo site_url('medico/prescricoes'); ?>" class="block text-gray-700">
+                        <i class="fas fa-prescription"></i>
+                        <span class="sidebar-text">Prescrições</span>
                     </a>
-                    <a href="<?php echo site_url('admin/disponibilidade'); ?>" class="block text-gray-700">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span class="sidebar-text">Disponibilidade</span>
+                    <a href="<?php echo site_url('medico/laudos'); ?>" class="block text-gray-700">
+                        <i class="fas fa-file-medical-alt"></i>
+                        <span class="sidebar-text">Laudos</span>
                     </a>
-                    <a href="<?php echo site_url('admin/relatorios'); ?>" class="block text-gray-700 active">
+                    <a href="<?php echo site_url('medico/horarios'); ?>" class="block text-gray-700">
+                        <i class="fas fa-clock"></i>
+                        <span class="sidebar-text">Meus Horários</span>
+                    </a>
+                    <a href="<?php echo site_url('medico/relatorios'); ?>" class="block text-gray-700 active">
                         <i class="fas fa-chart-bar"></i>
                         <span class="sidebar-text">Relatórios</span>
                     </a>
-                    <a href="<?php echo site_url('admin/configuracoes'); ?>" class="block text-gray-700">
-                        <i class="fas fa-cog"></i>
-                        <span class="sidebar-text">Configurações</span>
+                    <a href="<?php echo site_url('medico/perfil'); ?>" class="block text-gray-700">
+                        <i class="fas fa-user-md"></i>
+                        <span class="sidebar-text">Meu Perfil</span>
                     </a>
                 </div>
                 <button id="logout-btn" class="block w-full text-left text-gray-700 logout">
@@ -711,8 +704,8 @@
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="text-right hidden md:block">
-                        <p class="text-sm">Administrador</p>
-                        <p class="text-xs text-blue-200">Sistema Hospitalar</p>
+                        <p class="text-sm">Dr. <?php echo $medico_nome ?? 'Médico'; ?></p>
+                        <p class="text-xs text-blue-200"><?php echo $especialidade ?? 'Especialidade'; ?></p>
                     </div>
                     <button id="mobile-menu-btn" class="md:hidden text-white hover:text-blue-200" aria-label="Abrir menu">
                         <i class="fas fa-bars text-2xl"></i>
@@ -728,8 +721,8 @@
                 <div class="mb-8">
                     <div class="flex justify-between items-center mb-4">
                         <div>
-                            <h2 class="text-2xl font-semibold text-gray-800 mb-2">Relatórios Administrativos</h2>
-                            <p class="text-gray-600">Acompanhe o desempenho do hospital e gere relatórios detalhados.</p>
+                            <h2 class="text-2xl font-semibold text-gray-800 mb-2">Relatórios e Estatísticas</h2>
+                            <p class="text-gray-600">Acompanhe seu desempenho e gere relatórios detalhados.</p>
                         </div>
                         <button onclick="gerarRelatorioPersonalizado()" class="action-btn success flex items-center gap-2">
                             <i class="fas fa-plus"></i>
@@ -740,31 +733,31 @@
                     <!-- KPI Overview -->
                     <div class="kpi-grid">
                         <div class="kpi-card">
-                            <div class="kpi-value" id="kpi-pacientes">0</div>
-                            <div class="kpi-label">Pacientes Atendidos</div>
+                            <div class="kpi-value" id="kpi-consultas">0</div>
+                            <div class="kpi-label">Consultas Realizadas</div>
                             <div class="trend-indicator trend-up">
                                 <i class="fas fa-arrow-up mr-1"></i>12%
                             </div>
                         </div>
                         <div class="kpi-card">
-                            <div class="kpi-value" id="kpi-consultas">0</div>
-                            <div class="kpi-label">Consultas Realizadas</div>
+                            <div class="kpi-value" id="kpi-pacientes">0</div>
+                            <div class="kpi-label">Pacientes Atendidos</div>
                             <div class="trend-indicator trend-up">
                                 <i class="fas fa-arrow-up mr-1"></i>8%
                             </div>
                         </div>
                         <div class="kpi-card">
-                            <div class="kpi-value" id="kpi-ocupacao">0%</div>
-                            <div class="kpi-label">Taxa de Ocupação</div>
+                            <div class="kpi-value" id="kpi-tempo-medio">0min</div>
+                            <div class="kpi-label">Tempo Médio por Consulta</div>
                             <div class="trend-indicator trend-down">
                                 <i class="fas fa-arrow-down mr-1"></i>5%
                             </div>
                         </div>
                         <div class="kpi-card">
-                            <div class="kpi-value" id="kpi-receita">0 MT</div>
-                            <div class="kpi-label">Receita Mensal</div>
+                            <div class="kpi-value" id="kpi-satisfacao">0%</div>
+                            <div class="kpi-label">Taxa de Satisfação</div>
                             <div class="trend-indicator trend-up">
-                                <i class="fas fa-arrow-up mr-1"></i>15%
+                                <i class="fas fa-arrow-up mr-1"></i>3%
                             </div>
                         </div>
                     </div>
@@ -776,10 +769,10 @@
                         <!-- Filter Tabs -->
                         <div class="flex flex-wrap gap-2">
                             <div class="filter-tab active" data-filter="todos">Todos</div>
+                            <div class="filter-tab" data-filter="clinicos">Clínicos</div>
+                            <div class="filter-tab" data-filter="desempenho">Desempenho</div>
                             <div class="filter-tab" data-filter="operacionais">Operacionais</div>
                             <div class="filter-tab" data-filter="financeiros">Financeiros</div>
-                            <div class="filter-tab" data-filter="desempenho">Desempenho</div>
-                            <div class="filter-tab" data-filter="clinicos">Clínicos</div>
                         </div>
 
                         <!-- Date Range -->
@@ -807,26 +800,26 @@
 
                 <!-- Charts Section -->
                 <div class="grid grid-cols-1 lg:grid-cols-2 gap-6 mb-6">
-                    <!-- Consultas por Médico -->
+                    <!-- Consultas por Dia -->
                     <div class="chart-container">
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-medium text-gray-700">Consultas por Médico</h3>
-                            <button onclick="exportChart('consultas-medico')" class="action-btn secondary text-sm">
+                            <h3 class="text-lg font-medium text-gray-700">Consultas por Dia da Semana</h3>
+                            <button onclick="exportChart('consultas-dia')" class="action-btn secondary text-sm">
                                 <i class="fas fa-download mr-1"></i>Exportar
                             </button>
                         </div>
-                        <canvas id="consultasMedicoChart"></canvas>
+                        <canvas id="consultasChart"></canvas>
                     </div>
 
-                    <!-- Distribuição por Status -->
+                    <!-- Distribuição por Tipo -->
                     <div class="chart-container">
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-medium text-gray-700">Distribuição por Status</h3>
-                            <button onclick="exportChart('status-consultas')" class="action-btn secondary text-sm">
+                            <h3 class="text-lg font-medium text-gray-700">Distribuição por Tipo de Consulta</h3>
+                            <button onclick="exportChart('tipo-consulta')" class="action-btn secondary text-sm">
                                 <i class="fas fa-download mr-1"></i>Exportar
                             </button>
                         </div>
-                        <canvas id="statusConsultasChart"></canvas>
+                        <canvas id="tipoConsultaChart"></canvas>
                     </div>
 
                     <!-- Evolução Mensal -->
@@ -970,7 +963,7 @@
         // Carregar KPIs
         async function loadKPIs() {
             try {
-                const response = await fetch('<?php echo site_url('api/admin/relatorios_kpis'); ?>');
+                const response = await fetch('<?php echo site_url('api/medico/relatorios_kpis'); ?>');
                 const kpis = await response.json();
                 
                 if (kpis.error) {
@@ -978,10 +971,10 @@
                     return;
                 }
 
-                document.getElementById('kpi-pacientes').textContent = kpis.pacientes || 0;
                 document.getElementById('kpi-consultas').textContent = kpis.consultas || 0;
-                document.getElementById('kpi-ocupacao').textContent = kpis.ocupacao ? kpis.ocupacao + '%' : '0%';
-                document.getElementById('kpi-receita').textContent = kpis.receita ? kpis.receita + ' MT' : '0 MT';
+                document.getElementById('kpi-pacientes').textContent = kpis.pacientes || 0;
+                document.getElementById('kpi-tempo-medio').textContent = kpis.tempo_medio ? kpis.tempo_medio + 'min' : '0min';
+                document.getElementById('kpi-satisfacao').textContent = kpis.satisfacao ? kpis.satisfacao + '%' : '0%';
 
             } catch (error) {
                 console.error('Erro ao carregar KPIs:', error);
@@ -990,15 +983,15 @@
 
         // Inicializar gráficos
         function initCharts() {
-            // Gráfico de consultas por médico
-            const consultasMedicoCtx = document.getElementById('consultasMedicoChart').getContext('2d');
-            charts.consultasMedicoChart = new Chart(consultasMedicoCtx, {
+            // Gráfico de consultas por dia da semana
+            const consultasCtx = document.getElementById('consultasChart').getContext('2d');
+            charts.consultasChart = new Chart(consultasCtx, {
                 type: 'bar',
                 data: {
-                    labels: ['Dr. Silva', 'Dra. Santos', 'Dr. Costa', 'Dra. Fernandes', 'Dr. Oliveira'],
+                    labels: ['Seg', 'Ter', 'Qua', 'Qui', 'Sex', 'Sáb', 'Dom'],
                     datasets: [{
                         label: 'Consultas Realizadas',
-                        data: [45, 38, 52, 29, 41],
+                        data: [12, 19, 15, 17, 14, 8, 5],
                         backgroundColor: 'rgba(59, 130, 246, 0.8)',
                         borderColor: 'rgba(59, 130, 246, 1)',
                         borderWidth: 1
@@ -1011,26 +1004,26 @@
                         y: {
                             beginAtZero: true,
                             ticks: {
-                                stepSize: 10
+                                stepSize: 5
                             }
                         }
                     }
                 }
             });
 
-            // Gráfico de pizza - status das consultas
-            const statusConsultasCtx = document.getElementById('statusConsultasChart').getContext('2d');
-            charts.statusConsultasChart = new Chart(statusConsultasCtx, {
+            // Gráfico de pizza - tipos de consulta
+            const tipoConsultaCtx = document.getElementById('tipoConsultaChart').getContext('2d');
+            charts.tipoConsultaChart = new Chart(tipoConsultaCtx, {
                 type: 'doughnut',
                 data: {
-                    labels: ['Realizadas', 'Canceladas', 'Remarcadas', 'Pendentes'],
+                    labels: ['Consulta Rotina', 'Retorno', 'Emergência', 'Acompanhamento'],
                     datasets: [{
-                        data: [65, 10, 15, 10],
+                        data: [45, 25, 15, 15],
                         backgroundColor: [
                             'rgba(16, 185, 129, 0.8)',
+                            'rgba(59, 130, 246, 0.8)',
                             'rgba(239, 68, 68, 0.8)',
-                            'rgba(245, 158, 11, 0.8)',
-                            'rgba(156, 163, 175, 0.8)'
+                            'rgba(245, 158, 11, 0.8)'
                         ],
                         borderWidth: 1
                     }]
@@ -1049,7 +1042,7 @@
                     labels: ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'],
                     datasets: [{
                         label: 'Consultas Realizadas',
-                        data: [320, 350, 310, 380, 400, 420, 450, 430, 460, 480, 500, 520],
+                        data: [85, 92, 78, 95, 88, 102, 115, 98, 110, 105, 120, 125],
                         borderColor: 'rgba(59, 130, 246, 1)',
                         backgroundColor: 'rgba(59, 130, 246, 0.1)',
                         borderWidth: 2,
@@ -1084,7 +1077,7 @@
                 const params = new URLSearchParams();
                 if (currentFilter !== 'todos') params.append('filter', currentFilter);
 
-                const response = await fetch(`<?php echo site_url('api/admin/relatorios'); ?>?${params}`);
+                const response = await fetch(`<?php echo site_url('api/medico/relatorios'); ?>?${params}`);
                 const relatorios = await response.json();
 
                 if (loading) loading.classList.add('hidden');
@@ -1253,7 +1246,6 @@
                             <option value="pacientes">Relatório de Pacientes</option>
                             <option value="desempenho">Relatório de Desempenho</option>
                             <option value="financeiro">Relatório Financeiro</option>
-                            <option value="operacional">Relatório Operacional</option>
                             <option value="personalizado">Relatório Personalizado</option>
                         </select>
                     </div>
@@ -1333,15 +1325,6 @@
                             </select>
                         </div>
                         <div class="form-group">
-                            <label class="form-label">Filtrar por Médico</label>
-                            <select class="form-select">
-                                <option value="">Todos os médicos</option>
-                                <?php foreach ($medicos ?? [] as $medico): ?>
-                                    <option value="<?php echo $medico['ID_Medico']; ?>"><?php echo htmlspecialchars($medico['Nome']); ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                        </div>
-                        <div class="form-group">
                             <label class="form-label">Incluir Métricas</label>
                             <div class="space-y-2">
                                 <label class="flex items-center">
@@ -1399,25 +1382,6 @@
                     `;
                     break;
 
-                case 'operacional':
-                    camposHTML = `
-                        <div class="form-group">
-                            <label class="form-label">Áreas Operacionais</label>
-                            <div class="space-y-2">
-                                <label class="flex items-center">
-                                    <input type="checkbox" class="mr-2" checked> Utilização de recursos
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="checkbox" class="mr-2" checked> Eficiência de processos
-                                </label>
-                                <label class="flex items-center">
-                                    <input type="checkbox" class="mr-2"> Indicadores de qualidade
-                                </label>
-                            </div>
-                        </div>
-                    `;
-                    break;
-
                 case 'personalizado':
                     camposHTML = `
                         <div class="form-group">
@@ -1455,7 +1419,7 @@
 
         async function visualizarRelatorio(relatorioId) {
             try {
-                const response = await fetch(`<?php echo site_url('api/admin/relatorio_completo/'); ?>${relatorioId}`);
+                const response = await fetch(`<?php echo site_url('api/medico/relatorio_completo/'); ?>${relatorioId}`);
                 const relatorio = await response.json();
 
                 if (relatorio.error) {

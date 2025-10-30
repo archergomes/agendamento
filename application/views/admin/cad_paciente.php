@@ -1,6 +1,7 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -19,6 +20,7 @@
             position: relative;
             background-color: #f8fafc;
         }
+
         #notification {
             display: none;
             position: fixed;
@@ -31,31 +33,38 @@
             max-width: 300px;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
+
         #notification.error {
             background-color: #ef4444;
         }
+
         #notification.success {
             background-color: #10b981;
         }
+
         #notification.info {
             background-color: #3b82f6;
         }
+
         #notification.show {
             display: flex;
             align-items: center;
             justify-content: space-between;
             animation: slideIn 0.3s ease-out;
         }
+
         @keyframes slideIn {
             from {
                 transform: translateX(100%);
                 opacity: 0;
             }
+
             to {
                 transform: translateX(0);
                 opacity: 1;
             }
         }
+
         .sidebar {
             position: fixed;
             top: 0;
@@ -68,45 +77,58 @@
             display: none;
             flex-direction: column;
         }
+
         .sidebar.show {
             display: flex;
             transform: translateX(0);
         }
+
         .sidebar.mobile {
             left: 0;
         }
+
         .sidebar.mobile:not(.show) {
             transform: translateX(-100%);
         }
+
         .sidebar.desktop {
             left: 0;
             display: flex;
             transform: translateX(0);
         }
+
         .sidebar.desktop.collapsed {
             width: 60px;
         }
+
         .sidebar.desktop.collapsed .sidebar-text {
             display: none;
         }
+
         .sidebar.desktop.collapsed .sidebar-header {
             justify-content: center;
             padding: 1rem;
         }
+
         .sidebar.desktop.collapsed .close-sidebar-btn {
             display: none;
         }
+
         .sidebar.mobile .sidebar-text {
             display: inline;
         }
+
         .sidebar.mobile .sidebar-header {
             justify-content: space-between;
             padding: 1rem;
         }
-        .sidebar.mobile .sidebar-nav a, .sidebar.mobile .sidebar-nav button {
+
+        .sidebar.mobile .sidebar-nav a,
+        .sidebar.mobile .sidebar-nav button {
             justify-content: flex-start;
             padding: 8px 16px;
         }
+
         .sidebar-overlay {
             display: none;
             position: fixed;
@@ -117,9 +139,11 @@
             background-color: rgba(0, 0, 0, 0.5);
             z-index: 899;
         }
+
         .sidebar-overlay.show {
             display: block;
         }
+
         header {
             position: fixed;
             top: 0;
@@ -129,12 +153,14 @@
             background-color: #2563eb;
             box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
         }
+
         .page-wrapper {
             position: relative;
             width: 100%;
             max-width: 100vw;
             overflow-x: hidden;
         }
+
         .main-content {
             margin-left: 60px;
             margin-top: 64px;
@@ -143,105 +169,133 @@
             min-height: calc(100vh - 64px - 128px);
             width: calc(100% - 60px);
         }
+
         .main-content.expanded {
             margin-left: 250px;
             width: calc(100% - 250px);
         }
+
         @media (max-width: 767px) {
             .sidebar {
                 width: 250px;
                 transform: translateX(-100%);
                 display: none;
             }
+
             .sidebar.show {
                 display: flex;
                 transform: translateX(0);
             }
+
             .sidebar.desktop {
                 display: none;
             }
+
             .sidebar.mobile {
                 display: none;
                 left: 0;
             }
+
             .sidebar.mobile.show {
                 display: flex;
             }
+
             .sidebar.mobile .sidebar-text {
                 display: inline !important;
             }
+
             .sidebar.mobile .sidebar-header {
                 justify-content: space-between !important;
                 padding: 1rem !important;
             }
-            .sidebar.mobile .sidebar-nav a, .sidebar.mobile .sidebar-nav button {
+
+            .sidebar.mobile .sidebar-nav a,
+            .sidebar.mobile .sidebar-nav button {
                 justify-content: flex-start !important;
                 padding: 8px 16px !important;
             }
+
             .main-content {
                 margin-left: 0;
                 margin-top: 64px;
                 width: 100%;
             }
+
             .main-content.expanded {
                 margin-left: 0;
                 width: 100%;
             }
+
             #toggle-sidebar-btn {
                 display: none !important;
             }
+
             #mobile-menu-btn {
                 display: block;
                 margin-right: 1rem;
             }
+
             #close-sidebar-btn {
                 display: block;
             }
+
             .header-content {
                 justify-content: space-between;
                 align-items: center;
             }
         }
+
         @media (min-width: 768px) {
             #mobile-menu-btn {
                 display: none;
             }
+
             #close-sidebar-btn {
                 display: none;
             }
+
             .sidebar.desktop {
                 display: flex;
             }
+
             .sidebar.mobile {
                 display: none;
             }
+
             .header-content {
                 justify-content: flex-start;
             }
         }
+
         .sidebar-nav {
             display: flex;
             flex-direction: column;
             height: calc(100% - 64px);
             padding: 0.5rem;
         }
+
         .main-menu {
             overflow-y: auto;
             flex-grow: 1;
             scrollbar-width: thin;
             scrollbar-color: #3b82f6 #e5e7eb;
         }
+
         .main-menu::-webkit-scrollbar {
             width: 6px;
         }
+
         .main-menu::-webkit-scrollbar-track {
             background: #e5e7eb;
         }
+
         .main-menu::-webkit-scrollbar-thumb {
             background: #3b82f6;
             border-radius: 3px;
         }
-        .sidebar-nav a, .sidebar-nav button {
+
+        .sidebar-nav a,
+        .sidebar-nav button {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -251,57 +305,69 @@
             transition: background-color 0.2s, color 0.2s;
             font-size: 0.95rem;
         }
-        .sidebar-nav a:hover, .sidebar-nav button:hover {
+
+        .sidebar-nav a:hover,
+        .sidebar-nav button:hover {
             background-color: #eff6ff;
             color: #1e40af;
         }
+
         .sidebar-nav a.active {
             background-color: #3b82f6;
             color: white;
         }
+
         .sidebar-nav i {
             font-size: 1.5rem;
             width: 28px;
             text-align: center;
         }
-        .sidebar.desktop.collapsed .sidebar-nav a, .sidebar.desktop.collapsed .sidebar-nav button {
+
+        .sidebar.desktop.collapsed .sidebar-nav a,
+        .sidebar.desktop.collapsed .sidebar-nav button {
             justify-content: center;
             padding: 8px;
         }
+
         .sidebar-nav .logout {
             margin-top: 0.5rem;
             border-top: 1px solid #e5e7eb;
             padding-top: 0.5rem;
         }
+
         footer {
             width: 100%;
             position: relative;
             margin-left: 0;
         }
-        
+
         /* Estilos aprimorados para o formulário - mais compacto */
         .form-container {
             background-color: white;
             border-radius: 0.5rem;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             padding: 1.5rem;
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
         }
+
         .form-title {
             color: #1e40af;
             font-weight: 600;
             margin-bottom: 0.25rem;
             font-size: 1.5rem;
         }
+
         .form-subtitle {
             color: #6b7280;
             margin-bottom: 1.25rem;
             font-size: 0.9rem;
         }
+
         .form-group {
             margin-bottom: 1rem;
         }
+
         .form-label {
             display: block;
             font-weight: 500;
@@ -309,10 +375,12 @@
             margin-bottom: 0.375rem;
             font-size: 0.875rem;
         }
+
         .form-label.required::after {
             content: " *";
             color: #ef4444;
         }
+
         .form-input {
             width: 100%;
             padding: 0.625rem;
@@ -321,43 +389,52 @@
             transition: border-color 0.2s, box-shadow 0.2s;
             font-size: 0.875rem;
         }
+
         .form-input:focus {
             outline: none;
             border-color: #3b82f6;
             box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
         }
+
         .form-input.error {
             border-color: #ef4444;
         }
+
         .form-input.success {
             border-color: #10b981;
         }
+
         .form-input:read-only {
             background-color: #f9fafb;
             color: #6b7280;
             cursor: not-allowed;
         }
+
         .form-hint {
             font-size: 0.75rem;
             color: #6b7280;
             margin-top: 0.25rem;
         }
+
         .form-error {
             font-size: 0.75rem;
             color: #ef4444;
             margin-top: 0.25rem;
             display: none;
         }
+
         .form-grid {
             display: grid;
             grid-template-columns: 1fr;
             gap: 1rem;
         }
+
         @media (min-width: 640px) {
             .form-grid {
                 grid-template-columns: 1fr 1fr;
             }
         }
+
         .form-btn {
             padding: 0.625rem 1.25rem;
             border-radius: 0.375rem;
@@ -367,28 +444,35 @@
             cursor: pointer;
             border: none;
         }
+
         .save-btn {
             background-color: #3b82f6;
             color: white;
         }
+
         .save-btn:hover {
             background-color: #2563eb;
         }
+
         .cancel-btn {
             background-color: #f3f4f6;
             color: #374151;
         }
+
         .cancel-btn:hover {
             background-color: #e5e7eb;
         }
+
         .form-actions {
             display: flex;
             gap: 0.75rem;
             margin-top: 1.5rem;
         }
+
         .form-actions .form-btn {
             flex: 1;
         }
+
         .card-header {
             background-color: #f8fafc;
             border-bottom: 1px solid #e5e7eb;
@@ -396,11 +480,25 @@
             border-radius: 0.5rem 0.5rem 0 0;
             margin: -1.5rem -1.5rem 1.5rem -1.5rem;
         }
+
         .card-body {
             padding: 0;
         }
+
+        .name-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .name-fields {
+                grid-template-columns: 1fr;
+            }
+        }
     </style>
 </head>
+
 <body class="bg-gray-50">
     <div class="page-wrapper">
         <!-- Notification -->
@@ -445,15 +543,15 @@
                         <i class="fas fa-calendar-check"></i>
                         <span class="sidebar-text">Agendamentos</span>
                     </a>
-                    <a href="<?php echo site_url('admin/cad_pacientes'); ?>" class="block text-gray-700 active">
+                    <a href="<?php echo site_url('admin/cad_paciente'); ?>" class="block text-gray-700 active">
                         <i class="fas fa-user-plus"></i>
                         <span class="sidebar-text">Cadastrar Paciente</span>
                     </a>
-                    <a href="<?php echo site_url('admin/cad_secretarios'); ?>" class="block text-gray-700">
+                    <a href="<?php echo site_url('admin/cad_secretario'); ?>" class="block text-gray-700">
                         <i class="fas fa-user-plus"></i>
                         <span class="sidebar-text">Cadastrar Secretário</span>
                     </a>
-                    <a href="<?php echo site_url('admin/cad_medicos'); ?>" class="block text-gray-700">
+                    <a href="<?php echo site_url('admin/cad_medico'); ?>" class="block text-gray-700">
                         <i class="fas fa-user-plus"></i>
                         <span class="sidebar-text">Cadastrar Médico</span>
                     </a>
@@ -501,11 +599,18 @@
                     </div>
                     <div class="card-body">
                         <div class="form-grid">
+                            <!-- Nome e Sobrenome separados -->
                             <div class="form-group">
-                                <label for="patient-name" class="form-label required">Nome Completo</label>
-                                <input type="text" id="patient-name" class="form-input" required>
-                                <div class="form-error" id="name-error">Por favor, insira um nome válido</div>
+                                <label for="patient-firstname" class="form-label required">Nome</label>
+                                <input type="text" id="patient-firstname" class="form-input" required>
+                                <div class="form-error" id="firstname-error">Por favor, insira o nome</div>
                             </div>
+                            <div class="form-group">
+                                <label for="patient-lastname" class="form-label required">Sobrenome</label>
+                                <input type="text" id="patient-lastname" class="form-input" required>
+                                <div class="form-error" id="lastname-error">Por favor, insira o sobrenome</div>
+                            </div>
+
                             <div class="form-group">
                                 <label for="patient-phone" class="form-label required">Telefone</label>
                                 <input type="tel" id="patient-phone" class="form-input" required>
@@ -517,32 +622,34 @@
                                 <div class="form-error" id="bi-error">Por favor, insira um BI válido</div>
                             </div>
                             <div class="form-group">
-                                <label for="patient-email" class="form-label">Email</label>
-                                <input type="email" id="patient-email" class="form-input">
-                                <div class="form-hint">Opcional</div>
-                                <div class="form-error" id="email-error">Por favor, insira um email válido</div>
+                                <label for="patient-birthday" class="form-label required">Data de Nascimento</label>
+                                <input type="date" id="patient-birthday" class="form-input" required>
+                                <div class="form-error" id="birthday-error">Por favor, insira a data de nascimento</div>
                             </div>
                             <div class="form-group">
-                                <label for="patient-birthday" class="form-label">Data de Nascimento</label>
-                                <input type="date" id="patient-birthday" class="form-input">
-                                <div class="form-hint">Opcional</div>
-                            </div>
-                            <div class="form-group">
-                                <label for="patient-gender" class="form-label">Gênero</label>
-                                <select id="patient-gender" class="form-input">
+                                <label for="patient-gender" class="form-label required">Gênero</label>
+                                <select id="patient-gender" class="form-input" required>
                                     <option value="">Selecione o gênero</option>
                                     <option value="Masculino">Masculino</option>
                                     <option value="Feminino">Feminino</option>
                                     <option value="Outro">Outro</option>
                                 </select>
-                                <div class="form-hint">Opcional</div>
+                                <div class="form-error" id="gender-error">Por favor, selecione o gênero</div>
                             </div>
                         </div>
+
                         <div class="form-group">
                             <label for="patient-address" class="form-label">Endereço</label>
                             <input type="text" id="patient-address" class="form-input">
                             <div class="form-hint">Opcional</div>
                         </div>
+
+                        <div class="form-group">
+                            <label for="patient-emergency" class="form-label">Contato de Emergência</label>
+                            <input type="text" id="patient-emergency" class="form-input">
+                            <div class="form-hint">Opcional - Nome e telefone de contato em caso de emergência</div>
+                        </div>
+
                         <div class="form-actions">
                             <button id="save-btn" class="form-btn save-btn">Salvar</button>
                             <button id="cancel-btn" class="form-btn cancel-btn">Cancelar</button>
@@ -588,7 +695,10 @@
             const notification = document.getElementById('notification');
             const messageEl = document.getElementById('notification-message');
             if (!notification || !messageEl) {
-                console.error('Notification elements not found:', { notification, messageEl });
+                console.error('Notification elements not found:', {
+                    notification,
+                    messageEl
+                });
                 return;
             }
             messageEl.textContent = message;
@@ -607,17 +717,24 @@
         // Fetch patient by BI
         async function fetchPatient(bi) {
             try {
-                const response = await fetch(`<?php echo site_url('api/get_patients'); ?>?query=${encodeURIComponent(bi)}`, {
+                const response = await fetch(`<?php echo site_url('Api/get_patient'); ?>?bi=${encodeURIComponent(bi)}`, {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json'
                     }
                 });
+
+                if (!response.ok) throw new Error('Erro na resposta');
                 const data = await response.json();
-                return data.find(p => p.bi === bi) || null;
+
+                if (data.error) {
+                    showNotification(data.error, 'error');
+                    return null;
+                }
+                return data;
             } catch (error) {
-                showNotification('Erro ao carregar dados do paciente.', 'error');
-                console.error('Erro:', error);
+                showNotification('Erro ao carregar paciente.', 'error');
+                console.error(error);
                 return null;
             }
         }
@@ -625,19 +742,31 @@
         // Form validation
         function validateForm() {
             let isValid = true;
-            
-            // Name validation
-            const nameInput = document.getElementById('patient-name');
-            const nameError = document.getElementById('name-error');
-            if (!nameInput.value.trim()) {
-                nameInput.classList.add('error');
-                nameError.style.display = 'block';
+
+            // First name validation
+            const firstnameInput = document.getElementById('patient-firstname');
+            const firstnameError = document.getElementById('firstname-error');
+            if (!firstnameInput.value.trim()) {
+                firstnameInput.classList.add('error');
+                firstnameError.style.display = 'block';
                 isValid = false;
             } else {
-                nameInput.classList.remove('error');
-                nameError.style.display = 'none';
+                firstnameInput.classList.remove('error');
+                firstnameError.style.display = 'none';
             }
-            
+
+            // Last name validation
+            const lastnameInput = document.getElementById('patient-lastname');
+            const lastnameError = document.getElementById('lastname-error');
+            if (!lastnameInput.value.trim()) {
+                lastnameInput.classList.add('error');
+                lastnameError.style.display = 'block';
+                isValid = false;
+            } else {
+                lastnameInput.classList.remove('error');
+                lastnameError.style.display = 'none';
+            }
+
             // Phone validation
             const phoneInput = document.getElementById('patient-phone');
             const phoneError = document.getElementById('phone-error');
@@ -650,7 +779,7 @@
                 phoneInput.classList.remove('error');
                 phoneError.style.display = 'none';
             }
-            
+
             // BI validation
             const biInput = document.getElementById('patient-bi');
             const biError = document.getElementById('bi-error');
@@ -662,76 +791,84 @@
                 biInput.classList.remove('error');
                 biError.style.display = 'none';
             }
-            
-            // Email validation (if provided)
-            const emailInput = document.getElementById('patient-email');
-            const emailError = document.getElementById('email-error');
-            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-            if (emailInput.value.trim() && !emailRegex.test(emailInput.value)) {
-                emailInput.classList.add('error');
-                emailError.style.display = 'block';
+
+            // Birthday validation
+            const birthdayInput = document.getElementById('patient-birthday');
+            const birthdayError = document.getElementById('birthday-error');
+            if (!birthdayInput.value) {
+                birthdayInput.classList.add('error');
+                birthdayError.style.display = 'block';
                 isValid = false;
             } else {
-                emailInput.classList.remove('error');
-                emailError.style.display = 'none';
+                birthdayInput.classList.remove('error');
+                birthdayError.style.display = 'none';
             }
-            
+
+            // Gender validation
+            const genderInput = document.getElementById('patient-gender');
+            const genderError = document.getElementById('gender-error');
+            if (!genderInput.value) {
+                genderInput.classList.add('error');
+                genderError.style.display = 'block';
+                isValid = false;
+            } else {
+                genderInput.classList.remove('error');
+                genderError.style.display = 'none';
+            }
+
             return isValid;
         }
 
         // Save or update patient
         async function savePatient() {
             if (!validateForm()) {
-                showNotification('Por favor, corrija os erros no formulário.', 'error');
+                showNotification('Corrija os erros no formulário.', 'error');
                 return;
             }
 
-            const nameInput = document.getElementById('patient-name');
-            const phoneInput = document.getElementById('patient-phone');
-            const biInput = document.getElementById('patient-bi');
-            const emailInput = document.getElementById('patient-email');
-            const birthdayInput = document.getElementById('patient-birthday');
-            const genderInput = document.getElementById('patient-gender');
-            const addressInput = document.getElementById('patient-address');
+            const patient = {
+                Nome: document.getElementById('patient-firstname').value.trim(),
+                Sobrenome: document.getElementById('patient-lastname').value.trim(),
+                Telefone: document.getElementById('patient-phone').value.trim(),
+                BI: document.getElementById('patient-bi').value.trim(),
+                Data_Nascimento: document.getElementById('patient-birthday').value || null,
+                Genero: document.getElementById('patient-gender').value || null,
+                Endereco: document.getElementById('patient-address').value.trim() || null,
+                Contato_Emergencia: document.getElementById('patient-emergency').value.trim() || null
+            };
 
-            const name = nameInput.value.trim();
-            const phone = phoneInput.value.trim();
-            const bi = biInput.value.trim();
-            const email = emailInput.value.trim() || null;
-            const birthday = birthdayInput.value || null;
-            const gender = genderInput.value || null;
-            const address = addressInput.value.trim() || null;
-            const isEditMode = biInput.hasAttribute('readonly');
+            const isEditMode = document.getElementById('patient-bi').hasAttribute('readonly');
+            const endpoint = isEditMode ?
+                '<?php echo site_url('Api/update_patient'); ?>' :
+                '<?php echo site_url('Api/create_patient'); ?>';
 
-            const patient = { bi, name, phone, email, birthday, gender, address };
-            const endpoint = isEditMode ? '<?php echo site_url('api/update_patient'); ?>' : '<?php echo site_url('api/create_patient'); ?>';
-            
             try {
                 const response = await fetch(endpoint, {
                     method: 'POST',
                     headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRF-Token': '<?php echo $this->security->get_csrf_hash(); ?>'
+                        'Content-Type': 'application/json'
                     },
                     body: JSON.stringify(patient)
                 });
+
                 const result = await response.json();
+
                 if (result.error) {
                     showNotification(result.error, 'error');
                 } else {
                     showNotification(result.success, 'success');
                     setTimeout(() => {
                         window.location.href = '<?php echo site_url('admin/pacientes'); ?>';
-                    }, 1000);
+                    }, 1500);
                 }
             } catch (error) {
-                showNotification(isEditMode ? 'Erro ao atualizar paciente.' : 'Erro ao cadastrar paciente.', 'error');
-                console.error('Erro:', error);
+                showNotification('Erro de conexão.', 'error');
+                console.error(error);
             }
         }
 
         // Initialization
-        document.addEventListener('DOMContentLoaded', async function () {
+        document.addEventListener('DOMContentLoaded', async function() {
             const notificationClose = document.getElementById('notification-close');
             const mobileMenuBtn = document.getElementById('mobile-menu-btn');
             const sidebarMenu = document.getElementById('sidebar-menu');
@@ -741,23 +878,20 @@
             const sidebarOverlay = document.getElementById('sidebar-overlay');
             const saveBtn = document.getElementById('save-btn');
             const cancelBtn = document.getElementById('cancel-btn');
-            const nameInput = document.getElementById('patient-name');
+            const firstnameInput = document.getElementById('patient-firstname');
+            const lastnameInput = document.getElementById('patient-lastname');
             const phoneInput = document.getElementById('patient-phone');
             const biInput = document.getElementById('patient-bi');
-            const emailInput = document.getElementById('patient-email');
             const birthdayInput = document.getElementById('patient-birthday');
             const genderInput = document.getElementById('patient-gender');
             const addressInput = document.getElementById('patient-address');
+            const emergencyInput = document.getElementById('patient-emergency');
             const formTitle = document.getElementById('form-title');
 
             if (!notificationClose || !mobileMenuBtn || !sidebarMenu || !closeSidebarBtn || !toggleSidebarBtn ||
-                !mainContent || !sidebarOverlay || !saveBtn || !cancelBtn || !nameInput || !phoneInput || !biInput ||
-                !emailInput || !birthdayInput || !genderInput || !addressInput || !formTitle) {
-                console.error('DOM elements not found:', {
-                    notificationClose, mobileMenuBtn, sidebarMenu, closeSidebarBtn, toggleSidebarBtn,
-                    mainContent, sidebarOverlay, saveBtn, cancelBtn, nameInput, phoneInput, biInput,
-                    emailInput, birthdayInput, genderInput, addressInput, formTitle
-                });
+                !mainContent || !sidebarOverlay || !saveBtn || !cancelBtn || !firstnameInput || !lastnameInput ||
+                !phoneInput || !biInput || !birthdayInput || !genderInput || !addressInput || !emergencyInput || !formTitle) {
+                console.error('DOM elements not found');
                 return;
             }
 
@@ -767,16 +901,15 @@
                 formTitle.textContent = 'Editar Paciente';
                 const patient = await fetchPatient(bi);
                 if (patient) {
-                    nameInput.value = patient.name;
-                    phoneInput.value = patient.phone;
-                    biInput.value = patient.bi;
+                    firstnameInput.value = patient.Nome || '';
+                    lastnameInput.value = patient.Sobrenome || '';
+                    phoneInput.value = patient.Telefone || '';
+                    biInput.value = patient.BI || '';
                     biInput.setAttribute('readonly', 'true');
-                    emailInput.value = patient.email || '';
-                    birthdayInput.value = patient.birthday || '';
-                    genderInput.value = patient.gender || '';
-                    addressInput.value = patient.address || '';
-                } else {
-                    showNotification('Paciente não encontrado.', 'error');
+                    birthdayInput.value = patient.Data_Nascimento || '';
+                    genderInput.value = patient.Genero || '';
+                    addressInput.value = patient.Endereco || '';
+                    emergencyInput.value = patient.Contato_Emergencia || '';
                 }
             } else {
                 formTitle.textContent = 'Cadastrar Novo Paciente';
@@ -881,7 +1014,7 @@
             });
 
             // Real-time validation
-            const inputs = [nameInput, phoneInput, biInput, emailInput];
+            const inputs = [firstnameInput, lastnameInput, phoneInput, biInput, birthdayInput, genderInput];
             inputs.forEach(input => {
                 input.addEventListener('blur', validateForm);
                 input.addEventListener('input', function() {
@@ -905,4 +1038,5 @@
         });
     </script>
 </body>
+
 </html>

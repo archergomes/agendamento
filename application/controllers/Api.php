@@ -553,4 +553,34 @@ class Api extends CI_Controller
         $result = $this->Agendamentos_model->delete_appointment($id);
         echo json_encode($result);
     }
+
+    // Adicione este método no controlador Api
+    public function get_patient()
+    {
+        if ($this->input->method() !== 'get') {
+            $this->output->set_status_header(405);
+            echo json_encode(['error' => 'Método não permitido']);
+            return;
+        }
+
+        $bi = $this->input->get('bi', TRUE);
+        if (!$bi) {
+            $this->output->set_status_header(400);
+            echo json_encode(['error' => 'BI é obrigatório']);
+            return;
+        }
+
+        $this->db->select('ID_Paciente, Nome, Sobrenome, Telefone, Email, Data_Nascimento, Genero, Endereco, Contato_Emergencia');
+        $this->db->where('ID_Paciente', $bi); // ou 'BI' se você usar campo BI
+        $query = $this->db->get('Pacientes');
+
+        if ($query->num_rows() == 0) {
+            $this->output->set_status_header(404);
+            echo json_encode(['error' => 'Paciente não encontrado']);
+            return;
+        }
+
+        $patient = $query->row_array();
+        echo json_encode($patient);
+    }
 }

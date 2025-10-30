@@ -20,6 +20,7 @@ class Pacientes_model extends CI_Model
 		log_message('debug', 'Pacientes com JOIN Email: ' . count($result) . ' | Query: ' . $this->db->last_query());
 		return $result;
 	}
+    
 
     public function get_patient($bi)
     {
