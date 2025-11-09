@@ -99,13 +99,30 @@ class Admin_model extends CI_Model
         return array_slice($activities, 0, 5);
     }
 
-    public function get_patient($id_paciente)
+    public function get_patient()
     {
-        $this->db->select('ID_Paciente, CONCAT(Nome, " ", Sobrenome) AS Nome_Completo, Telefone, Email, Data_Nascimento, Genero, Endereco');
-        $this->db->where('ID_Paciente', $id_paciente);
-        $query = $this->db->get('Pacientes');
-        return $query->row_array();
+        $bi = $this->input->get('bi', TRUE);
+        if (!$bi) {
+            $this->output->set_status_header(400);
+            echo json_encode(['error' => 'BI é obrigatório']);
+            return;
+        }
+
+        $this->db->select('p.*, u.ID_Usuario');
+        $this->db->from('Pacientes p');
+        $this->db->join('usuarios u', 'p.ID_Usuario = u.ID_Usuario', 'left');
+        $this->db->where('p.BI', $bi);
+        $query = $this->db->get();
+
+        if ($query->num_rows() == 0) {
+            $this->output->set_status_header(404);
+            echo json_encode(['error' => 'Paciente não encontrado']);
+            return;
+        }
+
+        echo json_encode($query->row_array());
     }
+
 
     public function get_doctor($id_medico)
     {
@@ -194,7 +211,7 @@ class Admin_model extends CI_Model
     // Pacientes (com JOIN para Email de Usuarios — corrigido ORDER BY)
     public function get_pacientes($query = '')
     {
-        $this->db->select('p.ID_Paciente, CONCAT(p.Nome, " ", p.Sobrenome) AS Nome_Completo, p.Telefone, u.Email, p.Data_Nascimento, p.Genero, p.Endereco');
+        $this->db->select('p.BI, CONCAT(p.Nome, " ", p.Sobrenome) AS Nome_Completo, p.Telefone, u.Email, p.Data_Nascimento, p.Genero, p.Endereco');
         $this->db->from('Pacientes p');
         $this->db->join('Usuarios u', 'p.ID_Usuario = u.ID_Usuario', 'left');
         if ($query) {
@@ -214,20 +231,17 @@ class Admin_model extends CI_Model
     // Médicos
     public function get_medicos($query = '')
     {
-        $this->db->select('ID_Medico, Nome, Sobrenome, Especialidade, Telefone, Email');
-        $this->db->from('Medicos');
+        $this->db->select('m.ID_Medico, m.BI, m.Nome, m.Sobrenome, m.Especialidade, m.Telefone, u.Email');
+        $this->db->from('Medicos m');
+        $this->db->join('usuarios u', 'm.ID_Usuario = u.ID_Usuario', 'left');
         if ($query) {
-            $this->db->group_start();
-            $this->db->like('CONCAT(Nome, " ", Sobrenome)', $query);
-            $this->db->or_like('Especialidade', $query);
-            $this->db->group_end();
+            $this->db->like('CONCAT(m.Nome, " ", m.Sobrenome)', $query);
+            $this->db->or_like('m.BI', $query);
+            $this->db->or_like('u.Email', $query);
         }
-        $this->db->order_by('Nome', 'ASC');
-        $result = $this->db->get()->result_array();
-        log_message('debug', 'Médicos carregados: ' . count($result));
-        return $result;
+        $this->db->order_by('m.Nome', 'ASC');
+        return $this->db->get()->result_array();
     }
-
     // Secretários (assuma tabela Secretarios similar a Pacientes, ajuste colunas)
     public function get_secretarios($query = '')
     {
@@ -316,7 +330,7 @@ class Admin_model extends CI_Model
     }
 
 
-     /**
+    /**
      * Buscar paciente por BI
      */
     public function get_patient_by_bi($bi)
@@ -355,7 +369,7 @@ class Admin_model extends CI_Model
         // Verificar se BI já existe
         $this->db->where('BI', $data['BI']);
         $existing = $this->db->get('pacientes')->row();
-        
+
         if ($existing) {
             return ['error' => 'Já existe um paciente com este BI.'];
         }
@@ -374,7 +388,7 @@ class Admin_model extends CI_Model
         ];
 
         $success = $this->db->insert('pacientes', $patient_data);
-        
+
         if ($success) {
             return ['success' => 'Paciente cadastrado com sucesso!'];
         } else {
@@ -383,42 +397,13 @@ class Admin_model extends CI_Model
     }
 
     /**
-     * Atualizar paciente
-     */
-    // public function update_patient($data)
-    // {
-    //     $bi = $data['BI'];
-        
-    //     // Preparar dados para atualização
-    //     $patient_data = [
-    //         'Nome' => $data['Nome'],
-    //         'Sobrenome' => $data['Sobrenome'],
-    //         'Data_Nascimento' => $data['Data_Nascimento'],
-    //         'Genero' => $data['Genero'],
-    //         'Endereco' => $data['Endereco'] ?? null,
-    //         'Telefone' => $data['Telefone'],
-    //         'Contato_Emergencia' => $data['Contato_Emergencia'] ?? null,
-    //         'Criado_Em' => date('Y-m-d H:i:s')
-    //     ];
-
-    //     $this->db->where('BI', $bi);
-    //     $success = $this->db->update('pacientes', $patient_data);
-        
-    //     if ($success) {
-    //         return ['success' => 'Paciente atualizado com sucesso!'];
-    //     } else {
-    //         return ['error' => 'Erro ao atualizar paciente.'];
-    //     }
-    // }
-
-    /**
      * Deletar paciente
      */
     public function delete_patient($bi)
     {
         $this->db->where('BI', $bi);
         $success = $this->db->delete('pacientes');
-        
+
         return $success;
     }
 
@@ -432,5 +417,79 @@ class Admin_model extends CI_Model
         $this->db->where('ID_Paciente', $id);
         $query = $this->db->get();
         return $query->row();
+    }
+
+    //=========================================================================//
+
+    /**
+     * Buscar disponibilidade do médico
+     */
+    public function get_disponibilidade_medico($id_medico)
+    {
+        $this->db->where('ID_Medico', $id_medico);
+        $this->db->order_by('Dia_Semana, Hora_Inicio');
+        $query = $this->db->get('horarios');
+
+        $disponibilidade = [];
+        foreach ($query->result_array() as $row) {
+            // Converter para lowercase para compatibilidade com o frontend
+            $dia = strtolower($row['Dia_Semana']);
+
+            $disponibilidade[$dia][] = [
+                'inicio' => $row['Hora_Inicio'],
+                'fim' => $row['Hora_Fim'],
+                'id' => $row['ID_Horario']
+            ];
+        }
+
+        return $disponibilidade;
+    }
+
+    /**
+     * Salvar disponibilidade do médico
+     */
+    public function salvar_disponibilidade($id_medico, $disponibilidade)
+    {
+        $this->db->trans_start();
+
+        // Primeiro, remover todos os horários existentes do médico
+        $this->db->where('ID_Medico', $id_medico);
+        $this->db->delete('horarios');
+
+        // Inserir nova disponibilidade
+        foreach ($disponibilidade as $dia => $horarios) {
+            foreach ($horarios as $horario) {
+                if (!empty($horario['inicio']) && !empty($horario['fim'])) {
+                    // Converter para formato com primeira letra maiúscula
+                    $dia_semana = ucfirst($dia);
+
+                    $data = [
+                        'ID_Medico' => $id_medico,
+                        'Dia_Semana' => $dia_semana,
+                        'Hora_Inicio' => $horario['inicio'],
+                        'Hora_Fim' => $horario['fim']
+                    ];
+
+                    $this->db->insert('horarios', $data);
+                }
+            }
+        }
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE) {
+            return ['error' => 'Erro ao salvar disponibilidade'];
+        }
+
+        return ['success' => 'Disponibilidade salva com sucesso'];
+    }
+
+    /**
+     * Verificar se o médico existe
+     */
+    public function medico_existe($id_medico)
+    {
+        $this->db->where('ID_Medico', $id_medico);
+        return $this->db->get('Medicos')->num_rows() > 0;
     }
 }

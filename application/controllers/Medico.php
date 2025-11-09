@@ -26,7 +26,7 @@ class Medico extends CI_Controller {
 
 	public function prontuarios()
 	{
-		$this->load->view('medicos/prontuarios');
+		$this->load->view('medicos/disponibilidade');
 	}
 
 	public function prescricoes()

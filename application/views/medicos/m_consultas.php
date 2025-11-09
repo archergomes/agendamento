@@ -445,25 +445,9 @@
                         <i class="fas fa-users"></i>
                         <span class="sidebar-text">Meus Pacientes</span>
                     </a>
-                    <a href="<?php echo site_url('medico/prontuarios'); ?>" class="block text-gray-700">
-                        <i class="fas fa-file-medical"></i>
-                        <span class="sidebar-text">Prontuários</span>
-                    </a>
-                    <a href="<?php echo site_url('medico/prescricoes'); ?>" class="block text-gray-700">
-                        <i class="fas fa-prescription"></i>
-                        <span class="sidebar-text">Prescrições</span>
-                    </a>
-                    <a href="<?php echo site_url('medico/laudos'); ?>" class="block text-gray-700">
-                        <i class="fas fa-file-medical-alt"></i>
-                        <span class="sidebar-text">Laudos</span>
-                    </a>
                     <a href="<?php echo site_url('medico/horarios'); ?>" class="block text-gray-700">
                         <i class="fas fa-clock"></i>
                         <span class="sidebar-text">Meus Horários</span>
-                    </a>
-                    <a href="<?php echo site_url('medico/relatorios'); ?>" class="block text-gray-700">
-                        <i class="fas fa-chart-bar"></i>
-                        <span class="sidebar-text">Relatórios</span>
                     </a>
                     <a href="<?php echo site_url('medico/perfil'); ?>" class="block text-gray-700">
                         <i class="fas fa-user-md"></i>
@@ -486,8 +470,8 @@
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="text-right hidden md:block">
-                        <p class="text-sm">Dr. <?php echo $medico_nome ?? 'Médico'; ?></p>
-                        <p class="text-xs text-blue-200"><?php echo $especialidade ?? 'Especialidade'; ?></p>
+                        <p class="text-sm">Dr. <?php echo $medico_nome ?? 'Carlos Silva'; ?></p>
+                        <p class="text-xs text-blue-200"><?php echo $especialidade ?? 'Cardiologia'; ?></p>
                     </div>
                     <button id="mobile-menu-btn" class="md:hidden text-white hover:text-blue-200" aria-label="Abrir menu">
                         <i class="fas fa-bars text-2xl"></i>
@@ -515,19 +499,19 @@
                     <!-- Stats Overview -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                         <div class="bg-white rounded-lg p-4 text-center shadow">
-                            <div class="text-2xl font-bold text-blue-600" id="total-hoje">0</div>
+                            <div class="text-2xl font-bold text-blue-600" id="total-hoje">8</div>
                             <div class="text-sm text-gray-600">Hoje</div>
                         </div>
                         <div class="bg-white rounded-lg p-4 text-center shadow">
-                            <div class="text-2xl font-bold text-orange-600" id="total-agendadas">0</div>
+                            <div class="text-2xl font-bold text-orange-600" id="total-agendadas">24</div>
                             <div class="text-sm text-gray-600">Agendadas</div>
                         </div>
                         <div class="bg-white rounded-lg p-4 text-center shadow">
-                            <div class="text-2xl font-bold text-green-600" id="total-concluidas">0</div>
+                            <div class="text-2xl font-bold text-green-600" id="total-concluidas">156</div>
                             <div class="text-sm text-gray-600">Concluídas</div>
                         </div>
                         <div class="bg-white rounded-lg p-4 text-center shadow">
-                            <div class="text-2xl font-bold text-red-600" id="total-canceladas">0</div>
+                            <div class="text-2xl font-bold text-red-600" id="total-canceladas">3</div>
                             <div class="text-sm text-gray-600">Canceladas</div>
                         </div>
                     </div>
@@ -569,7 +553,7 @@
                         </div>
 
                         <!-- Loading State -->
-                        <div id="loading-state" class="text-center py-8">
+                        <div id="loading-state" class="text-center py-8 hidden">
                             <i class="fas fa-spinner fa-spin text-2xl text-blue-600 mb-2"></i>
                             <p class="text-gray-600">Carregando consultas...</p>
                         </div>
@@ -605,6 +589,124 @@
     </div>
 
     <script>
+        // Dados fictícios para consultas
+        const dadosFicticios = {
+            consultas: [
+                {
+                    id: 1,
+                    paciente_nome: "Maria Santos",
+                    motivo: "Consulta de rotina - Hipertensão",
+                    data: "2024-01-15",
+                    hora: "09:00",
+                    status: "agendada",
+                    idade: 45,
+                    telefone: "+258 84 123 4567",
+                    observacoes: "Paciente em acompanhamento há 6 meses",
+                    urgente: false,
+                    retorno: false,
+                    tipo: "rotina"
+                },
+                {
+                    id: 2,
+                    paciente_nome: "João Pereira",
+                    motivo: "Acompanhamento pós-cirúrgico",
+                    data: "2024-01-15",
+                    hora: "10:30",
+                    status: "confirmada",
+                    idade: 62,
+                    telefone: "+258 85 234 5678",
+                    observacoes: "Cirurgia cardíaca realizada há 2 semanas",
+                    urgente: false,
+                    retorno: true,
+                    tipo: "acompanhamento"
+                },
+                {
+                    id: 3,
+                    paciente_nome: "Ana Costa",
+                    motivo: "Dor no peito - Urgente",
+                    data: "2024-01-15",
+                    hora: "11:15",
+                    status: "agendada",
+                    idade: 38,
+                    telefone: "+258 86 345 6789",
+                    observacoes: "Relata dor torácica há 3 dias",
+                    urgente: true,
+                    retorno: false,
+                    tipo: "emergencia"
+                },
+                {
+                    id: 4,
+                    paciente_nome: "Pedro Mendes",
+                    motivo: "Resultados de exames",
+                    data: "2024-01-15",
+                    hora: "14:00",
+                    status: "em-andamento",
+                    idade: 55,
+                    telefone: "+258 87 456 7890",
+                    observacoes: "Aguardando resultados de sangue",
+                    urgente: false,
+                    retorno: false,
+                    tipo: "consulta"
+                },
+                {
+                    id: 5,
+                    paciente_nome: "Carla Fernandes",
+                    motivo: "Avaliação cardiológica",
+                    data: "2024-01-16",
+                    hora: "08:30",
+                    status: "agendada",
+                    idade: 42,
+                    telefone: "+258 88 567 8901",
+                    observacoes: "Histórico familiar de cardiopatia",
+                    urgente: false,
+                    retorno: false,
+                    tipo: "avaliacao"
+                },
+                {
+                    id: 6,
+                    paciente_nome: "Miguel Silva",
+                    motivo: "Consulta de retorno",
+                    data: "2024-01-16",
+                    hora: "10:00",
+                    status: "concluida",
+                    idade: 68,
+                    telefone: "+258 89 678 9012",
+                    observacoes: "Evolução satisfatória do tratamento",
+                    urgente: false,
+                    retorno: true,
+                    tipo: "retorno"
+                },
+                {
+                    id: 7,
+                    paciente_nome: "Sofia Rodrigues",
+                    motivo: "Palpitações",
+                    data: "2024-01-14",
+                    hora: "15:30",
+                    status: "concluida",
+                    idade: 29,
+                    telefone: "+258 82 789 0123",
+                    observacoes: "Exames solicitados - retorno em 15 dias",
+                    urgente: false,
+                    retorno: true,
+                    tipo: "consulta"
+                },
+                {
+                    id: 8,
+                    paciente_nome: "António Gomes",
+                    motivo: "Pressão arterial elevada",
+                    data: "2024-01-13",
+                    hora: "11:00",
+                    status: "cancelada",
+                    idade: 51,
+                    telefone: "+258 83 890 1234",
+                    observacoes: "Paciente cancelou por motivo pessoal",
+                    urgente: false,
+                    retorno: false,
+                    tipo: "consulta"
+                }
+            ]
+        };
+
         let currentFilter = 'todas';
         let currentSearch = '';
         let currentDate = '';
@@ -625,28 +727,22 @@
         }
 
         // Carregar estatísticas
-        async function loadStats() {
-            try {
-                const response = await fetch('<?php echo site_url('api/medico/consultas_stats'); ?>');
-                const stats = await response.json();
-                
-                if (stats.error) {
-                    showNotification(stats.error, 'error');
-                    return;
-                }
+        function loadStats() {
+            // Estatísticas baseadas nos dados fictícios
+            const hoje = new Date().toISOString().split('T')[0];
+            const consultasHoje = dadosFicticios.consultas.filter(c => c.data === hoje).length;
+            const agendadas = dadosFicticios.consultas.filter(c => ['agendada', 'confirmada'].includes(c.status)).length;
+            const concluidas = dadosFicticios.consultas.filter(c => c.status === 'concluida').length;
+            const canceladas = dadosFicticios.consultas.filter(c => c.status === 'cancelada').length;
 
-                document.getElementById('total-hoje').textContent = stats.hoje || 0;
-                document.getElementById('total-agendadas').textContent = stats.agendadas || 0;
-                document.getElementById('total-concluidas').textContent = stats.concluidas || 0;
-                document.getElementById('total-canceladas').textContent = stats.canceladas || 0;
-
-            } catch (error) {
-                console.error('Erro ao carregar estatísticas:', error);
-            }
+            document.getElementById('total-hoje').textContent = consultasHoje;
+            document.getElementById('total-agendadas').textContent = agendadas;
+            document.getElementById('total-concluidas').textContent = concluidas;
+            document.getElementById('total-canceladas').textContent = canceladas;
         }
 
         // Carregar consultas
-        async function loadConsultations() {
+        function loadConsultations() {
             const loading = document.getElementById('loading-state');
             const empty = document.getElementById('empty-state');
             const list = document.getElementById('consultations-list');
@@ -655,34 +751,44 @@
             if (empty) empty.classList.add('hidden');
             if (list) list.innerHTML = '';
 
-            try {
-                const params = new URLSearchParams();
-                if (currentFilter !== 'todas') params.append('filter', currentFilter);
-                if (currentSearch) params.append('search', currentSearch);
-                if (currentDate) params.append('date', currentDate);
+            // Simular carregamento
+            setTimeout(() => {
+                let consultasFiltradas = [...dadosFicticios.consultas];
 
-                const response = await fetch(`<?php echo site_url('api/medico/consultas'); ?>?${params}`);
-                const consultas = await response.json();
+                // Aplicar filtro
+                if (currentFilter !== 'todas') {
+                    if (currentFilter === 'hoje') {
+                        const hoje = new Date().toISOString().split('T')[0];
+                        consultasFiltradas = consultasFiltradas.filter(c => c.data === hoje);
+                    } else {
+                        consultasFiltradas = consultasFiltradas.filter(c => c.status === currentFilter);
+                    }
+                }
+
+                // Aplicar busca
+                if (currentSearch) {
+                    const searchLower = currentSearch.toLowerCase();
+                    consultasFiltradas = consultasFiltradas.filter(c => 
+                        c.paciente_nome.toLowerCase().includes(searchLower) ||
+                        c.motivo.toLowerCase().includes(searchLower)
+                    );
+                }
+
+                // Aplicar filtro por data
+                if (currentDate) {
+                    consultasFiltradas = consultasFiltradas.filter(c => c.data === currentDate);
+                }
 
                 if (loading) loading.classList.add('hidden');
 
-                if (consultas.error) {
-                    showNotification(consultas.error, 'error');
-                    return;
-                }
-
-                if (consultas.length === 0) {
+                if (consultasFiltradas.length === 0) {
                     if (empty) empty.classList.remove('hidden');
                     return;
                 }
 
-                renderConsultations(consultas);
+                renderConsultations(consultasFiltradas);
 
-            } catch (error) {
-                console.error('Erro ao carregar consultas:', error);
-                showNotification('Erro ao carregar consultas.', 'error');
-                if (loading) loading.classList.add('hidden');
-            }
+            }, 1000); // Simular delay de carregamento
         }
 
         // Renderizar consultas
@@ -709,7 +815,7 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4 text-sm">
                                     <div>
                                         <span class="text-gray-600">Data/Hora:</span>
-                                        <p class="font-medium">${consulta.data} às ${consulta.hora}</p>
+                                        <p class="font-medium">${formatDate(consulta.data)} às ${consulta.hora}</p>
                                     </div>
                                     <div>
                                         <span class="text-gray-600">Motivo:</span>
@@ -717,11 +823,11 @@
                                     </div>
                                     <div>
                                         <span class="text-gray-600">Idade:</span>
-                                        <p class="font-medium">${consulta.idade || 'N/A'} anos</p>
+                                        <p class="font-medium">${consulta.idade} anos</p>
                                     </div>
                                     <div>
                                         <span class="text-gray-600">Telefone:</span>
-                                        <p class="font-medium">${consulta.telefone || 'N/A'}</p>
+                                        <p class="font-medium">${consulta.telefone}</p>
                                     </div>
                                 </div>
 
@@ -743,6 +849,12 @@
 
             // Adicionar event listeners aos botões
             addEventListeners();
+        }
+
+        // Formatar data para exibição
+        function formatDate(dateString) {
+            const date = new Date(dateString);
+            return date.toLocaleDateString('pt-BR');
         }
 
         // Obter classe CSS do card baseado no tipo de consulta
@@ -841,80 +953,100 @@
         // Funções de ação
         function iniciarConsulta(consultaId) {
             showNotification('Iniciando consulta...', 'info');
-            window.location.href = `<?php echo site_url('medico/consulta/'); ?>${consultaId}`;
+            // Simular redirecionamento
+            setTimeout(() => {
+                showNotification('Consulta iniciada com sucesso!', 'success');
+            }, 1000);
         }
 
         function finalizarConsulta(consultaId) {
             showNotification('Finalizando consulta...', 'info');
-            // Implementar lógica de finalização
+            // Simular finalização
+            setTimeout(() => {
+                showNotification('Consulta finalizada com sucesso!', 'success');
+                loadConsultations();
+                loadStats();
+            }, 1000);
         }
 
-        async function verDetalhesConsulta(consultaId) {
-            try {
-                const response = await fetch(`<?php echo site_url('api/medico/consulta/'); ?>${consultaId}`);
-                const consulta = await response.json();
+        function verDetalhesConsulta(consultaId) {
+            const consulta = dadosFicticios.consultas.find(c => c.id == consultaId);
+            
+            if (!consulta) {
+                showNotification('Consulta não encontrada.', 'error');
+                return;
+            }
 
-                if (consulta.error) {
-                    showNotification(consulta.error, 'error');
-                    return;
-                }
+            const modal = document.getElementById('consultation-modal');
+            const details = document.getElementById('consultation-details');
 
-                const modal = document.getElementById('consultation-modal');
-                const details = document.getElementById('consultation-details');
-
-                details.innerHTML = `
-                    <div class="space-y-4">
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="font-medium text-gray-700">Paciente:</label>
-                                <p>${consulta.paciente_nome}</p>
-                            </div>
-                            <div>
-                                <label class="font-medium text-gray-700">Status:</label>
-                                <span class="status-badge ${getStatusClass(consulta.status)}">${consulta.status}</span>
-                            </div>
-                        </div>
-                        <div class="grid grid-cols-2 gap-4">
-                            <div>
-                                <label class="font-medium text-gray-700">Data:</label>
-                                <p>${consulta.data}</p>
-                            </div>
-                            <div>
-                                <label class="font-medium text-gray-700">Hora:</label>
-                                <p>${consulta.hora}</p>
-                            </div>
+            details.innerHTML = `
+                <div class="space-y-4">
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="font-medium text-gray-700">Paciente:</label>
+                            <p>${consulta.paciente_nome}</p>
                         </div>
                         <div>
-                            <label class="font-medium text-gray-700">Motivo:</label>
-                            <p>${consulta.motivo}</p>
+                            <label class="font-medium text-gray-700">Status:</label>
+                            <span class="status-badge ${getStatusClass(consulta.status)}">${consulta.status}</span>
                         </div>
-                        ${consulta.observacoes ? `
-                            <div>
-                                <label class="font-medium text-gray-700">Observações:</label>
-                                <p>${consulta.observacoes}</p>
-                            </div>
-                        ` : ''}
-                        ${consulta.historico ? `
-                            <div>
-                                <label class="font-medium text-gray-700">Histórico:</label>
-                                <p>${consulta.historico}</p>
-                            </div>
-                        ` : ''}
                     </div>
-                `;
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="font-medium text-gray-700">Data:</label>
+                            <p>${formatDate(consulta.data)}</p>
+                        </div>
+                        <div>
+                            <label class="font-medium text-gray-700">Hora:</label>
+                            <p>${consulta.hora}</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-2 gap-4">
+                        <div>
+                            <label class="font-medium text-gray-700">Idade:</label>
+                            <p>${consulta.idade} anos</p>
+                        </div>
+                        <div>
+                            <label class="font-medium text-gray-700">Telefone:</label>
+                            <p>${consulta.telefone}</p>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="font-medium text-gray-700">Motivo:</label>
+                        <p>${consulta.motivo}</p>
+                    </div>
+                    ${consulta.observacoes ? `
+                        <div>
+                            <label class="font-medium text-gray-700">Observações:</label>
+                            <p class="bg-gray-50 p-3 rounded">${consulta.observacoes}</p>
+                        </div>
+                    ` : ''}
+                    ${consulta.urgente ? `
+                        <div class="bg-red-50 p-3 rounded border border-red-200">
+                            <label class="font-medium text-red-700">⚠️ Consulta Urgente</label>
+                        </div>
+                    ` : ''}
+                    ${consulta.retorno ? `
+                        <div class="bg-green-50 p-3 rounded border border-green-200">
+                            <label class="font-medium text-green-700">↩️ Consulta de Retorno</label>
+                        </div>
+                    ` : ''}
+                </div>
+            `;
 
-                modal.classList.add('show');
-
-            } catch (error) {
-                console.error('Erro ao carregar detalhes:', error);
-                showNotification('Erro ao carregar detalhes da consulta.', 'error');
-            }
+            modal.classList.add('show');
         }
 
         function cancelarConsulta(consultaId) {
             if (confirm('Tem certeza que deseja cancelar esta consulta?')) {
                 showNotification('Cancelando consulta...', 'info');
-                // Implementar lógica de cancelamento
+                // Simular cancelamento
+                setTimeout(() => {
+                    showNotification('Consulta cancelada com sucesso!', 'success');
+                    loadConsultations();
+                    loadStats();
+                }, 1000);
             }
         }
 
@@ -923,7 +1055,11 @@
         }
 
         function novaConsulta() {
-            window.location.href = '<?php echo site_url('medico/nova_consulta'); ?>';
+            showNotification('Redirecionando para nova consulta...', 'info');
+            // Simular redirecionamento
+            setTimeout(() => {
+                window.location.href = '<?php echo site_url('admin/cad_agendamento'); ?>';
+            }, 1000);
         }
 
         // Filtros e busca

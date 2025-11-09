@@ -131,14 +131,14 @@
             border-radius: 3px;
         }
 
-        /* Chat Bot Styles - MODIFICADO */
+        /* Chat Bot Styles - CORRIGIDO E OTIMIZADO */
         #chat-btn {
             position: fixed;
             bottom: 20px;
             right: 20px;
             width: 60px;
             height: 60px;
-            background-color: #10b981;
+            background: linear-gradient(135deg, #10b981, #059669);
             color: white;
             border: none;
             border-radius: 50%;
@@ -146,14 +146,27 @@
             cursor: pointer;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
             z-index: 1000;
-            transition: transform 0.3s ease;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         #chat-btn:hover {
             transform: scale(1.1);
+            box-shadow: 0 6px 16px rgba(0, 0, 0, 0.2);
         }
 
-        /* Chat Modal - Agora no canto inferior */
+        #chat-btn.pulsing {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+
         #chat-modal {
             display: none;
             position: fixed;
@@ -210,6 +223,11 @@
             padding: 4px;
             border-radius: 50%;
             transition: background-color 0.2s;
+            width: 32px;
+            height: 32px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         #close-chat-btn:hover {
@@ -230,11 +248,12 @@
             border-radius: 1rem;
             max-width: 85%;
             word-wrap: break-word;
-            animation: fadeIn 0.3s ease-in;
+            animation: fadeIn 0.2s ease-in;
+            line-height: 1.4;
         }
 
         @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(10px); }
+            from { opacity: 0; transform: translateY(5px); }
             to { opacity: 1; transform: translateY(0); }
         }
 
@@ -300,6 +319,37 @@
             transform: scale(0.95);
         }
 
+        .typing-indicator {
+            display: inline-flex;
+            align-items: center;
+            color: #6b7280;
+            font-style: italic;
+        }
+
+        .typing-dots {
+            display: inline-flex;
+            margin-left: 4px;
+        }
+
+        .typing-dots span {
+            animation: typing 1.4s infinite ease-in-out;
+            background-color: #6b7280;
+            border-radius: 50%;
+            display: inline-block;
+            height: 4px;
+            width: 4px;
+            margin: 0 1px;
+        }
+
+        .typing-dots span:nth-child(1) { animation-delay: 0s; }
+        .typing-dots span:nth-child(2) { animation-delay: 0.2s; }
+        .typing-dots span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes typing {
+            0%, 60%, 100% { transform: translateY(0); }
+            30% { transform: translateY(-4px); }
+        }
+
         /* Responsividade para mobile */
         @media (max-width: 640px) {
             #chat-modal {
@@ -316,25 +366,6 @@
                 width: 56px;
                 height: 56px;
             }
-        }
-
-        /* Scrollbar personalizada para as mensagens */
-        .chat-messages::-webkit-scrollbar {
-            width: 6px;
-        }
-
-        .chat-messages::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 3px;
-        }
-
-        .chat-messages::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border-radius: 3px;
-        }
-
-        .chat-messages::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
         }
 
         /* CORREÇÃO DO LAYOUT PRINCIPAL - NOVA ESTRUTURA */
@@ -840,12 +871,12 @@
         </footer>
     </div> <!-- Fim do page-wrapper -->
 
-    <!-- Chat Bot Button -->
-    <button id="chat-btn" title="Falar com Assistente">
+    <!-- Chat Bot Button - CORRIGIDO -->
+    <button id="chat-btn" title="Falar com Assistente" class="pulsing">
         <i class="fas fa-comments"></i>
     </button>
 
-    <!-- Chat Modal - MODIFICADO -->
+    <!-- Chat Modal - CORRIGIDO -->
     <div id="chat-modal">
         <div class="chat-header">
             <h3>Assistente de Agendamento</h3>
@@ -859,7 +890,7 @@
             </div>
         </div>
         <div class="chat-input-container">
-            <input type="text" id="chat-input" class="chat-input" placeholder="Digite sua mensagem...">
+            <input type="text" id="chat-input" class="chat-input" placeholder="Digite sua mensagem..." autocomplete="off">
             <button id="chat-send-btn" class="chat-send-btn">
                 <i class="fas fa-paper-plane"></i>
             </button>
@@ -893,504 +924,497 @@
             document.getElementById('notification').classList.remove('show');
         });
 
-        // Chat Bot Logic - VERSÃO MELHORADA
-        const chatBtn = document.getElementById('chat-btn');
-        const chatModal = document.getElementById('chat-modal');
-        const closeChatBtn = document.getElementById('close-chat-btn');
-        const chatInput = document.getElementById('chat-input');
-        const chatSendBtn = document.getElementById('chat-send-btn');
-        const chatMessages = document.getElementById('chat-messages');
+        // Chat Bot Logic - VERSÃO CORRIGIDA E OTIMIZADA
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('DOM carregado - inicializando chatbot...');
+            
+            const chatBtn = document.getElementById('chat-btn');
+            const chatModal = document.getElementById('chat-modal');
+            const closeChatBtn = document.getElementById('close-chat-btn');
+            const chatInput = document.getElementById('chat-input');
+            const chatSendBtn = document.getElementById('chat-send-btn');
+            const chatMessages = document.getElementById('chat-messages');
 
-        // Especialidades e palavras-chave para sugestões - Expandida
-        const specialtySuggestions = {
-            'coração': 'Cardiologia',
-            'dor no peito': 'Cardiologia',
-            'pressão alta': 'Cardiologia',
-            'pressão arterial': 'Cardiologia',
-            'batimento cardíaco': 'Cardiologia',
-            'colesterol': 'Cardiologia',
-            'criança': 'Pediatria',
-            'bebé': 'Pediatria',
-            'bebê': 'Pediatria',
-            'crianças': 'Pediatria',
-            'infantil': 'Pediatria',
-            'vacina': 'Pediatria',
-            'dor nas costas': 'Ortopedia',
-            'fratura': 'Ortopedia',
-            'osso': 'Ortopedia',
-            'articulação': 'Ortopedia',
-            'joelho': 'Ortopedia',
-            'ombro': 'Ortopedia',
-            'gravidez': 'Ginecologia',
-            'menstruação': 'Ginecologia',
-            'menstrual': 'Ginecologia',
-            'ginecológica': 'Ginecologia',
-            'obstetrícia': 'Ginecologia',
-            'cabeça': 'Neurologia',
-            'dor de cabeça': 'Neurologia',
-            'enxaqueca': 'Neurologia',
-            'tontura': 'Neurologia',
-            'convulsão': 'Neurologia',
-            'memória': 'Neurologia',
-            'cirurgia': 'Cirurgia Geral',
-            'ferida': 'Cirurgia Geral',
-            'operar': 'Cirurgia Geral',
-            'geral': 'Medicina Geral',
-            'febre': 'Medicina Geral',
-            'gripe': 'Medicina Geral',
-            'tosse': 'Medicina Geral',
-            'dor de garganta': 'Medicina Geral',
-            'check-up': 'Medicina Geral'
-        };
+            // Cache de respostas para melhor performance
+            const responseCache = new Map();
+            let isTyping = false;
 
-        // Mensagens de boas-vindas do bot
-        const welcomeMessages = [
-            "Olá! Sou o assistente virtual do Hospital Matlhovele. Como posso ajudar você hoje?",
-            "Bem-vindo! Descreva seus sintomas ou o motivo da consulta para eu sugerir a especialidade adequada.",
-            "Oi! Estou aqui para ajudar. Conte-me sobre o que você está sentindo para indicar o melhor especialista."
-        ];
+            // Especialidades e palavras-chave para sugestões - Expandida e otimizada
+            const specialtySuggestions = {
+                'coração': 'Cardiologia',
+                'dor no peito': 'Cardiologia', 
+                'pressão alta': 'Cardiologia',
+                'pressão arterial': 'Cardiologia',
+                'batimento cardíaco': 'Cardiologia',
+                'colesterol': 'Cardiologia',
+                'criança': 'Pediatria',
+                'bebé': 'Pediatria',
+                'bebê': 'Pediatria',
+                'crianças': 'Pediatria',
+                'infantil': 'Pediatria',
+                'vacina': 'Pediatria',
+                'dor nas costas': 'Ortopedia',
+                'fratura': 'Ortopedia', 
+                'osso': 'Ortopedia',
+                'articulação': 'Ortopedia',
+                'joelho': 'Ortopedia',
+                'ombro': 'Ortopedia',
+                'gravidez': 'Ginecologia',
+                'menstruação': 'Ginecologia',
+                'menstrual': 'Ginecologia',
+                'ginecológica': 'Ginecologia',
+                'obstetrícia': 'Ginecologia',
+                'cabeça': 'Neurologia',
+                'dor de cabeça': 'Neurologia',
+                'enxaqueca': 'Neurologia', 
+                'tontura': 'Neurologia',
+                'convulsão': 'Neurologia',
+                'memória': 'Neurologia',
+                'cirurgia': 'Cirurgia Geral',
+                'ferida': 'Cirurgia Geral',
+                'operar': 'Cirurgia Geral',
+                'geral': 'Medicina Geral',
+                'febre': 'Medicina Geral',
+                'gripe': 'Medicina Geral',
+                'tosse': 'Medicina Geral',
+                'dor de garganta': 'Medicina Geral',
+                'check-up': 'Medicina Geral',
+                'diabetes': 'Endocrinologia',
+                'tiroide': 'Endocrinologia',
+                'hormonal': 'Endocrinologia',
+                'pele': 'Dermatologia',
+                'acne': 'Dermatologia',
+                'erupção': 'Dermatologia',
+                'olhos': 'Oftalmologia',
+                'visão': 'Oftalmologia',
+                'ocular': 'Oftalmologia'
+            };
 
-        if (chatBtn) {
-            chatBtn.addEventListener('click', () => {
+            // Respostas pré-definidas para melhor performance
+            const quickResponses = {
+                'horario': `O Hospital Matlhovele funciona:<br>
+                           • Segunda a Sexta: 7h30 - 16h30<br>
+                           • Sábado: 8h00 - 12h00<br>
+                           • Emergências: 24 horas`,
+                'contato': `📞 Telefone: +258 84 123 4567<br>
+                           📍 Endereço: Av. 25 de Setembro, Maputo<br>
+                           📧 Email: info@mathlovele.gov.mz`,
+                'obrigado': `De nada! Estou aqui para ajudar. Se precisar de mais alguma coisa, é só falar. 😊`,
+                'agendar': `Para agendar uma consulta:<br>
+                           1. Selecione a especialidade<br>
+                           2. Escolha o médico<br>
+                           3. Selecione data e horário<br>
+                           4. Preencha seus dados<br>
+                           Posso ajudar a escolher a especialidade certa!`,
+                'default': `Desculpe, não entendi completamente. Pode descrever melhor seus sintomas? Por exemplo: "estou com dor de cabeça frequente" ou "minha filha está com febre".`
+            };
+
+            // Mensagens de boas-vindas do bot
+            const welcomeMessages = [
+                "Olá! Sou o assistente virtual do Hospital Matlhovele. Como posso ajudar você hoje?",
+                "Bem-vindo! Descreva seus sintomas ou o motivo da consulta para eu sugerir a especialidade adequada.",
+                "Oi! Estou aqui para ajudar. Conte-me sobre o que você está sentindo para indicar o melhor especialista."
+            ];
+
+            // CORREÇÃO: Event listeners do chatbot
+            if (chatBtn) {
+                chatBtn.addEventListener('click', openChat);
+            } else {
+                console.error('Botão do chat não encontrado!');
+            }
+
+            if (closeChatBtn) {
+                closeChatBtn.addEventListener('click', closeChat);
+            }
+
+            if (chatSendBtn) {
+                chatSendBtn.addEventListener('click', sendChatMessage);
+            }
+
+            if (chatInput) {
+                chatInput.addEventListener('keypress', (e) => {
+                    if (e.key === 'Enter') {
+                        sendChatMessage();
+                    }
+                });
+            }
+
+            function openChat() {
+                console.log('Abrindo chat...');
                 chatModal.classList.add('show');
                 chatInput.focus();
                 
-                // Adiciona mensagem de boas-vindas aleatória se for a primeira vez
+                // Adiciona mensagem de boas-vindas se for a primeira vez
                 if (chatMessages.children.length <= 1) {
                     const welcomeMsg = welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)];
                     addBotMessage(welcomeMsg);
                 }
-            });
-        }
+            }
 
-        if (closeChatBtn) {
-            closeChatBtn.addEventListener('click', () => {
+            function closeChat() {
                 chatModal.classList.remove('show');
                 chatInput.value = '';
-            });
-        }
+            }
 
-        if (chatSendBtn) {
-            chatSendBtn.addEventListener('click', sendChatMessage);
-        }
+            // Função para adicionar mensagem do bot
+            function addBotMessage(message) {
+                const botMsg = document.createElement('div');
+                botMsg.className = 'chat-message bot';
+                botMsg.innerHTML = message;
+                chatMessages.appendChild(botMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
 
-        if (chatInput) {
-            chatInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    sendChatMessage();
+            // Função para adicionar mensagem do usuário
+            function addUserMessage(message) {
+                const userMsg = document.createElement('div');
+                userMsg.className = 'chat-message user';
+                userMsg.textContent = message;
+                chatMessages.appendChild(userMsg);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+            }
+
+            // Função para mostrar indicador de digitação
+            function showTypingIndicator() {
+                if (isTyping) return;
+                
+                isTyping = true;
+                const typingEl = document.createElement('div');
+                typingEl.className = 'chat-message bot typing-indicator';
+                typingEl.innerHTML = 'Digitando<span class="typing-dots"><span></span><span></span><span></span></span>';
+                chatMessages.appendChild(typingEl);
+                chatMessages.scrollTop = chatMessages.scrollHeight;
+                
+                return typingEl;
+            }
+
+            // Função para remover indicador de digitação
+            function removeTypingIndicator(typingEl) {
+                if (typingEl && typingEl.parentNode) {
+                    typingEl.remove();
                 }
-            });
-        }
+                isTyping = false;
+            }
 
-        // Função para adicionar mensagem do bot
-        function addBotMessage(message) {
-            const botMsg = document.createElement('div');
-            botMsg.className = 'chat-message bot';
-            botMsg.innerHTML = message;
-            chatMessages.appendChild(botMsg);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
+            // Função otimizada para processar mensagem
+            function processMessage(message) {
+                const lowerMessage = message.toLowerCase().trim();
+                
+                // Verifica cache primeiro
+                if (responseCache.has(lowerMessage)) {
+                    return responseCache.get(lowerMessage);
+                }
 
-        // Função para adicionar mensagem do usuário
-        function addUserMessage(message) {
-            const userMsg = document.createElement('div');
-            userMsg.className = 'chat-message user';
-            userMsg.textContent = message;
-            chatMessages.appendChild(userMsg);
-            chatMessages.scrollTop = chatMessages.scrollHeight;
-        }
-
-        function sendChatMessage() {
-            const message = chatInput.value.trim();
-            if (!message) return;
-
-            // Adiciona mensagem do usuário
-            addUserMessage(message);
-
-            // Limpa input
-            chatInput.value = '';
-
-            // Processa a resposta do bot
-            setTimeout(() => {
                 let response = '';
-                let foundSpecialty = null;
-
-                // Procura por palavras-chave
-                for (let keyword in specialtySuggestions) {
-                    if (message.toLowerCase().includes(keyword)) {
-                        foundSpecialty = specialtySuggestions[keyword];
-                        break;
-                    }
-                }
-
-                if (foundSpecialty) {
-                    response = `Com base na sua descrição, recomendo a especialidade de <strong>${foundSpecialty}</strong>. `;
-                    response += `Clique em "${foundSpecialty}" na lista de especialidades acima para agendar sua consulta. `;
-                    response += `Posso ajudar com mais alguma coisa?`;
-                } else if (message.toLowerCase().includes('obrigado') || message.toLowerCase().includes('obrigada')) {
-                    response = `De nada! Estou aqui para ajudar. Se precisar de mais alguma coisa, é só falar. 😊`;
-                } else if (message.toLowerCase().includes('horário') || message.toLowerCase().includes('funcionamento')) {
-                    response = `O Hospital Matlhovele funciona:<br>
-                               • Segunda a Sexta: 7h30 - 16h30<br>
-                               • Sábado: 8h00 - 12h00<br>
-                               • Emergências: 24 horas`;
-                } else if (message.toLowerCase().includes('telefone') || message.toLowerCase().includes('contacto')) {
-                    response = `📞 Telefone: +258 84 123 4567<br>
-                               📍 Endereço: Av. 25 de Setembro, Maputo<br>
-                               📧 Email: info@mathlovele.gov.mz`;
+                
+                // Respostas rápidas
+                if (lowerMessage.includes('obrigad') || lowerMessage.includes('agradeço')) {
+                    response = quickResponses.obrigado;
+                } else if (lowerMessage.includes('horário') || lowerMessage.includes('funcionamento') || lowerMessage.includes('horario')) {
+                    response = quickResponses.horario;
+                } else if (lowerMessage.includes('telefone') || lowerMessage.includes('contacto') || lowerMessage.includes('contato') || lowerMessage.includes('email')) {
+                    response = quickResponses.contato;
+                } else if (lowerMessage.includes('agendar') || lowerMessage.includes('marcar') || lowerMessage.includes('consulta')) {
+                    response = quickResponses.agendar;
                 } else {
-                    response = `Desculpe, não entendi completamente. Pode descrever melhor seus sintomas? `;
-                    response += `Por exemplo: "estou com dor de cabeça frequente" ou "minha filha está com febre".`;
-                }
+                    // Procura por palavras-chave de especialidades
+                    let foundSpecialty = null;
+                    for (let keyword in specialtySuggestions) {
+                        if (lowerMessage.includes(keyword)) {
+                            foundSpecialty = specialtySuggestions[keyword];
+                            break;
+                        }
+                    }
 
-                addBotMessage(response);
-                chatInput.focus();
-            }, 1000);
-        }
-
-        // Fechar chat ao clicar fora (opcional)
-        document.addEventListener('click', (e) => {
-            if (chatModal.classList.contains('show') && 
-                !chatModal.contains(e.target) && 
-                e.target !== chatBtn) {
-                chatModal.classList.remove('show');
-            }
-        });
-
-        // AJAX para carregar médicos
-        async function loadDoctors(query = '', specialty = '', limit = 10, offset = 0) {
-            try {
-                console.log('Carregando médicos com filtro:', { query, specialty, limit, offset });
-                const params = new URLSearchParams({ q: query, specialty: specialty, limit: limit, offset: offset });
-                const response = await fetch('<?= site_url("agenda/get_doctors"); ?>', {
-                    method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: params
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const result = await response.json();
-                console.log('Resposta AJAX médicos:', result);
-                if (result.status === 'success') {
-                    if (offset === 0) {
-                        doctors = result.data;
+                    if (foundSpecialty) {
+                        response = `Com base na sua descrição, recomendo a especialidade de <strong>${foundSpecialty}</strong>. `;
+                        response += `Clique em "${foundSpecialty}" na lista de especialidades acima para agendar sua consulta. `;
+                        response += `Posso ajudar com mais alguma coisa?`;
                     } else {
-                        doctors = doctors.concat(result.data);
+                        response = quickResponses.default;
                     }
-                    renderDoctors(specialty, result.total);
-                    if (result.data.length === 0 && offset === 0) {
-                        showNotification('Nenhum médico encontrado para esta especialidade.', 'info');
-                    }
-                    if (result.total > (offset + limit)) {
-                        renderLoadMoreButton(result.total - (offset + limit));
-                    }
-                } else {
-                    showNotification(result.message || 'Erro ao carregar médicos.', 'error');
-                    console.error('Erro no AJAX:', result);
                 }
-            } catch (err) {
-                showNotification('Erro de conexão ao carregar médicos.', 'error');
-                console.error('Erro AJAX:', err);
-            }
-        }
 
-        // Renderizar lista de médicos
-        function renderDoctors(specialty = null, total = 0) {
-            const container = document.getElementById('doctor-container');
-            const header = document.getElementById('doctor-header');
-            const filteredDoctors = doctors;  // Server já filtra
-
-            if (specialty && filteredDoctors.length > 0) {
-                header.classList.remove('hidden');
-                header.textContent = `Médicos em ${specialty} (${total})`;
-            } else {
-                header.classList.add('hidden');
+                // Armazena no cache
+                responseCache.set(lowerMessage, response);
+                return response;
             }
 
-            container.innerHTML = filteredDoctors.length > 0 
-                ? filteredDoctors.map(doctor => `
-                    <div class="doctor-item flex items-center p-4 border rounded-lg hover:bg-blue-50 cursor-pointer" data-id="${doctor.id}" data-name="${doctor.name}">
-                        <img src="${doctor.image || 'https://picsum.photos/100?random=' + doctor.id}" alt="${doctor.name}" class="w-12 h-12 rounded-full mr-4">
-                        <div>
-                            <p class="font-medium">${doctor.name}</p>
-                            <p class="text-sm text-gray-600">${doctor.specialty} - Experiência: ${doctor.experience || 'N/A'}</p>
-                        </div>
-                    </div>
-                `).join('')
-                : '<p class="text-gray-500 text-center py-8 col-span-full">Nenhum médico disponível para esta especialidade.</p>';
+            function sendChatMessage() {
+                const message = chatInput.value.trim();
+                if (!message) return;
 
-            document.querySelectorAll('.doctor-item').forEach(item => {
-                item.addEventListener('click', function() {
-                    document.querySelectorAll('.doctor-item').forEach(el => el.classList.remove('selected'));
-                    this.classList.add('selected');
-                    selectedDoctor = this.dataset.name;
-                    selectedDoctorId = this.dataset.id;
-                    selectedDate = null;
-                    selectedTime = null;
-                    updateAvailableDays();
-                    showNotification(`Médico selecionado: ${selectedDoctor}`, 'info');
-                });
+                // Adiciona mensagem do usuário
+                addUserMessage(message);
+
+                // Limpa input
+                chatInput.value = '';
+
+                // Mostra indicador de digitação
+                const typingEl = showTypingIndicator();
+
+                // Processa a resposta do bot com tempo reduzido
+                setTimeout(() => {
+                    const response = processMessage(message);
+                    removeTypingIndicator(typingEl);
+                    addBotMessage(response);
+                    chatInput.focus();
+                }, 800); // Reduzido de 1000ms para 800ms
+            }
+
+            // Fechar chat ao clicar fora
+            document.addEventListener('click', (e) => {
+                if (chatModal.classList.contains('show') && 
+                    !chatModal.contains(e.target) && 
+                    e.target !== chatBtn) {
+                    closeChat();
+                }
             });
-        }
 
-        // Função para renderizar botão "Carregar Mais"
-        function renderLoadMoreButton(remaining) {
-            const container = document.getElementById('doctor-container');
-            if (container.querySelector('.load-more-btn')) return;  // Evita duplicatas
-            const loadMoreBtn = document.createElement('button');
-            loadMoreBtn.innerHTML = `<i class="fas fa-plus mr-2"></i>Carregar Mais Médicos (${remaining} restantes)`;
-            loadMoreBtn.className = 'load-more-btn w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition mt-4';
-            loadMoreBtn.addEventListener('click', () => {
-                loadDoctors('', selectedSpecialty, 10, doctors.length);
-            });
-            container.appendChild(loadMoreBtn);
-        }
+            // Restante do código do sistema de agendamento...
+            
+            // AJAX para carregar médicos
+            async function loadDoctors(query = '', specialty = '', limit = 10, offset = 0) {
+                try {
+                    console.log('Carregando médicos com filtro:', { query, specialty, limit, offset });
+                    const params = new URLSearchParams({ q: query, specialty: specialty, limit: limit, offset: offset });
+                    const response = await fetch('<?= site_url("agenda/get_doctors"); ?>', {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: params
+                    });
 
-        // Eventos para especialidades
-        document.querySelectorAll('.specialty-item').forEach(item => {
-            item.addEventListener('click', function() {
-                document.querySelectorAll('.specialty-item').forEach(el => el.classList.remove('selected'));
-                this.classList.add('selected');
-                selectedSpecialty = this.dataset.specialty;
-                selectedDoctor = null;
-                selectedDoctorId = null;
-                selectedDate = null;
-                selectedTime = null;
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
 
+                    const result = await response.json();
+                    console.log('Resposta AJAX médicos:', result);
+                    if (result.status === 'success') {
+                        if (offset === 0) {
+                            doctors = result.data;
+                        } else {
+                            doctors = doctors.concat(result.data);
+                        }
+                        renderDoctors(specialty, result.total);
+                        if (result.data.length === 0 && offset === 0) {
+                            showNotification('Nenhum médico encontrado para esta especialidade.', 'info');
+                        }
+                        if (result.total > (offset + limit)) {
+                            renderLoadMoreButton(result.total - (offset + limit));
+                        }
+                    } else {
+                        showNotification(result.message || 'Erro ao carregar médicos.', 'error');
+                        console.error('Erro no AJAX:', result);
+                    }
+                } catch (err) {
+                    showNotification('Erro de conexão ao carregar médicos.', 'error');
+                    console.error('Erro AJAX:', err);
+                }
+            }
+
+            // Renderizar lista de médicos
+            function renderDoctors(specialty = null, total = 0) {
                 const container = document.getElementById('doctor-container');
                 const header = document.getElementById('doctor-header');
-                container.innerHTML = '<div class="loading">Carregando médicos para ' + selectedSpecialty + '...</div>';
-                header.classList.add('hidden');
+                const filteredDoctors = doctors;  // Server já filtra
 
-                loadDoctors('', selectedSpecialty, 6, 0);
+                if (specialty && filteredDoctors.length > 0) {
+                    header.classList.remove('hidden');
+                    header.textContent = `Médicos em ${specialty} (${total})`;
+                } else {
+                    header.classList.add('hidden');
+                }
+
+                container.innerHTML = filteredDoctors.length > 0 
+                    ? filteredDoctors.map(doctor => `
+                        <div class="doctor-item flex items-center p-4 border rounded-lg hover:bg-blue-50 cursor-pointer" data-id="${doctor.id}" data-name="${doctor.name}">
+                            <img src="${doctor.image || 'https://picsum.photos/100?random=' + doctor.id}" alt="${doctor.name}" class="w-12 h-12 rounded-full mr-4">
+                            <div>
+                                <p class="font-medium">${doctor.name}</p>
+                                <p class="text-sm text-gray-600">${doctor.specialty} - Experiência: ${doctor.experience || 'N/A'}</p>
+                            </div>
+                        </div>
+                    `).join('')
+                    : '<p class="text-gray-500 text-center py-8 col-span-full">Nenhum médico disponível para esta especialidade.</p>';
+
+                document.querySelectorAll('.doctor-item').forEach(item => {
+                    item.addEventListener('click', function() {
+                        document.querySelectorAll('.doctor-item').forEach(el => el.classList.remove('selected'));
+                        this.classList.add('selected');
+                        selectedDoctor = this.dataset.name;
+                        selectedDoctorId = this.dataset.id;
+                        selectedDate = null;
+                        selectedTime = null;
+                        updateAvailableDays();
+                        showNotification(`Médico selecionado: ${selectedDoctor}`, 'info');
+                    });
+                });
+            }
+
+            // Função para renderizar botão "Carregar Mais"
+            function renderLoadMoreButton(remaining) {
+                const container = document.getElementById('doctor-container');
+                if (container.querySelector('.load-more-btn')) return;  // Evita duplicatas
+                const loadMoreBtn = document.createElement('button');
+                loadMoreBtn.innerHTML = `<i class="fas fa-plus mr-2"></i>Carregar Mais Médicos (${remaining} restantes)`;
+                loadMoreBtn.className = 'load-more-btn w-full bg-blue-600 text-white py-2 px-4 rounded-lg hover:bg-blue-700 transition mt-4';
+                loadMoreBtn.addEventListener('click', () => {
+                    loadDoctors('', selectedSpecialty, 10, doctors.length);
+                });
+                container.appendChild(loadMoreBtn);
+            }
+
+            // Eventos para especialidades
+            document.querySelectorAll('.specialty-item').forEach(item => {
+                item.addEventListener('click', function() {
+                    document.querySelectorAll('.specialty-item').forEach(el => el.classList.remove('selected'));
+                    this.classList.add('selected');
+                    selectedSpecialty = this.dataset.specialty;
+                    selectedDoctor = null;
+                    selectedDoctorId = null;
+                    selectedDate = null;
+                    selectedTime = null;
+
+                    const container = document.getElementById('doctor-container');
+                    const header = document.getElementById('doctor-header');
+                    container.innerHTML = '<div class="loading">Carregando médicos para ' + selectedSpecialty + '...</div>';
+                    header.classList.add('hidden');
+
+                    loadDoctors('', selectedSpecialty, 6, 0);
+                });
             });
-        });
 
-        // AJAX para horários disponíveis
-        async function loadAvailableSlots(dateStr, medicoId) {
-            try {
-                const params = new URLSearchParams({ data: dateStr, medico_id: medicoId });
-                const response = await fetch('<?= site_url("agenda/get_available_slots"); ?>', {
-                    method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: params
+            // AJAX para horários disponíveis
+            async function loadAvailableSlots(dateStr, medicoId) {
+                try {
+                    const params = new URLSearchParams({ data: dateStr, medico_id: medicoId });
+                    const response = await fetch('<?= site_url("agenda/get_available_slots"); ?>', {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: params
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    if (result.status === 'success') {
+                        const slots = result.data;
+                        if (!availableSlots[dateStr]) availableSlots[dateStr] = {};
+                        availableSlots[dateStr][selectedDoctor || 'default'] = slots;
+                    } else {
+                        showNotification(result.message, 'error');
+                    }
+                } catch (err) {
+                    showNotification('Erro ao carregar horários.', 'error');
+                    console.error('Erro AJAX slots:', err);
+                }
+            }
+
+            // Função para destacar dias disponíveis
+            async function updateAvailableDays() {
+                if (!selectedDoctorId) return;
+
+                const today = new Date();
+                today.setHours(0, 0, 0, 0);
+                const visibleStart = calendar.view.activeStart;
+                const visibleEnd = calendar.view.activeEnd;
+
+                document.querySelectorAll('.fc-daygrid-day').forEach(el => {
+                    el.classList.remove('available', 'selected', 'unavailable');
                 });
 
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const result = await response.json();
-                if (result.status === 'success') {
-                    const slots = result.data;
-                    if (!availableSlots[dateStr]) availableSlots[dateStr] = {};
-                    availableSlots[dateStr][selectedDoctor || 'default'] = slots;
-                } else {
-                    showNotification(result.message, 'error');
-                }
-            } catch (err) {
-                showNotification('Erro ao carregar horários.', 'error');
-                console.error('Erro AJAX slots:', err);
-            }
-        }
-
-        // Função para destacar dias disponíveis
-        async function updateAvailableDays() {
-            if (!selectedDoctorId) return;
-
-            const today = new Date();
-            today.setHours(0, 0, 0, 0);
-            const visibleStart = calendar.view.activeStart;
-            const visibleEnd = calendar.view.activeEnd;
-
-            document.querySelectorAll('.fc-daygrid-day').forEach(el => {
-                el.classList.remove('available', 'selected', 'unavailable');
-            });
-
-            const loadPromises = [];
-            for (let date = new Date(Math.max(visibleStart, today)); date < visibleEnd && ((date - today) / (1000 * 60 * 60 * 24)) < 14; date.setDate(date.getDate() + 1)) {
-                const dateStr = date.toISOString().split('T')[0];
-                if (date >= today) {
-                    loadPromises.push(loadAvailableSlots(dateStr, selectedDoctorId));
-                }
-            }
-
-            await Promise.all(loadPromises);
-
-            Object.keys(availableSlots).forEach(dateStr => {
-                const dayEl = document.querySelector(`.fc-daygrid-day[data-date="${dateStr}"]`);
-                if (dayEl) {
-                    const slots = availableSlots[dateStr][selectedDoctor || 'default'] || [];
-                    if (slots.length > 0) {
-                        dayEl.classList.add('available');
-                    } else {
-                        dayEl.classList.add('unavailable');
+                const loadPromises = [];
+                for (let date = new Date(Math.max(visibleStart, today)); date < visibleEnd && ((date - today) / (1000 * 60 * 60 * 24)) < 14; date.setDate(date.getDate() + 1)) {
+                    const dateStr = date.toISOString().split('T')[0];
+                    if (date >= today) {
+                        loadPromises.push(loadAvailableSlots(dateStr, selectedDoctorId));
                     }
                 }
-            });
-        }
 
-        // Show time slots
-        async function showTimeSlots(dateStr, doctorName) {
-            const medicoId = doctors.find(d => d.name === doctorName)?.id;
-            if (!medicoId) {
-                showNotification('Médico inválido.', 'error');
-                return;
+                await Promise.all(loadPromises);
+
+                Object.keys(availableSlots).forEach(dateStr => {
+                    const dayEl = document.querySelector(`.fc-daygrid-day[data-date="${dateStr}"]`);
+                    if (dayEl) {
+                        const slots = availableSlots[dateStr][selectedDoctor || 'default'] || [];
+                        if (slots.length > 0) {
+                            dayEl.classList.add('available');
+                        } else {
+                            dayEl.classList.add('unavailable');
+                        }
+                    }
+                });
             }
 
-            await loadAvailableSlots(dateStr, medicoId);
-
-            const slots = availableSlots[dateStr] ? availableSlots[dateStr][doctorName] || [] : [];
-            const modal = document.getElementById('time-slot-modal');
-            const slotList = document.getElementById('time-slot-list');
-            slotList.innerHTML = slots.length > 0 
-                ? slots.map(slot => `<button class="slot-button available" data-time="${slot}">${slot} (Disponível)</button>`).join('')
-                : '<p class="text-gray-500">Nenhum horário disponível para esta data.</p>';
-
-            modal.classList.add('show');
-
-            document.querySelectorAll('.slot-button.available').forEach(button => {
-                button.addEventListener('click', function() {
-                    selectedTime = this.dataset.time;
-                    showNotification(`Horário selecionado: ${selectedTime}`, 'success');
-                    modal.classList.remove('show');
-                });
-            });
-        }
-
-        // AJAX para salvar agendamento
-        async function saveAppointment(formData) {
-            try {
-                const params = new URLSearchParams(formData);
-                const response = await fetch('<?= site_url("agenda/save_appointment"); ?>', {
-                    method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest',
-                        'Content-Type': 'application/x-www-form-urlencoded',
-                    },
-                    body: params
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
+            // Show time slots
+            async function showTimeSlots(dateStr, doctorName) {
+                const medicoId = doctors.find(d => d.name === doctorName)?.id;
+                if (!medicoId) {
+                    showNotification('Médico inválido.', 'error');
+                    return;
                 }
 
-                const result = await response.json();
-                if (result.status === 'success') {
-                    showNotification(result.message, 'success');
-                    return true;
-                } else {
-                    showNotification(result.message, 'error');
+                await loadAvailableSlots(dateStr, medicoId);
+
+                const slots = availableSlots[dateStr] ? availableSlots[dateStr][doctorName] || [] : [];
+                const modal = document.getElementById('time-slot-modal');
+                const slotList = document.getElementById('time-slot-list');
+                slotList.innerHTML = slots.length > 0 
+                    ? slots.map(slot => `<button class="slot-button available" data-time="${slot}">${slot} (Disponível)</button>`).join('')
+                    : '<p class="text-gray-500">Nenhum horário disponível para esta data.</p>';
+
+                modal.classList.add('show');
+
+                document.querySelectorAll('.slot-button.available').forEach(button => {
+                    button.addEventListener('click', function() {
+                        selectedTime = this.dataset.time;
+                        showNotification(`Horário selecionado: ${selectedTime}`, 'success');
+                        modal.classList.remove('show');
+                    });
+                });
+            }
+
+            // AJAX para salvar agendamento
+            async function saveAppointment(formData) {
+                try {
+                    const params = new URLSearchParams(formData);
+                    const response = await fetch('<?= site_url("agenda/save_appointment"); ?>', {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest',
+                            'Content-Type': 'application/x-www-form-urlencoded',
+                        },
+                        body: params
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    if (result.status === 'success') {
+                        showNotification(result.message, 'success');
+                        return true;
+                    } else {
+                        showNotification(result.message, 'error');
+                        return false;
+                    }
+                } catch (err) {
+                    showNotification('Erro de conexão. Tente novamente.', 'error');
+                    console.error('Erro AJAX:', err);
                     return false;
                 }
-            } catch (err) {
-                showNotification('Erro de conexão. Tente novamente.', 'error');
-                console.error('Erro AJAX:', err);
-                return false;
-            }
-        }
-
-        // Evento para confirmar
-        document.getElementById('review-confirm-btn').addEventListener('click', async () => {
-            const formData = {
-                especialidade: selectedSpecialty,
-                medico: selectedDoctorId,
-                data_consulta: selectedDate,
-                horario: selectedTime,
-                nome: document.getElementById('name').value.trim(),
-                telefone: document.getElementById('phone').value.trim(),
-                bi: document.getElementById('bi').value.trim(),
-                motivo: document.getElementById('motivo').value.trim()
-            };
-
-            const success = await saveAppointment(formData);
-            if (success) {
-                const confirmationMessage = `Agendamento confirmado!<br>Nome: ${formData.nome}<br>Especialidade: ${selectedSpecialty}<br>Médico: ${selectedDoctor}<br>Data: ${selectedDate}<br>Horário: ${selectedTime}`;
-                document.getElementById('confirmation-message').innerHTML = confirmationMessage;
-                document.getElementById('confirmation-modal').classList.add('show');
-                document.getElementById('review-modal').classList.remove('show');
-
-                selectedSpecialty = null;
-                selectedDoctor = null;
-                selectedDoctorId = null;
-                selectedDate = null;
-                selectedTime = null;
-                document.querySelectorAll('.specialty-item').forEach(el => el.classList.remove('selected'));
-                document.getElementById('doctor-container').innerHTML = '<p class="text-gray-500 text-center py-8 col-span-full">Selecione uma especialidade para ver os médicos disponíveis.</p>';
-                document.getElementById('doctor-header').classList.add('hidden');
-            }
-        });
-
-        // AJAX para listar agendamentos
-        async function loadPatientAppointments() {
-            try {
-                const response = await fetch('<?= site_url("agenda/get_patient_appointments"); ?>', {
-                    method: 'POST',
-                    headers: {
-                        'X-Requested-With': 'XMLHttpRequest'
-                    }
-                });
-
-                if (!response.ok) {
-                    throw new Error(`HTTP error! status: ${response.status}`);
-                }
-
-                const result = await response.json();
-                if (result.status === 'success') {
-                    renderAppointments(result.data);
-                } else {
-                    showNotification(result.message, 'error');
-                }
-            } catch (err) {
-                showNotification('Erro ao carregar agendamentos.', 'error');
-                console.error('Erro AJAX:', err);
-            }
-        }
-
-        // Renderizar agendamentos
-        function renderAppointments(appointments) {
-            const container = document.getElementById('appointments-list');
-            if (appointments.length === 0) {
-                container.innerHTML = '<p class="text-gray-500">Nenhum agendamento encontrado.</p>';
-                return;
             }
 
-            container.innerHTML = appointments.map(appointment => `
-                <div class="appointment-item">
-                    <h4 class="font-medium">${appointment.especialidade || 'N/A'} - ${appointment.medico || 'N/A'}</h4>
-                    <p class="text-sm text-gray-600">Data: ${appointment.date} às ${appointment.time}</p>
-                    <p class="text-sm text-gray-600">Status: <span class="font-semibold ${appointment.status === 'Pendente' ? 'text-yellow-600' : appointment.status === 'Confirmado' ? 'text-green-600' : 'text-red-600'}">${appointment.status}</span></p>
-                    <p class="text-sm text-gray-600">Motivo: ${appointment.motivo || 'N/A'}</p>
-                </div>
-            `).join('');
-        }
-
-        // Evento para Meus Agendamentos
-        document.getElementById('meus-agendamentos-btn').addEventListener('click', () => {
-            document.getElementById('appointments-section').classList.toggle('hidden');
-            if (!document.getElementById('appointments-section').classList.contains('hidden')) {
-                loadPatientAppointments();
-            }
-        });
-
-        // Logout
-        document.getElementById('logout-btn').addEventListener('click', () => {
-            window.location.href = '<?= site_url("auth/logout"); ?>';
-        });
-
-        // DOMContentLoaded - CORRIGIDO
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('DOM carregado - inicializando...');
-            
             // Sidebar Handlers
             const mobileMenuBtn = document.getElementById('mobile-menu-btn');
             const sidebarMenu = document.getElementById('sidebar-menu');
@@ -1524,6 +1548,94 @@
                 document.getElementById('review-bi').textContent = bi;
 
                 document.getElementById('review-modal').classList.add('show');
+            });
+
+            // Evento para confirmar
+            document.getElementById('review-confirm-btn').addEventListener('click', async () => {
+                const formData = {
+                    especialidade: selectedSpecialty,
+                    medico: selectedDoctorId,
+                    data_consulta: selectedDate,
+                    horario: selectedTime,
+                    nome: document.getElementById('name').value.trim(),
+                    telefone: document.getElementById('phone').value.trim(),
+                    bi: document.getElementById('bi').value.trim(),
+                    motivo: document.getElementById('motivo').value.trim()
+                };
+
+                const success = await saveAppointment(formData);
+                if (success) {
+                    const confirmationMessage = `Agendamento confirmado!<br>Nome: ${formData.nome}<br>Especialidade: ${selectedSpecialty}<br>Médico: ${selectedDoctor}<br>Data: ${selectedDate}<br>Horário: ${selectedTime}`;
+                    document.getElementById('confirmation-message').innerHTML = confirmationMessage;
+                    document.getElementById('confirmation-modal').classList.add('show');
+                    document.getElementById('review-modal').classList.remove('show');
+
+                    selectedSpecialty = null;
+                    selectedDoctor = null;
+                    selectedDoctorId = null;
+                    selectedDate = null;
+                    selectedTime = null;
+                    document.querySelectorAll('.specialty-item').forEach(el => el.classList.remove('selected'));
+                    document.getElementById('doctor-container').innerHTML = '<p class="text-gray-500 text-center py-8 col-span-full">Selecione uma especialidade para ver os médicos disponíveis.</p>';
+                    document.getElementById('doctor-header').classList.add('hidden');
+                }
+            });
+
+            // AJAX para listar agendamentos
+            async function loadPatientAppointments() {
+                try {
+                    const response = await fetch('<?= site_url("agenda/get_patient_appointments"); ?>', {
+                        method: 'POST',
+                        headers: {
+                            'X-Requested-With': 'XMLHttpRequest'
+                        }
+                    });
+
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! status: ${response.status}`);
+                    }
+
+                    const result = await response.json();
+                    if (result.status === 'success') {
+                        renderAppointments(result.data);
+                    } else {
+                        showNotification(result.message, 'error');
+                    }
+                } catch (err) {
+                    showNotification('Erro ao carregar agendamentos.', 'error');
+                    console.error('Erro AJAX:', err);
+                }
+            }
+
+            // Renderizar agendamentos
+            function renderAppointments(appointments) {
+                const container = document.getElementById('appointments-list');
+                if (appointments.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500">Nenhum agendamento encontrado.</p>';
+                    return;
+                }
+
+                container.innerHTML = appointments.map(appointment => `
+                    <div class="appointment-item">
+                        <h4 class="font-medium">${appointment.especialidade || 'N/A'} - ${appointment.medico || 'N/A'}</h4>
+                        <p class="text-sm text-gray-600">Data: ${appointment.date} às ${appointment.time}</p>
+                        <p class="text-sm text-gray-600">Status: <span class="font-semibold ${appointment.status === 'Pendente' ? 'text-yellow-600' : appointment.status === 'Confirmado' ? 'text-green-600' : 'text-red-600'}">${appointment.status}</span></p>
+                        <p class="text-sm text-gray-600">Motivo: ${appointment.motivo || 'N/A'}</p>
+                    </div>
+                `).join('');
+            }
+
+            // Evento para Meus Agendamentos
+            document.getElementById('meus-agendamentos-btn').addEventListener('click', () => {
+                document.getElementById('appointments-section').classList.toggle('hidden');
+                if (!document.getElementById('appointments-section').classList.contains('hidden')) {
+                    loadPatientAppointments();
+                }
+            });
+
+            // Logout
+            document.getElementById('logout-btn').addEventListener('click', () => {
+                window.location.href = '<?= site_url("auth/logout"); ?>';
             });
         });
     </script>

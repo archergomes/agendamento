@@ -23,4 +23,14 @@ class Secretario extends CI_Controller {
 	{
 		$this->load->view('secretario/medico');
 	}
+
+	public function relatorios()
+	{
+		$this->load->view('secretario/relatorio');
+	}
+
+	public function configuracoes()
+	{
+		$this->load->view('secretario/config');
+	}
 }

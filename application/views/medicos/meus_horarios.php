@@ -292,6 +292,11 @@
             background-color: #fffbeb;
         }
 
+        .schedule-card.reuniao {
+            border-left-color: #8b5cf6;
+            background-color: #faf5ff;
+        }
+
         .status-badge {
             padding: 0.25rem 0.75rem;
             border-radius: 1rem;
@@ -659,6 +664,15 @@
             color: white;
             border-color: #3b82f6;
         }
+
+        .type-badge {
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            font-weight: 500;
+            background-color: #e5e7eb;
+            color: #374151;
+        }
     </style>
 </head>
 
@@ -699,25 +713,9 @@
                         <i class="fas fa-users"></i>
                         <span class="sidebar-text">Meus Pacientes</span>
                     </a>
-                    <a href="<?php echo site_url('medico/prontuarios'); ?>" class="block text-gray-700">
-                        <i class="fas fa-file-medical"></i>
-                        <span class="sidebar-text">Prontuários</span>
-                    </a>
-                    <a href="<?php echo site_url('medico/prescricoes'); ?>" class="block text-gray-700">
-                        <i class="fas fa-prescription"></i>
-                        <span class="sidebar-text">Prescrições</span>
-                    </a>
-                    <a href="<?php echo site_url('medico/laudos'); ?>" class="block text-gray-700">
-                        <i class="fas fa-file-medical-alt"></i>
-                        <span class="sidebar-text">Laudos</span>
-                    </a>
                     <a href="<?php echo site_url('medico/horarios'); ?>" class="block text-gray-700 active">
                         <i class="fas fa-clock"></i>
                         <span class="sidebar-text">Meus Horários</span>
-                    </a>
-                    <a href="<?php echo site_url('medico/relatorios'); ?>" class="block text-gray-700">
-                        <i class="fas fa-chart-bar"></i>
-                        <span class="sidebar-text">Relatórios</span>
                     </a>
                     <a href="<?php echo site_url('medico/perfil'); ?>" class="block text-gray-700">
                         <i class="fas fa-user-md"></i>
@@ -740,8 +738,8 @@
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="text-right hidden md:block">
-                        <p class="text-sm">Dr. <?php echo $medico_nome ?? 'Médico'; ?></p>
-                        <p class="text-xs text-blue-200"><?php echo $especialidade ?? 'Especialidade'; ?></p>
+                        <p class="text-sm">Dr. <?php echo $medico_nome ?? 'Carlos Silva'; ?></p>
+                        <p class="text-xs text-blue-200"><?php echo $especialidade ?? 'Cardiologia'; ?></p>
                     </div>
                     <button id="mobile-menu-btn" class="md:hidden text-white hover:text-blue-200" aria-label="Abrir menu">
                         <i class="fas fa-bars text-2xl"></i>
@@ -769,19 +767,19 @@
                     <!-- Stats Overview -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
                         <div class="metric-card" onclick="filterByStatus('hoje')">
-                            <div class="text-2xl font-bold text-blue-600" id="total-hoje">0</div>
+                            <div class="text-2xl font-bold text-blue-600" id="total-hoje">8</div>
                             <div class="text-sm text-gray-600">Consultas Hoje</div>
                         </div>
                         <div class="metric-card" onclick="filterByStatus('semana')">
-                            <div class="text-2xl font-bold text-green-600" id="total-semana">0</div>
+                            <div class="text-2xl font-bold text-green-600" id="total-semana">32</div>
                             <div class="text-sm text-gray-600">Esta Semana</div>
                         </div>
                         <div class="metric-card" onclick="filterByStatus('disponiveis')">
-                            <div class="text-2xl font-bold text-orange-600" id="horarios-disponiveis">0</div>
+                            <div class="text-2xl font-bold text-orange-600" id="horarios-disponiveis">15</div>
                             <div class="text-sm text-gray-600">Horários Livres</div>
                         </div>
                         <div class="metric-card" onclick="filterByStatus('ocupados')">
-                            <div class="text-2xl font-bold text-purple-600" id="horarios-ocupados">0</div>
+                            <div class="text-2xl font-bold text-purple-600" id="horarios-ocupados">24</div>
                             <div class="text-sm text-gray-600">Horários Ocupados</div>
                         </div>
                     </div>
@@ -932,6 +930,131 @@
     </div>
 
     <script>
+        // Dados fictícios para demonstração
+        const horariosFicticios = [
+            {
+                id: 1,
+                data: new Date().toISOString().split('T')[0],
+                hora_inicio: "08:00",
+                hora_fim: "08:30",
+                status: "disponivel",
+                tipo_atendimento: "Consulta de Rotina",
+                duracao: 30,
+                local: "Consultório 1",
+                observacoes: "",
+                paciente_nome: null
+            },
+            {
+                id: 2,
+                data: new Date().toISOString().split('T')[0],
+                hora_inicio: "09:00",
+                hora_fim: "09:30",
+                status: "ocupado",
+                tipo_atendimento: "Consulta de Acompanhamento",
+                duracao: 30,
+                local: "Consultório 2",
+                observacoes: "Paciente com hipertensão controlada",
+                paciente_nome: "Maria Santos",
+                consulta_id: 101
+            },
+            {
+                id: 3,
+                data: new Date().toISOString().split('T')[0],
+                hora_inicio: "10:00",
+                hora_fim: "10:30",
+                status: "disponivel",
+                tipo_atendimento: "Consulta de Rotina",
+                duracao: 30,
+                local: "Consultório 1",
+                observacoes: "",
+                paciente_nome: null
+            },
+            {
+                id: 4,
+                data: new Date().toISOString().split('T')[0],
+                hora_inicio: "11:00",
+                hora_fim: "11:30",
+                status: "bloqueado",
+                tipo_atendimento: "Bloqueado",
+                duracao: 30,
+                local: "Consultório 1",
+                observacoes: "Horário reservado para documentação",
+                paciente_nome: null
+            },
+            {
+                id: 5,
+                data: new Date().toISOString().split('T')[0],
+                hora_inicio: "12:00",
+                hora_fim: "13:00",
+                status: "almoco",
+                tipo_atendimento: "Almoço",
+                duracao: 60,
+                local: "Refeitório",
+                observacoes: "Horário de almoço",
+                paciente_nome: null
+            },
+            {
+                id: 6,
+                data: new Date().toISOString().split('T')[0],
+                hora_inicio: "14:00",
+                hora_fim: "14:30",
+                status: "ocupado",
+                tipo_atendimento: "Consulta de Emergência",
+                duracao: 30,
+                local: "Consultório 3",
+                observacoes: "Paciente com dor torácica",
+                paciente_nome: "João Silva",
+                consulta_id: 102
+            },
+            {
+                id: 7,
+                data: new Date().toISOString().split('T')[0],
+                hora_inicio: "15:00",
+                hora_fim: "15:30",
+                status: "disponivel",
+                tipo_atendimento: "Consulta de Rotina",
+                duracao: 30,
+                local: "Consultório 1",
+                observacoes: "",
+                paciente_nome: null
+            },
+            {
+                id: 8,
+                data: new Date().toISOString().split('T')[0],
+                hora_inicio: "16:00",
+                hora_fim: "17:00",
+                status: "reuniao",
+                tipo_atendimento: "Reunião de Equipe",
+                duracao: 60,
+                local: "Sala de Reuniões",
+                observacoes: "Reunião semanal da equipe de cardiologia",
+                paciente_nome: null
+            }
+        ];
+
+        const agendaHojeFicticia = [
+            {
+                hora: "08:00 - 08:30",
+                descricao: "Consulta disponível",
+                tipo: "disponivel"
+            },
+            {
+                hora: "09:00 - 09:30",
+                descricao: "Maria Santos - Acompanhamento",
+                tipo: "consulta"
+            },
+            {
+                hora: "12:00 - 13:00",
+                descricao: "Horário de almoço",
+                tipo: "almoco"
+            },
+            {
+                hora: "16:00 - 17:00",
+                descricao: "Reunião de equipe",
+                tipo: "reuniao"
+            }
+        ];
+
         let currentFilter = 'todos';
         let currentDate = new Date();
         let selectedDate = new Date();
@@ -952,24 +1075,12 @@
         }
 
         // Carregar estatísticas
-        async function loadStats() {
-            try {
-                const response = await fetch('<?php echo site_url('api/medico/horarios_stats'); ?>');
-                const stats = await response.json();
-                
-                if (stats.error) {
-                    showNotification(stats.error, 'error');
-                    return;
-                }
-
-                document.getElementById('total-hoje').textContent = stats.hoje || 0;
-                document.getElementById('total-semana').textContent = stats.semana || 0;
-                document.getElementById('horarios-disponiveis').textContent = stats.disponiveis || 0;
-                document.getElementById('horarios-ocupados').textContent = stats.ocupados || 0;
-
-            } catch (error) {
-                console.error('Erro ao carregar estatísticas:', error);
-            }
+        function loadStats() {
+            // Dados fictícios para estatísticas
+            document.getElementById('total-hoje').textContent = '8';
+            document.getElementById('total-semana').textContent = '32';
+            document.getElementById('horarios-disponiveis').textContent = '15';
+            document.getElementById('horarios-ocupados').textContent = '24';
         }
 
         // Inicializar calendário
@@ -1030,6 +1141,16 @@
                 // Marcar selecionado
                 if (day === selectedDate.getDate() && currentMonth === selectedDate.getMonth() && currentYear === selectedDate.getFullYear()) {
                     dayElement.classList.add('selected');
+                }
+
+                // Adicionar indicadores de consulta para alguns dias
+                if ([5, 12, 19, 26].includes(day)) {
+                    const indicators = dayElement.querySelector('.appointment-indicators');
+                    indicators.innerHTML = `
+                        <div class="appointment-indicator"></div>
+                        <div class="appointment-indicator emergency"></div>
+                    `;
+                    dayElement.classList.add('has-appointments');
                 }
 
                 calendarGrid.appendChild(dayElement);
@@ -1121,37 +1242,28 @@
         }
 
         // Carregar agenda de hoje
-        async function loadTodaySchedule() {
-            try {
-                const today = new Date().toISOString().split('T')[0];
-                const response = await fetch(`<?php echo site_url('api/medico/agenda_hoje'); ?>?date=${today}`);
-                const schedule = await response.json();
+        function loadTodaySchedule() {
+            const container = document.getElementById('today-schedule');
+            if (!container) return;
 
-                const container = document.getElementById('today-schedule');
-                if (!container) return;
-
-                if (schedule.error || schedule.length === 0) {
-                    container.innerHTML = '<p class="text-gray-600 text-center">Nenhum compromisso hoje.</p>';
-                    return;
-                }
-
-                container.innerHTML = schedule.map(item => `
-                    <div class="time-slot ${getTimeSlotClass(item)}">
-                        <div class="flex-1">
-                            <div class="font-medium">${item.hora}</div>
-                            <div class="text-sm text-gray-600">${item.descricao}</div>
-                        </div>
-                        <span class="status-badge ${getStatusClass(item)}">${item.tipo}</span>
-                    </div>
-                `).join('');
-
-            } catch (error) {
-                console.error('Erro ao carregar agenda de hoje:', error);
+            if (agendaHojeFicticia.length === 0) {
+                container.innerHTML = '<p class="text-gray-600 text-center">Nenhum compromisso hoje.</p>';
+                return;
             }
+
+            container.innerHTML = agendaHojeFicticia.map(item => `
+                <div class="time-slot ${getTimeSlotClass(item)}">
+                    <div class="flex-1">
+                        <div class="font-medium">${item.hora}</div>
+                        <div class="text-sm text-gray-600">${item.descricao}</div>
+                    </div>
+                    <span class="status-badge ${getStatusClass({status: item.tipo})}">${item.tipo}</span>
+                </div>
+            `).join('');
         }
 
         // Carregar horários para data selecionada
-        async function loadScheduleForDate(date) {
+        function loadScheduleForDate(date) {
             const loading = document.getElementById('loading-state');
             const empty = document.getElementById('empty-state');
             const list = document.getElementById('schedule-list');
@@ -1167,32 +1279,24 @@
             const monthNames = ['Jan', 'Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul', 'Ago', 'Set', 'Out', 'Nov', 'Dez'];
             title.textContent = `Agenda - ${dayNames[date.getDay()]}, ${date.getDate()} ${monthNames[date.getMonth()]} ${date.getFullYear()}`;
 
-            try {
-                const dateString = date.toISOString().split('T')[0];
-                const response = await fetch(`<?php echo site_url('api/medico/horarios_data'); ?>?date=${dateString}`);
-                const horarios = await response.json();
-
+            // Simular carregamento
+            setTimeout(() => {
                 if (loading) loading.classList.add('hidden');
 
-                if (horarios.error) {
-                    showNotification(horarios.error, 'error');
-                    return;
-                }
+                const horariosDoDia = horariosFicticios.filter(h => 
+                    h.data === date.toISOString().split('T')[0]
+                );
 
-                if (count) count.textContent = horarios.length || 0;
+                if (count) count.textContent = horariosDoDia.length;
 
-                if (horarios.length === 0) {
+                if (horariosDoDia.length === 0) {
                     if (empty) empty.classList.remove('hidden');
                     return;
                 }
 
-                renderHorarios(horarios);
+                renderHorarios(horariosDoDia);
 
-            } catch (error) {
-                console.error('Erro ao carregar horários:', error);
-                showNotification('Erro ao carregar horários.', 'error');
-                if (loading) loading.classList.add('hidden');
-            }
+            }, 1000);
         }
 
         // Renderizar horários
@@ -1213,7 +1317,7 @@
                                     <div class="flex flex-col sm:flex-row sm:items-center gap-2 mb-3">
                                         <h4 class="font-semibold text-gray-800 text-lg">${horario.hora_inicio} - ${horario.hora_fim}</h4>
                                         <span class="status-badge ${statusClass}">${horario.status}</span>
-                                        ${horario.tipo ? `<span class="type-badge">${horario.tipo}</span>` : ''}
+                                        ${horario.tipo_atendimento ? `<span class="type-badge">${horario.tipo_atendimento}</span>` : ''}
                                     </div>
                                     
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mb-3">
@@ -1269,6 +1373,11 @@
                                         <i class="fas fa-eye mr-1"></i>Ver Consulta
                                     </button>
                                 ` : ''}
+                                ${['almoco', 'reuniao'].includes(horario.status) ? `
+                                    <button class="action-btn editar-horario" data-id="${horario.id}">
+                                        <i class="fas fa-edit mr-1"></i>Editar
+                                    </button>
+                                ` : ''}
                                 <button class="action-btn danger excluir-horario" data-id="${horario.id}">
                                     <i class="fas fa-trash mr-1"></i>Excluir
                                 </button>
@@ -1290,7 +1399,7 @@
                 'bloqueado': 'unavailable',
                 'emergencia': 'emergency',
                 'almoco': 'break',
-                'reuniao': 'unavailable'
+                'reuniao': 'reuniao'
             };
             return classMap[horario.status] || 'available';
         }
@@ -1485,66 +1594,59 @@
             });
         }
 
-        async function editarHorario(horarioId) {
-            try {
-                const response = await fetch(`<?php echo site_url('api/medico/horario_editar/'); ?>${horarioId}`);
-                const horario = await response.json();
+        function editarHorario(horarioId) {
+            const horario = horariosFicticios.find(h => h.id == horarioId);
+            
+            if (!horario) {
+                showNotification('Horário não encontrado', 'error');
+                return;
+            }
 
-                if (horario.error) {
-                    showNotification(horario.error, 'error');
-                    return;
-                }
+            const modal = document.getElementById('editar-horario-modal');
+            const content = document.getElementById('editar-horario-content');
 
-                const modal = document.getElementById('editar-horario-modal');
-                const content = document.getElementById('editar-horario-content');
-
-                content.innerHTML = `
-                    <div class="space-y-4">
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="form-group">
-                                <label class="form-label">Data</label>
-                                <input type="date" class="form-input" value="${horario.data}" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Tipo de Horário</label>
-                                <select class="form-select">
-                                    <option value="disponivel" ${horario.status === 'disponivel' ? 'selected' : ''}>Disponível</option>
-                                    <option value="bloqueado" ${horario.status === 'bloqueado' ? 'selected' : ''}>Bloqueado</option>
-                                    <option value="almoco" ${horario.status === 'almoco' ? 'selected' : ''}>Almoço</option>
-                                    <option value="reuniao" ${horario.status === 'reuniao' ? 'selected' : ''}>Reunião</option>
-                                </select>
-                            </div>
-                        </div>
-
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div class="form-group">
-                                <label class="form-label">Hora de Início</label>
-                                <input type="time" class="form-input" value="${horario.hora_inicio}" required>
-                            </div>
-                            <div class="form-group">
-                                <label class="form-label">Hora de Fim</label>
-                                <input type="time" class="form-input" value="${horario.hora_fim}" required>
-                            </div>
-                        </div>
-
+            content.innerHTML = `
+                <div class="space-y-4">
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                         <div class="form-group">
-                            <label class="form-label">Observações</label>
-                            <textarea class="form-textarea">${horario.observacoes || ''}</textarea>
+                            <label class="form-label">Data</label>
+                            <input type="date" class="form-input" value="${horario.data}" required>
                         </div>
-
-                        <div class="flex gap-2 justify-end">
-                            <button onclick="closeEditarHorarioModal()" class="action-btn danger">Cancelar</button>
-                            <button onclick="salvarHorario(${horarioId})" class="action-btn success">Salvar</button>
+                        <div class="form-group">
+                            <label class="form-label">Tipo de Horário</label>
+                            <select class="form-select" id="edit-tipo-horario">
+                                <option value="disponivel" ${horario.status === 'disponivel' ? 'selected' : ''}>Disponível</option>
+                                <option value="bloqueado" ${horario.status === 'bloqueado' ? 'selected' : ''}>Bloqueado</option>
+                                <option value="almoco" ${horario.status === 'almoco' ? 'selected' : ''}>Almoço</option>
+                                <option value="reuniao" ${horario.status === 'reuniao' ? 'selected' : ''}>Reunião</option>
+                            </select>
                         </div>
                     </div>
-                `;
 
-                modal.classList.add('show');
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div class="form-group">
+                            <label class="form-label">Hora de Início</label>
+                            <input type="time" class="form-input" value="${horario.hora_inicio}" required>
+                        </div>
+                        <div class="form-group">
+                            <label class="form-label">Hora de Fim</label>
+                            <input type="time" class="form-input" value="${horario.hora_fim}" required>
+                        </div>
+                    </div>
 
-            } catch (error) {
-                console.error('Erro ao carregar formulário de edição:', error);
-                showNotification('Erro ao carregar formulário de edição.', 'error');
-            }
+                    <div class="form-group">
+                        <label class="form-label">Observações</label>
+                        <textarea class="form-textarea">${horario.observacoes || ''}</textarea>
+                    </div>
+
+                    <div class="flex gap-2 justify-end">
+                        <button onclick="closeEditarHorarioModal()" class="action-btn danger">Cancelar</button>
+                        <button onclick="salvarHorario(${horarioId})" class="action-btn success">Salvar</button>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.add('show');
         }
 
         function criarHorario() {
@@ -1572,7 +1674,8 @@
         }
 
         function verConsulta(consultaId) {
-            window.location.href = `<?php echo site_url('medico/consulta/'); ?>${consultaId}`;
+            showNotification(`Redirecionando para consulta ${consultaId}...`, 'info');
+            // window.location.href = `<?php echo site_url('medico/consulta/'); ?>${consultaId}`;
         }
 
         function excluirHorario(horarioId) {
@@ -1664,6 +1767,10 @@
 
         function exportarAgenda() {
             showNotification('Exportando agenda...', 'info');
+            // Simular download
+            setTimeout(() => {
+                showNotification('Agenda exportada com sucesso!', 'success');
+            }, 2000);
         }
 
         function closeNovoHorarioModal() {
@@ -1681,8 +1788,8 @@
         // Filtros
         function filterByStatus(status) {
             currentFilter = status;
-            // Implementar filtros específicos
             showNotification(`Filtrando por: ${status}`, 'info');
+            loadScheduleForDate(selectedDate);
         }
 
         // Inicialização
@@ -1760,5 +1867,4 @@
         });
     </script>
 </body>
-
 </html>

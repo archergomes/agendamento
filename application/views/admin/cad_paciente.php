@@ -639,6 +639,18 @@
                         </div>
 
                         <div class="form-group">
+                            <label for="patient-email" class="form-label required">Email</label>
+                            <input type="email" id="patient-email" class="form-input" required>
+                            <div class="form-error" id="email-error">Por favor, insira um email válido</div>
+                        </div>
+
+                        <div class="form-group">
+                            <label for="patient-password" class="form-label required">Senha</label>
+                            <input type="password" id="patient-password" class="form-input" required minlength="6">
+                            <div class="form-error" id="password-error">A senha deve ter pelo menos 6 caracteres</div>
+                        </div>
+
+                        <div class="form-group">
                             <label for="patient-address" class="form-label">Endereço</label>
                             <input type="text" id="patient-address" class="form-input">
                             <div class="form-hint">Opcional</div>
@@ -834,7 +846,9 @@
                 Data_Nascimento: document.getElementById('patient-birthday').value || null,
                 Genero: document.getElementById('patient-gender').value || null,
                 Endereco: document.getElementById('patient-address').value.trim() || null,
-                Contato_Emergencia: document.getElementById('patient-emergency').value.trim() || null
+                Contato_Emergencia: document.getElementById('patient-emergency').value.trim() || null,
+                Email: document.getElementById('patient-email').value.trim(),
+                Senha: document.getElementById('patient-password').value
             };
 
             const isEditMode = document.getElementById('patient-bi').hasAttribute('readonly');
@@ -865,6 +879,31 @@
                 showNotification('Erro de conexão.', 'error');
                 console.error(error);
             }
+        }
+
+        // Email
+        const emailInput = document.getElementById('patient-email');
+        const emailError = document.getElementById('email-error');
+        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        if (!emailInput.value.trim() || !emailRegex.test(emailInput.value)) {
+            emailInput.classList.add('error');
+            emailError.style.display = 'block';
+            isValid = false;
+        } else {
+            emailInput.classList.remove('error');
+            emailError.style.display = 'none';
+        }
+
+        // Senha
+        const passwordInput = document.getElementById('patient-password');
+        const passwordError = document.getElementById('password-error');
+        if (!passwordInput.value || passwordInput.value.length < 6) {
+            passwordInput.classList.add('error');
+            passwordError.style.display = 'block';
+            isValid = false;
+        } else {
+            passwordInput.classList.remove('error');
+            passwordError.style.display = 'none';
         }
 
         // Initialization

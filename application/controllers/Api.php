@@ -43,45 +43,88 @@ class Api extends CI_Controller
         }
 
         $data = json_decode(file_get_contents('php://input'), true);
-        $id_paciente = $data['bi'] ?? '';
-        $name = $data['name'] ?? '';
-        $phone = $data['phone'] ?? '';
-        $email = $data['email'] ?? null;
-        $birthday = $data['birthday'] ?? null;
-        $gender = $data['gender'] ?? null;
-        $address = $data['address'] ?? null;
 
-        if (!$id_paciente || !$name || !$phone) {
+        // Dados
+        $BI = trim($data['BI'] ?? '');
+        $Nome = trim($data['Nome'] ?? '');
+        $Sobrenome = trim($data['Sobrenome'] ?? '');
+        $Telefone = trim($data['Telefone'] ?? '');
+        $Data_Nascimento = $data['Data_Nascimento'] ?? null;
+        $Genero = $data['Genero'] ?? null;
+        $Endereco = trim($data['Endereco'] ?? '') ?: null;
+        $Contato_Emergencia = trim($data['Contato_Emergencia'] ?? '') ?: null;
+        $Email = trim($data['Email'] ?? '');
+        $Senha = $data['Senha'] ?? '';
+
+        // Validação
+        if (!$BI || !$Nome || !$Sobrenome || !$Telefone || !$Data_Nascimento || !$Genero || !$Email || !$Senha) {
             $this->output->set_status_header(400);
-            echo json_encode(['error' => 'BI, nome e telefone são obrigatórios']);
+            echo json_encode(['error' => 'Todos os campos são obrigatórios.']);
             return;
         }
 
-        $this->db->where('ID_Paciente', $id_paciente);
+        if (!filter_var($Email, FILTER_VALIDATE_EMAIL)) {
+            $this->output->set_status_header(400);
+            echo json_encode(['error' => 'Email inválido.']);
+            return;
+        }
+
+        if (strlen($Senha) < 6) {
+            $this->output->set_status_header(400);
+            echo json_encode(['error' => 'A senha deve ter pelo menos 6 caracteres.']);
+            return;
+        }
+
+        // Verifica BI e Email duplicados
+        $this->db->where('BI', $BI);
         if ($this->db->get('Pacientes')->num_rows() > 0) {
             $this->output->set_status_header(400);
-            echo json_encode(['error' => 'BI já cadastrado']);
+            echo json_encode(['error' => 'BI já cadastrado.']);
             return;
         }
 
-        $names = explode(' ', $name, 2);
-        $insert_data = [
-            'ID_Paciente' => $id_paciente,
-            'Nome' => $names[0],
-            'Sobrenome' => $names[1] ?? '',
-            'Telefone' => $phone,
-            'Email' => $email,
-            'Data_Nascimento' => $birthday,
-            'Genero' => $gender,
-            'Endereco' => $address
-        ];
-
-        if ($this->db->insert('Pacientes', $insert_data)) {
-            echo json_encode(['success' => 'Paciente cadastrado com sucesso']);
-        } else {
-            $this->output->set_status_header(500);
-            echo json_encode(['error' => 'Erro ao cadastrar paciente']);
+        $this->db->where('Email', $Email);
+        if ($this->db->get('usuarios')->num_rows() > 0) {
+            $this->output->set_status_header(400);
+            echo json_encode(['error' => 'Email já está em uso.']);
+            return;
         }
+
+        // Transação
+        $this->db->trans_start();
+
+        // 1. Cria usuário
+        $this->db->insert('usuarios', [
+            'Email' => $Email,
+            'Senha' => password_hash($Senha, PASSWORD_BCRYPT),
+            'Tipo_Usuario' => 'paciente',
+            'ID_Referencia' => $BI,
+            'Criado_Em' => date('Y-m-d H:i:s')
+        ]);
+        $ID_Usuario = $this->db->insert_id();
+
+        // 2. Cria paciente
+        $this->db->insert('Pacientes', [
+            'BI' => $BI,
+            'Nome' => $Nome,
+            'Sobrenome' => $Sobrenome,
+            'Telefone' => $Telefone,
+            'Data_Nascimento' => $Data_Nascimento,
+            'Genero' => $Genero,
+            'Endereco' => $Endereco,
+            'Contato_Emergencia' => $Contato_Emergencia,
+            'ID_Usuario' => $ID_Usuario
+        ]);
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE) {
+            $this->output->set_status_header(500);
+            echo json_encode(['error' => 'Erro ao cadastrar. Tente novamente.']);
+            return;
+        }
+
+        echo json_encode(['success' => 'Paciente cadastrado com sucesso!']);
     }
 
     public function update_patient()
@@ -93,34 +136,30 @@ class Api extends CI_Controller
         }
 
         $data = json_decode(file_get_contents('php://input'), true);
-        $id_paciente = $data['bi'] ?? '';
-        $name = $data['name'] ?? '';
-        $phone = $data['phone'] ?? '';
-        $email = $data['email'] ?? null;
-        $birthday = $data['birthday'] ?? null;
-        $gender = $data['gender'] ?? null;
-        $address = $data['address'] ?? null;
 
-        if (!$id_paciente || !$name || !$phone) {
+        $BI = trim($data['BI'] ?? '');
+        if (!$BI) {
             $this->output->set_status_header(400);
-            echo json_encode(['error' => 'Nome, BI e telefone são obrigatórios']);
+            echo json_encode(['error' => 'BI é obrigatório.']);
             return;
         }
 
-        if (
-            $this->Admin_model->update_patient($id_paciente, [
-                'name' => $name,
-                'phone' => $phone,
-                'email' => $email,
-                'birthday' => $birthday,
-                'gender' => $gender,
-                'address' => $address
-            ])
-        ) {
-            echo json_encode(['success' => 'Paciente atualizado com sucesso']);
+        $update_data = [
+            'Nome'               => trim($data['Nome'] ?? ''),
+            'Sobrenome'          => trim($data['Sobrenome'] ?? ''),
+            'Telefone'           => trim($data['Telefone'] ?? ''),
+            'Data_Nascimento'    => $data['Data_Nascimento'] ?? null,
+            'Genero'             => $data['Genero'] ?? null,
+            'Endereco'           => trim($data['Endereco'] ?? '') ?: null,
+            'Contato_Emergencia' => trim($data['Contato_Emergencia'] ?? '') ?: null
+        ];
+
+        $this->db->where('BI', $BI);
+        if ($this->db->update('Pacientes', $update_data)) {
+            echo json_encode(['success' => 'Paciente atualizado com sucesso!']);
         } else {
             $this->output->set_status_header(500);
-            echo json_encode(['error' => 'Erro ao atualizar paciente']);
+            echo json_encode(['error' => 'Erro ao atualizar paciente.']);
         }
     }
 
@@ -132,51 +171,90 @@ class Api extends CI_Controller
             return;
         }
 
-        $data = json_decode(file_get_contents('php://input'), true);
-        $id_medico = $data['bi'] ?? '';
-        $name = $data['name'] ?? '';
-        $specialty = $data['specialty'] ?? '';
-        $phone = $data['phone'] ?? '';
-        $email = $data['email'] ?? null;
-        $license_number = $data['licenseNumber'] ?? '';
+        $input = file_get_contents('php://input');
+        $data = json_decode($input, true);
 
-        if (!$id_medico || !$name || !$specialty || !$phone || !$license_number) {
-            $this->output->set_status_header(400);
-            echo json_encode(['error' => 'BI, nome, especialidade, telefone e número da licença são obrigatórios']);
+        log_message('debug', 'create_doctor input: ' . $input);
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            echo json_encode(['error' => 'JSON inválido: ' . json_last_error_msg()]);
             return;
         }
 
-        $this->db->where('ID_Medico', $id_medico);
-        if ($this->db->get('Medicos')->num_rows() > 0) {
-            $this->output->set_status_header(400);
+        $required = ['BI', 'Nome', 'Sobrenome', 'Telefone', 'Email', 'Especialidade', 'Numero_Licenca', 'Senha'];
+        foreach ($required as $field) {
+            if (empty(trim($data[$field] ?? ''))) {
+                echo json_encode(['error' => "Campo obrigatório: $field"]);
+                return;
+            }
+        }
+
+        $bi = trim($data['BI']);
+        $email = trim($data['Email']);
+
+        // Validações
+        if (!filter_var($email, FILTER_VALIDATE_EMAIL)) {
+            echo json_encode(['error' => 'Email inválido']);
+            return;
+        }
+        if (strlen($data['Senha']) < 6) {
+            echo json_encode(['error' => 'Senha deve ter no mínimo 6 caracteres']);
+            return;
+        }
+        if (!preg_match('/^\d{9}$/', $data['Telefone'])) {
+            echo json_encode(['error' => 'Telefone deve ter 9 dígitos']);
+            return;
+        }
+
+        // Verifica duplicatas
+        if ($this->db->where('BI', $bi)->get('Medicos')->num_rows() > 0) {
             echo json_encode(['error' => 'BI já cadastrado']);
             return;
         }
-
-        $this->db->where('Numero_Licenca', $license_number);
-        if ($this->db->get('Medicos')->num_rows() > 0) {
-            $this->output->set_status_header(400);
-            echo json_encode(['error' => 'Número da licença já cadastrado']);
+        if ($this->db->where('Email', $email)->get('usuarios')->num_rows() > 0) {
+            echo json_encode(['error' => 'Email já cadastrado']);
             return;
         }
 
-        $names = explode(' ', $name, 2);
-        $insert_data = [
-            'ID_Medico' => $id_medico,
-            'Nome' => $names[0],
-            'Sobrenome' => $names[1] ?? '',
-            'Telefone' => $phone,
-            'Email' => $email,
-            'Especialidade' => $specialty,
-            'Numero_Licenca' => $license_number
-        ];
+        // === TRANSAÇÃO COM LOG COMPLETO ===
+        $this->db->trans_start();
 
-        if ($this->db->insert('Medicos', $insert_data)) {
-            echo json_encode(['success' => 'Médico cadastrado com sucesso']);
-        } else {
-            $this->output->set_status_header(500);
-            echo json_encode(['error' => 'Erro ao cadastrar médico']);
+        $this->db->insert('usuarios', [
+            'Email' => $email,
+            'Senha' => password_hash($data['Senha'], PASSWORD_BCRYPT),
+            'Tipo_Usuario' => 'Medico'
+        ]);
+        $id_usuario = $this->db->insert_id();
+
+        if (!$id_usuario) {
+            $this->db->trans_rollback();
+            log_message('error', 'Falha ao inserir usuário: ' . $this->db->last_query());
+            echo json_encode(['error' => 'Erro ao criar usuário']);
+            return;
         }
+
+        $this->db->insert('Medicos', [
+            'BI' => $bi,
+            'Nome' => $data['Nome'],
+            'Sobrenome' => $data['Sobrenome'],
+            'Telefone' => $data['Telefone'],
+            'Especialidade' => $data['Especialidade'],
+            'Numero_Licenca' => $data['Numero_Licenca'],
+            'ID_Usuario' => $id_usuario
+        ]);
+
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE) {
+            $error = $this->db->error();
+            log_message('error', 'TRANSAÇÃO FALHOU: ' . json_encode($error));
+            log_message('error', 'Query falha: ' . $this->db->last_query());
+            echo json_encode(['error' => 'Erro no banco: ' . ($error['message'] ?? 'Desconhecido')]);
+            return;
+        }
+
+        log_message('debug', "Médico cadastrado com sucesso: BI=$bi, ID_Usuario=$id_usuario");
+        echo json_encode(['success' => 'Médico cadastrado com sucesso']);
     }
 
     public function update_doctor()
@@ -188,44 +266,65 @@ class Api extends CI_Controller
         }
 
         $data = json_decode(file_get_contents('php://input'), true);
-        $id_medico = $data['bi'] ?? '';
-        $name = $data['name'] ?? '';
-        $specialty = $data['specialty'] ?? '';
-        $phone = $data['phone'] ?? '';
-        $email = $data['email'] ?? '';
-        $license_number = $data['licenseNumber'] ?? '';
+        $bi = $data['BI'] ?? null;
 
-        if (!$id_medico || !$name || !$specialty || !$phone || !$license_number) {
-            $this->output->set_status_header(400);
-            echo json_encode(['error' => 'Nome, especialidade, BI, telefone e número da licença são obrigatórios']);
+        if (!$bi) {
+            echo json_encode(['error' => 'BI é obrigatório']);
             return;
         }
 
-        $this->db->where('Numero_Licenca', $license_number);
-        $this->db->where('ID_Medico !=', $id_medico);
-        if ($this->db->get('Medicos')->num_rows() > 0) {
-            $this->output->set_status_header(400);
-            echo json_encode(['error' => 'Número da licença já cadastrado para outro médico']);
+        // Busca médico com JOIN
+        $this->db->select('m.*, u.ID_Usuario, u.Email as user_email');
+        $this->db->from('Medicos m');
+        $this->db->join('usuarios u', 'm.ID_Usuario = u.ID_Usuario', 'left');
+        $this->db->where('m.BI', $bi);
+        $medico = $this->db->get()->row_array();
+
+        if (!$medico) {
+            echo json_encode(['error' => 'Médico não encontrado']);
             return;
         }
 
-        $names = explode(' ', $name, 2);
-        $update_data = [
-            'Nome' => $names[0],
-            'Sobrenome' => $names[1] ?? '',
-            'Telefone' => $phone,
-            'Email' => $email,
-            'Especialidade' => $specialty,
-            'Numero_Licenca' => $license_number
+        $this->db->trans_start();
+
+        // Atualiza usuário
+        $user_data = [];
+        if (!empty($data['Email']) && $data['Email'] !== $medico['user_email']) {
+            if (!filter_var($data['Email'], FILTER_VALIDATE_EMAIL)) {
+                echo json_encode(['error' => 'Email inválido']);
+                return;
+            }
+            if ($this->db->where('Email', $data['Email'])->where('ID_Usuario !=', $medico['ID_Usuario'])->get('usuarios')->num_rows() > 0) {
+                echo json_encode(['error' => 'Email já em uso']);
+                return;
+            }
+            $user_data['Email'] = $data['Email'];
+        }
+        if (!empty($data['Senha']) && strlen($data['Senha']) >= 6) {
+            $user_data['Senha'] = password_hash($data['Senha'], PASSWORD_BCRYPT);
+        }
+        if (!empty($user_data)) {
+            $this->db->where('ID_Usuario', $medico['ID_Usuario'])->update('usuarios', $user_data);
+        }
+
+        // Atualiza médico
+        $medico_data = [
+            'Nome' => $data['Nome'] ?? $medico['Nome'],
+            'Sobrenome' => $data['Sobrenome'] ?? $medico['Sobrenome'],
+            'Telefone' => $data['Telefone'] ?? $medico['Telefone'],
+            'Especialidade' => $data['Especialidade'] ?? $medico['Especialidade'],
+            'Numero_Licenca' => $data['Numero_Licenca'] ?? $medico['Numero_Licenca']
         ];
+        $this->db->where('BI', $bi)->update('Medicos', $medico_data);
 
-        $this->db->where('ID_Medico', $id_medico);
-        if ($this->db->update('Medicos', $update_data)) {
-            echo json_encode(['success' => 'Médico atualizado com sucesso']);
-        } else {
-            $this->output->set_status_header(500);
+        $this->db->trans_complete();
+
+        if ($this->db->trans_status() === FALSE) {
             echo json_encode(['error' => 'Erro ao atualizar médico']);
+            return;
         }
+
+        echo json_encode(['success' => 'Médico atualizado com sucesso']);
     }
 
     public function get_doctors()

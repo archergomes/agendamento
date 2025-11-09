@@ -424,14 +424,6 @@
             font-size: 1.25rem;
         }
 
-        .tab-content {
-            display: none;
-        }
-
-        .tab-content.active {
-            display: block;
-        }
-
         .info-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
@@ -494,25 +486,9 @@
                         <i class="fas fa-users"></i>
                         <span class="sidebar-text">Meus Pacientes</span>
                     </a>
-                    <a href="<?php echo site_url('medico/prontuarios'); ?>" class="block text-gray-700">
-                        <i class="fas fa-file-medical"></i>
-                        <span class="sidebar-text">Prontuários</span>
-                    </a>
-                    <a href="<?php echo site_url('medico/prescricoes'); ?>" class="block text-gray-700">
-                        <i class="fas fa-prescription"></i>
-                        <span class="sidebar-text">Prescrições</span>
-                    </a>
-                    <a href="<?php echo site_url('medico/laudos'); ?>" class="block text-gray-700">
-                        <i class="fas fa-file-medical-alt"></i>
-                        <span class="sidebar-text">Laudos</span>
-                    </a>
                     <a href="<?php echo site_url('medico/horarios'); ?>" class="block text-gray-700">
                         <i class="fas fa-clock"></i>
                         <span class="sidebar-text">Meus Horários</span>
-                    </a>
-                    <a href="<?php echo site_url('medico/relatorios'); ?>" class="block text-gray-700">
-                        <i class="fas fa-chart-bar"></i>
-                        <span class="sidebar-text">Relatórios</span>
                     </a>
                     <a href="<?php echo site_url('medico/perfil'); ?>" class="block text-gray-700">
                         <i class="fas fa-user-md"></i>
@@ -535,8 +511,8 @@
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="text-right hidden md:block">
-                        <p class="text-sm">Dr. <?php echo $medico_nome ?? 'Médico'; ?></p>
-                        <p class="text-xs text-blue-200"><?php echo $especialidade ?? 'Especialidade'; ?></p>
+                        <p class="text-sm">Dr. <?php echo $medico_nome ?? 'Carlos Silva'; ?></p>
+                        <p class="text-xs text-blue-200"><?php echo $especialidade ?? 'Cardiologia'; ?></p>
                     </div>
                     <button id="mobile-menu-btn" class="md:hidden text-white hover:text-blue-200" aria-label="Abrir menu">
                         <i class="fas fa-bars text-2xl"></i>
@@ -563,20 +539,20 @@
 
                     <!-- Stats Overview -->
                     <div class="grid grid-cols-2 md:grid-cols-4 gap-4 mb-6">
-                        <div class="metric-card" onclick="filterByStatus('active')">
-                            <div class="text-2xl font-bold text-blue-600" id="total-pacientes">0</div>
+                        <div class="metric-card" onclick="filterByStatus('todos')">
+                            <div class="text-2xl font-bold text-blue-600" id="total-pacientes">42</div>
                             <div class="text-sm text-gray-600">Total de Pacientes</div>
                         </div>
-                        <div class="metric-card" onclick="filterByStatus('high-risk')">
-                            <div class="text-2xl font-bold text-red-600" id="pacientes-risco">0</div>
+                        <div class="metric-card" onclick="filterByStatus('alto-risco')">
+                            <div class="text-2xl font-bold text-red-600" id="pacientes-risco">8</div>
                             <div class="text-sm text-gray-600">Alto Risco</div>
                         </div>
-                        <div class="metric-card" onclick="filterByStatus('follow-up')">
-                            <div class="text-2xl font-bold text-orange-600" id="pacientes-acompanhamento">0</div>
+                        <div class="metric-card" onclick="filterByStatus('acompanhamento')">
+                            <div class="text-2xl font-bold text-orange-600" id="pacientes-acompanhamento">15</div>
                             <div class="text-sm text-gray-600">Em Acompanhamento</div>
                         </div>
                         <div class="metric-card" onclick="filterByLastVisit()">
-                            <div class="text-2xl font-bold text-purple-600" id="consultas-mes">0</div>
+                            <div class="text-2xl font-bold text-purple-600" id="consultas-mes">24</div>
                             <div class="text-sm text-gray-600">Consultas/Mês</div>
                         </div>
                     </div>
@@ -624,7 +600,7 @@
                         </div>
 
                         <!-- Loading State -->
-                        <div id="loading-state" class="text-center py-8">
+                        <div id="loading-state" class="text-center py-8 hidden">
                             <i class="fas fa-spinner fa-spin text-2xl text-blue-600 mb-2"></i>
                             <p class="text-gray-600">Carregando pacientes...</p>
                         </div>
@@ -675,6 +651,180 @@
     </div>
 
     <script>
+        // Dados fictícios para pacientes
+        const dadosFicticios = {
+            pacientes: [
+                {
+                    id: 1,
+                    nome: "Maria Santos",
+                    bi: "123456789LA123",
+                    data_nascimento: "1978-05-15",
+                    idade: 45,
+                    genero: "Feminino",
+                    telefone: "+258 84 123 4567",
+                    email: "maria.santos@email.com",
+                    endereco: "Av. 25 de Setembro, Maputo",
+                    tipo_sanguineo: "A+",
+                    alergias: "Penicilina, Amendoim",
+                    medicacoes: "Losartana 50mg, Atenolol 25mg",
+                    condicoes_cronicas: "Hipertensão, Diabetes Tipo 2",
+                    status: "ativo",
+                    alto_risco: true,
+                    ultima_consulta: "2024-01-10",
+                    proxima_consulta: "2024-02-15",
+                    total_consultas: 12,
+                    condicao: "Hipertensão arterial não controlada"
+                },
+                {
+                    id: 2,
+                    nome: "João Pereira",
+                    bi: "987654321LA456",
+                    data_nascimento: "1961-08-22",
+                    idade: 62,
+                    genero: "Masculino",
+                    telefone: "+258 85 234 5678",
+                    email: "joao.pereira@email.com",
+                    endereco: "Rua da Sé, Matola",
+                    tipo_sanguineo: "O+",
+                    alergias: "Nenhuma",
+                    medicacoes: "AAS 100mg, Sinvastatina 20mg",
+                    condicoes_cronicas: "Cardiopatia isquêmica pós-infarto",
+                    status: "acompanhamento",
+                    alto_risco: true,
+                    ultima_consulta: "2024-01-12",
+                    proxima_consulta: "2024-01-26",
+                    total_consultas: 8,
+                    condicao: "Acompanhamento pós-cirúrgico cardíaco"
+                },
+                {
+                    id: 3,
+                    nome: "Ana Costa",
+                    bi: "456789123LA789",
+                    data_nascimento: "1985-12-03",
+                    idade: 38,
+                    genero: "Feminino",
+                    telefone: "+258 86 345 6789",
+                    email: "ana.costa@email.com",
+                    endereco: "Bairro Central, Matlhovele",
+                    tipo_sanguineo: "B+",
+                    alergias: "Iodo, Mariscos",
+                    medicacoes: "Nenhuma",
+                    condicoes_cronicas: "Asma brônquica",
+                    status: "ativo",
+                    alto_risco: false,
+                    ultima_consulta: "2024-01-08",
+                    proxima_consulta: "2024-04-08",
+                    total_consultas: 5,
+                    condicao: "Asma controlada - acompanhamento anual"
+                },
+                {
+                    id: 4,
+                    nome: "Pedro Mendes",
+                    bi: "321654987LA321",
+                    data_nascimento: "1968-03-18",
+                    idade: 55,
+                    genero: "Masculino",
+                    telefone: "+258 87 456 7890",
+                    email: "pedro.mendes@email.com",
+                    endereco: "Zona Verde, Boane",
+                    tipo_sanguineo: "AB+",
+                    alergias: "Dipirona",
+                    medicacoes: "Metformina 850mg, Glibenclamida 5mg",
+                    condicoes_cronicas: "Diabetes Mellitus Tipo 2",
+                    status: "acompanhamento",
+                    alto_risco: false,
+                    ultima_consulta: "2024-01-05",
+                    proxima_consulta: "2024-02-05",
+                    total_consultas: 15,
+                    condicao: "Diabetes controlada - ajuste de medicação"
+                },
+                {
+                    id: 5,
+                    nome: "Carla Fernandes",
+                    bi: "654123987LA654",
+                    data_nascimento: "1981-07-30",
+                    idade: 42,
+                    genero: "Feminino",
+                    telefone: "+258 88 567 8901",
+                    email: "carla.fernandes@email.com",
+                    endereco: "Alto Maé, Maputo",
+                    tipo_sanguineo: "A-",
+                    alergias: "Nenhuma",
+                    medicacoes: "Levotiroxina 50mcg",
+                    condicoes_cronicas: "Hipotireoidismo",
+                    status: "ativo",
+                    alto_risco: false,
+                    ultima_consulta: "2023-12-20",
+                    proxima_consulta: "2024-03-20",
+                    total_consultas: 6,
+                    condicao: "Hipotireoidismo compensado"
+                },
+                {
+                    id: 6,
+                    nome: "Miguel Silva",
+                    bi: "789456123LA987",
+                    data_nascimento: "1955-11-12",
+                    idade: 68,
+                    genero: "Masculino",
+                    telefone: "+258 89 678 9012",
+                    email: "miguel.silva@email.com",
+                    endereco: "Mavalane, Maputo",
+                    tipo_sanguineo: "O-",
+                    alergias: "Sulfas, Codeína",
+                    medicacoes: "Warfarina 5mg, Furosemida 40mg",
+                    condicoes_cronicas: "Fibrilação atrial, ICC",
+                    status: "alto-risco",
+                    alto_risco: true,
+                    ultima_consulta: "2024-01-15",
+                    proxima_consulta: "2024-01-29",
+                    total_consultas: 22,
+                    condicao: "Insuficiência cardíaca compensada"
+                },
+                {
+                    id: 7,
+                    nome: "Sofia Rodrigues",
+                    bi: "159753486LA159",
+                    data_nascimento: "1994-02-28",
+                    idade: 29,
+                    genero: "Feminino",
+                    telefone: "+258 82 789 0123",
+                    email: "sofia.rodrigues@email.com",
+                    endereco: "Maxaquene, Maputo",
+                    tipo_sanguineo: "B-",
+                    alergias: "Nenhuma",
+                    medicacoes: "Nenhuma",
+                    condicoes_cronicas: "Nenhuma",
+                    status: "inativo",
+                    alto_risco: false,
+                    ultima_consulta: "2023-06-10",
+                    proxima_consulta: "Não agendada",
+                    total_consultas: 2,
+                    condicao: "Consulta de rotina - saudável"
+                },
+                {
+                    id: 8,
+                    nome: "António Gomes",
+                    bi: "357951486LA357",
+                    data_nascimento: "1972-09-14",
+                    idade: 51,
+                    genero: "Masculino",
+                    telefone: "+258 83 890 1234",
+                    email: "antonio.gomes@email.com",
+                    endereco: "Malhangalene, Maputo",
+                    tipo_sanguineo: "A+",
+                    alergias: "Analgésicos opióides",
+                    medicacoes: "Omeprazol 20mg",
+                    condicoes_cronicas: "DRGE",
+                    status: "ativo",
+                    alto_risco: false,
+                    ultima_consulta: "2024-01-03",
+                    proxima_consulta: "2024-07-03",
+                    total_consultas: 4,
+                    condicao: "Doença do refluxo controlada"
+                }
+            ]
+        };
+
         let currentFilter = 'todos';
         let currentSearch = '';
 
@@ -694,28 +844,21 @@
         }
 
         // Carregar estatísticas
-        async function loadStats() {
-            try {
-                const response = await fetch('<?php echo site_url('api/medico/pacientes_stats'); ?>');
-                const stats = await response.json();
-                
-                if (stats.error) {
-                    showNotification(stats.error, 'error');
-                    return;
-                }
+        function loadStats() {
+            // Estatísticas baseadas nos dados fictícios
+            const total = dadosFicticios.pacientes.length;
+            const altoRisco = dadosFicticios.pacientes.filter(p => p.alto_risco).length;
+            const acompanhamento = dadosFicticios.pacientes.filter(p => p.status === 'acompanhamento').length;
+            const consultasMes = 24; // Valor fictício
 
-                document.getElementById('total-pacientes').textContent = stats.total || 0;
-                document.getElementById('pacientes-risco').textContent = stats.alto_risco || 0;
-                document.getElementById('pacientes-acompanhamento').textContent = stats.acompanhamento || 0;
-                document.getElementById('consultas-mes').textContent = stats.consultas_mes || 0;
-
-            } catch (error) {
-                console.error('Erro ao carregar estatísticas:', error);
-            }
+            document.getElementById('total-pacientes').textContent = total;
+            document.getElementById('pacientes-risco').textContent = altoRisco;
+            document.getElementById('pacientes-acompanhamento').textContent = acompanhamento;
+            document.getElementById('consultas-mes').textContent = consultasMes;
         }
 
         // Carregar pacientes
-        async function loadPatients() {
+        function loadPatients() {
             const loading = document.getElementById('loading-state');
             const empty = document.getElementById('empty-state');
             const list = document.getElementById('patients-list');
@@ -725,35 +868,45 @@
             if (empty) empty.classList.add('hidden');
             if (list) list.innerHTML = '';
 
-            try {
-                const params = new URLSearchParams();
-                if (currentFilter !== 'todos') params.append('filter', currentFilter);
-                if (currentSearch) params.append('search', currentSearch);
+            // Simular carregamento
+            setTimeout(() => {
+                let pacientesFiltrados = [...dadosFicticios.pacientes];
 
-                const response = await fetch(`<?php echo site_url('api/medico/pacientes'); ?>?${params}`);
-                const pacientes = await response.json();
+                // Aplicar filtro
+                if (currentFilter !== 'todos') {
+                    if (currentFilter === 'ativos') {
+                        pacientesFiltrados = pacientesFiltrados.filter(p => p.status === 'ativo');
+                    } else if (currentFilter === 'alto-risco') {
+                        pacientesFiltrados = pacientesFiltrados.filter(p => p.alto_risco);
+                    } else if (currentFilter === 'acompanhamento') {
+                        pacientesFiltrados = pacientesFiltrados.filter(p => p.status === 'acompanhamento');
+                    } else if (currentFilter === 'inativos') {
+                        pacientesFiltrados = pacientesFiltrados.filter(p => p.status === 'inativo');
+                    }
+                }
+
+                // Aplicar busca
+                if (currentSearch) {
+                    const searchLower = currentSearch.toLowerCase();
+                    pacientesFiltrados = pacientesFiltrados.filter(p => 
+                        p.nome.toLowerCase().includes(searchLower) ||
+                        p.bi.toLowerCase().includes(searchLower) ||
+                        p.condicao.toLowerCase().includes(searchLower)
+                    );
+                }
 
                 if (loading) loading.classList.add('hidden');
 
-                if (pacientes.error) {
-                    showNotification(pacientes.error, 'error');
-                    return;
-                }
+                if (count) count.textContent = pacientesFiltrados.length;
 
-                if (count) count.textContent = pacientes.length || 0;
-
-                if (pacientes.length === 0) {
+                if (pacientesFiltrados.length === 0) {
                     if (empty) empty.classList.remove('hidden');
                     return;
                 }
 
-                renderPatients(pacientes);
+                renderPatients(pacientesFiltrados);
 
-            } catch (error) {
-                console.error('Erro ao carregar pacientes:', error);
-                showNotification('Erro ao carregar pacientes.', 'error');
-                if (loading) loading.classList.add('hidden');
-            }
+            }, 1000); // Simular delay de carregamento
         }
 
         // Renderizar pacientes
@@ -784,26 +937,26 @@
                                     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-sm">
                                         <div>
                                             <span class="text-gray-600">Idade:</span>
-                                            <p class="font-medium">${paciente.idade || 'N/A'} anos</p>
+                                            <p class="font-medium">${paciente.idade} anos</p>
                                         </div>
                                         <div>
                                             <span class="text-gray-600">BI:</span>
-                                            <p class="font-medium">${paciente.bi || 'N/A'}</p>
+                                            <p class="font-medium">${paciente.bi}</p>
                                         </div>
                                         <div>
                                             <span class="text-gray-600">Telefone:</span>
-                                            <p class="font-medium">${paciente.telefone || 'N/A'}</p>
+                                            <p class="font-medium">${paciente.telefone}</p>
                                         </div>
                                     </div>
 
                                     <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm mt-3">
                                         <div>
                                             <span class="text-gray-600">Última Consulta:</span>
-                                            <p class="font-medium">${paciente.ultima_consulta || 'Nunca'}</p>
+                                            <p class="font-medium">${formatDate(paciente.ultima_consulta) || 'Nunca'}</p>
                                         </div>
                                         <div>
                                             <span class="text-gray-600">Próxima Consulta:</span>
-                                            <p class="font-medium">${paciente.proxima_consulta || 'Não agendada'}</p>
+                                            <p class="font-medium">${formatDate(paciente.proxima_consulta) || 'Não agendada'}</p>
                                         </div>
                                     </div>
 
@@ -842,6 +995,13 @@
             addEventListeners();
         }
 
+        // Formatar data para exibição
+        function formatDate(dateString) {
+            if (!dateString || dateString === 'Não agendada') return dateString;
+            const date = new Date(dateString);
+            return date.toLocaleDateString('pt-BR');
+        }
+
         // Obter iniciais do nome
         function getInitials(nome) {
             return nome.split(' ').map(word => word[0]).join('').toUpperCase().substring(0, 2);
@@ -851,7 +1011,6 @@
         function getCardClass(paciente) {
             if (paciente.alto_risco) return 'urgent';
             if (paciente.status === 'acompanhamento') return 'follow-up';
-            if (paciente.status === 'control') return 'control';
             return '';
         }
 
@@ -902,204 +1061,226 @@
         }
 
         // Funções de ação
-        async function verDetalhesPaciente(pacienteId) {
-            try {
-                const response = await fetch(`<?php echo site_url('api/medico/paciente/'); ?>${pacienteId}`);
-                const paciente = await response.json();
+        function verDetalhesPaciente(pacienteId) {
+            const paciente = dadosFicticios.pacientes.find(p => p.id == pacienteId);
+            
+            if (!paciente) {
+                showNotification('Paciente não encontrado.', 'error');
+                return;
+            }
 
-                if (paciente.error) {
-                    showNotification(paciente.error, 'error');
-                    return;
-                }
+            const modal = document.getElementById('patient-modal');
+            const details = document.getElementById('patient-details');
 
-                const modal = document.getElementById('patient-modal');
-                const details = document.getElementById('patient-details');
-
-                details.innerHTML = `
-                    <div class="space-y-6">
-                        <!-- Informações Pessoais -->
-                        <div>
-                            <h4 class="font-medium text-gray-700 mb-3">Informações Pessoais</h4>
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <span class="info-label">Nome Completo</span>
-                                    <span class="info-value">${paciente.nome}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">BI/Identificação</span>
-                                    <span class="info-value">${paciente.bi || 'N/A'}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Data de Nascimento</span>
-                                    <span class="info-value">${paciente.data_nascimento || 'N/A'}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Idade</span>
-                                    <span class="info-value">${paciente.idade || 'N/A'} anos</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Gênero</span>
-                                    <span class="info-value">${paciente.genero || 'N/A'}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Telefone</span>
-                                    <span class="info-value">${paciente.telefone || 'N/A'}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Email</span>
-                                    <span class="info-value">${paciente.email || 'N/A'}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Endereço</span>
-                                    <span class="info-value">${paciente.endereco || 'N/A'}</span>
-                                </div>
+            details.innerHTML = `
+                <div class="space-y-6">
+                    <!-- Informações Pessoais -->
+                    <div>
+                        <h4 class="font-medium text-gray-700 mb-3">Informações Pessoais</h4>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Nome Completo</span>
+                                <span class="info-value">${paciente.nome}</span>
                             </div>
-                        </div>
-
-                        <!-- Informações Médicas -->
-                        <div>
-                            <h4 class="font-medium text-gray-700 mb-3">Informações Médicas</h4>
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <span class="info-label">Tipo Sanguíneo</span>
-                                    <span class="info-value">${paciente.tipo_sanguineo || 'N/A'}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Alergias</span>
-                                    <span class="info-value">${paciente.alergias || 'Nenhuma'}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Medicações</span>
-                                    <span class="info-value">${paciente.medicacoes || 'Nenhuma'}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Condições Crônicas</span>
-                                    <span class="info-value">${paciente.condicoes_cronicas || 'Nenhuma'}</span>
-                                </div>
+                            <div class="info-item">
+                                <span class="info-label">BI/Identificação</span>
+                                <span class="info-value">${paciente.bi}</span>
                             </div>
-                        </div>
-
-                        <!-- Estatísticas -->
-                        <div>
-                            <h4 class="font-medium text-gray-700 mb-3">Estatísticas</h4>
-                            <div class="info-grid">
-                                <div class="info-item">
-                                    <span class="info-label">Total de Consultas</span>
-                                    <span class="info-value">${paciente.total_consultas || 0}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Última Consulta</span>
-                                    <span class="info-value">${paciente.ultima_consulta || 'Nunca'}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Próxima Consulta</span>
-                                    <span class="info-value">${paciente.proxima_consulta || 'Não agendada'}</span>
-                                </div>
-                                <div class="info-item">
-                                    <span class="info-label">Status</span>
-                                    <span class="status-badge ${getStatusClass(paciente.status)}">${paciente.status}</span>
-                                </div>
+                            <div class="info-item">
+                                <span class="info-label">Data de Nascimento</span>
+                                <span class="info-value">${formatDate(paciente.data_nascimento)}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Idade</span>
+                                <span class="info-value">${paciente.idade} anos</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Gênero</span>
+                                <span class="info-value">${paciente.genero}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Telefone</span>
+                                <span class="info-value">${paciente.telefone}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Email</span>
+                                <span class="info-value">${paciente.email}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Endereço</span>
+                                <span class="info-value">${paciente.endereco}</span>
                             </div>
                         </div>
                     </div>
-                `;
 
-                modal.classList.add('show');
+                    <!-- Informações Médicas -->
+                    <div>
+                        <h4 class="font-medium text-gray-700 mb-3">Informações Médicas</h4>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Tipo Sanguíneo</span>
+                                <span class="info-value">${paciente.tipo_sanguineo}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Alergias</span>
+                                <span class="info-value">${paciente.alergias}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Medicações</span>
+                                <span class="info-value">${paciente.medicacoes}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Condições Crônicas</span>
+                                <span class="info-value">${paciente.condicoes_cronicas}</span>
+                            </div>
+                        </div>
+                    </div>
 
-            } catch (error) {
-                console.error('Erro ao carregar detalhes:', error);
-                showNotification('Erro ao carregar detalhes do paciente.', 'error');
-            }
+                    <!-- Estatísticas -->
+                    <div>
+                        <h4 class="font-medium text-gray-700 mb-3">Estatísticas</h4>
+                        <div class="info-grid">
+                            <div class="info-item">
+                                <span class="info-label">Total de Consultas</span>
+                                <span class="info-value">${paciente.total_consultas}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Última Consulta</span>
+                                <span class="info-value">${formatDate(paciente.ultima_consulta) || 'Nunca'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Próxima Consulta</span>
+                                <span class="info-value">${formatDate(paciente.proxima_consulta) || 'Não agendada'}</span>
+                            </div>
+                            <div class="info-item">
+                                <span class="info-label">Status</span>
+                                <span class="status-badge ${getStatusClass(paciente.status)}">${paciente.status}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.add('show');
         }
 
-        async function verProntuario(pacienteId) {
-            try {
-                const response = await fetch(`<?php echo site_url('api/medico/prontuario/'); ?>${pacienteId}`);
-                const prontuario = await response.json();
-
-                if (prontuario.error) {
-                    showNotification(prontuario.error, 'error');
-                    return;
-                }
-
-                const modal = document.getElementById('prontuario-modal');
-                const content = document.getElementById('prontuario-content');
-
-                content.innerHTML = `
-                    <div class="space-y-6">
-                        <!-- Header do Prontuário -->
-                        <div class="border-b pb-4">
-                            <h4 class="text-lg font-semibold text-gray-800">${prontuario.paciente_nome}</h4>
-                            <p class="text-gray-600">BI: ${prontuario.paciente_bi} | Idade: ${prontuario.idade} anos</p>
-                        </div>
-
-                        <!-- Histórico de Consultas -->
-                        <div>
-                            <h5 class="font-medium text-gray-700 mb-3">Histórico de Consultas</h5>
-                            ${prontuario.consultas && prontuario.consultas.length > 0 ? 
-                                prontuario.consultas.map(consulta => `
-                                    <div class="border rounded p-3 mb-2">
-                                        <div class="flex justify-between items-start">
-                                            <div>
-                                                <strong>${consulta.data}</strong> - ${consulta.motivo}
-                                            </div>
-                                            <span class="status-badge ${getStatusClass(consulta.status)}">${consulta.status}</span>
-                                        </div>
-                                        ${consulta.diagnostico ? `<p class="text-sm mt-2"><strong>Diagnóstico:</strong> ${consulta.diagnostico}</p>` : ''}
-                                        ${consulta.prescricao ? `<p class="text-sm mt-1"><strong>Prescrição:</strong> ${consulta.prescricao}</p>` : ''}
-                                    </div>
-                                `).join('') : 
-                                '<p class="text-gray-600">Nenhuma consulta registrada.</p>'
-                            }
-                        </div>
-
-                        <!-- Exames -->
-                        <div>
-                            <h5 class="font-medium text-gray-700 mb-3">Exames Realizados</h5>
-                            ${prontuario.exames && prontuario.exames.length > 0 ? 
-                                prontuario.exames.map(exame => `
-                                    <div class="border rounded p-3 mb-2">
-                                        <div class="flex justify-between items-center">
-                                            <strong>${exame.tipo}</strong>
-                                            <span class="text-sm text-gray-600">${exame.data}</span>
-                                        </div>
-                                        ${exame.resultado ? `<p class="text-sm mt-2"><strong>Resultado:</strong> ${exame.resultado}</p>` : ''}
-                                    </div>
-                                `).join('') : 
-                                '<p class="text-gray-600">Nenhum exame registrado.</p>'
-                            }
-                        </div>
-
-                        <!-- Observações Gerais -->
-                        <div>
-                            <h5 class="font-medium text-gray-700 mb-3">Observações Gerais</h5>
-                            <textarea class="w-full border rounded p-3" rows="4" placeholder="Adicionar observações...">${prontuario.observacoes || ''}</textarea>
-                        </div>
-
-                        <!-- Ações -->
-                        <div class="flex gap-2 justify-end">
-                            <button class="action-btn">Salvar Observações</button>
-                            <button class="action-btn success">Imprimir Prontuário</button>
-                        </div>
-                    </div>
-                `;
-
-                modal.classList.add('show');
-
-            } catch (error) {
-                console.error('Erro ao carregar prontuário:', error);
-                showNotification('Erro ao carregar prontuário.', 'error');
+        function verProntuario(pacienteId) {
+            const paciente = dadosFicticios.pacientes.find(p => p.id == pacienteId);
+            
+            if (!paciente) {
+                showNotification('Paciente não encontrado.', 'error');
+                return;
             }
+
+            const modal = document.getElementById('prontuario-modal');
+            const content = document.getElementById('prontuario-content');
+
+            // Dados fictícios do prontuário
+            const prontuario = {
+                paciente_nome: paciente.nome,
+                paciente_bi: paciente.bi,
+                idade: paciente.idade,
+                consultas: [
+                    {
+                        data: "2024-01-10",
+                        motivo: "Consulta de rotina - Hipertensão",
+                        status: "concluida",
+                        diagnostico: "Hipertensão arterial estágio 1",
+                        prescricao: "Losartana 50mg 1x/dia, Atenolol 25mg 1x/dia"
+                    },
+                    {
+                        data: "2023-11-15",
+                        motivo: "Acompanhamento medicação",
+                        status: "concluida",
+                        diagnostico: "Hipertensão controlada",
+                        prescricao: "Manter medicação atual"
+                    }
+                ],
+                exames: [
+                    {
+                        tipo: "Hemograma completo",
+                        data: "2024-01-08",
+                        resultado: "Dentro dos parâmetros normais"
+                    },
+                    {
+                        tipo: "Eletrocardiograma",
+                        data: "2023-11-10",
+                        resultado: "Ritmo sinusal normal"
+                    }
+                ],
+                observacoes: "Paciente em acompanhamento regular. Manter controle da pressão arterial."
+            };
+
+            content.innerHTML = `
+                <div class="space-y-6">
+                    <!-- Header do Prontuário -->
+                    <div class="border-b pb-4">
+                        <h4 class="text-lg font-semibold text-gray-800">${prontuario.paciente_nome}</h4>
+                        <p class="text-gray-600">BI: ${prontuario.paciente_bi} | Idade: ${prontuario.idade} anos</p>
+                    </div>
+
+                    <!-- Histórico de Consultas -->
+                    <div>
+                        <h5 class="font-medium text-gray-700 mb-3">Histórico de Consultas</h5>
+                        ${prontuario.consultas.map(consulta => `
+                            <div class="border rounded p-3 mb-2">
+                                <div class="flex justify-between items-start">
+                                    <div>
+                                        <strong>${formatDate(consulta.data)}</strong> - ${consulta.motivo}
+                                    </div>
+                                    <span class="status-badge status-active">${consulta.status}</span>
+                                </div>
+                                ${consulta.diagnostico ? `<p class="text-sm mt-2"><strong>Diagnóstico:</strong> ${consulta.diagnostico}</p>` : ''}
+                                ${consulta.prescricao ? `<p class="text-sm mt-1"><strong>Prescrição:</strong> ${consulta.prescricao}</p>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <!-- Exames -->
+                    <div>
+                        <h5 class="font-medium text-gray-700 mb-3">Exames Realizados</h5>
+                        ${prontuario.exames.map(exame => `
+                            <div class="border rounded p-3 mb-2">
+                                <div class="flex justify-between items-center">
+                                    <strong>${exame.tipo}</strong>
+                                    <span class="text-sm text-gray-600">${formatDate(exame.data)}</span>
+                                </div>
+                                ${exame.resultado ? `<p class="text-sm mt-2"><strong>Resultado:</strong> ${exame.resultado}</p>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+
+                    <!-- Observações Gerais -->
+                    <div>
+                        <h5 class="font-medium text-gray-700 mb-3">Observações Gerais</h5>
+                        <textarea class="w-full border rounded p-3" rows="4" placeholder="Adicionar observações...">${prontuario.observacoes}</textarea>
+                    </div>
+
+                    <!-- Ações -->
+                    <div class="flex gap-2 justify-end">
+                        <button class="action-btn">Salvar Observações</button>
+                        <button class="action-btn success">Imprimir Prontuário</button>
+                    </div>
+                </div>
+            `;
+
+            modal.classList.add('show');
         }
 
         function novaConsultaPaciente(pacienteId) {
             showNotification('Abrindo agendamento de consulta...', 'info');
-            window.location.href = `<?php echo site_url('medico/nova_consulta/'); ?>${pacienteId}`;
+            // Simular redirecionamento
+            setTimeout(() => {
+                showNotification('Redirecionando para nova consulta...', 'success');
+            }, 1000);
         }
 
         function verAcompanhamento(pacienteId) {
             showNotification('Abrindo acompanhamento...', 'info');
-            window.location.href = `<?php echo site_url('medico/acompanhamento/'); ?>${pacienteId}`;
+            // Simular redirecionamento
+            setTimeout(() => {
+                showNotification('Página de acompanhamento carregada', 'success');
+            }, 1000);
         }
 
         function closeModal() {
@@ -1111,12 +1292,19 @@
         }
 
         function novoPaciente() {
-            window.location.href = '<?php echo site_url('medico/novo_paciente'); ?>';
+            showNotification('Redirecionando para cadastro de paciente...', 'info');
+            // Simular redirecionamento
+            setTimeout(() => {
+                window.location.href = '<?php echo site_url('medico/novo_paciente'); ?>';
+            }, 1000);
         }
 
         function exportPacientes() {
             showNotification('Exportando lista de pacientes...', 'info');
-            // Implementar lógica de exportação
+            // Simular exportação
+            setTimeout(() => {
+                showNotification('Lista de pacientes exportada com sucesso!', 'success');
+            }, 2000);
         }
 
         // Filtros

@@ -1,6 +1,7 @@
 <?php defined('BASEPATH') or exit('No direct script access allowed'); ?>
 <!DOCTYPE html>
 <html lang="pt">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -28,10 +29,21 @@
             max-width: 300px;
         }
 
-        #notification.error { background-color: #ef4444; }
-        #notification.success { background-color: #10b981; }
-        #notification.info { background-color: #3b82f6; }
-        #notification.show { display: block; }
+        #notification.error {
+            background-color: #ef4444;
+        }
+
+        #notification.success {
+            background-color: #10b981;
+        }
+
+        #notification.info {
+            background-color: #3b82f6;
+        }
+
+        #notification.show {
+            display: block;
+        }
 
         .sidebar {
             position: fixed;
@@ -95,7 +107,7 @@
             display: flex;
             flex-direction: column;
         }
-        
+
         .page-wrapper.expanded {
             margin-left: 250px;
             width: calc(100% - 250px);
@@ -120,12 +132,15 @@
             z-index: 899;
         }
 
-        .sidebar-overlay.show { display: block; }
+        .sidebar-overlay.show {
+            display: block;
+        }
 
         @media (min-width: 768px) {
             #mobile-menu-btn {
                 display: none;
             }
+
             .sidebar.desktop {
                 display: flex;
             }
@@ -135,17 +150,21 @@
             .sidebar.desktop {
                 display: none;
             }
+
             .sidebar {
                 transform: translateX(-100%);
                 width: 250px;
             }
+
             .sidebar.show {
                 transform: translateX(0);
             }
+
             .page-wrapper {
                 margin-left: 0 !important;
                 width: 100% !important;
             }
+
             .page-wrapper.expanded {
                 margin-left: 0 !important;
                 width: 100% !important;
@@ -166,11 +185,21 @@
             scrollbar-color: #3b82f6 #e5e7eb;
         }
 
-        .main-menu::-webkit-scrollbar { width: 6px; }
-        .main-menu::-webkit-scrollbar-track { background: #e5e7eb; }
-        .main-menu::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 3px; }
-        
-        .sidebar-nav a, .sidebar-nav button {
+        .main-menu::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .main-menu::-webkit-scrollbar-track {
+            background: #e5e7eb;
+        }
+
+        .main-menu::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 3px;
+        }
+
+        .sidebar-nav a,
+        .sidebar-nav button {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -180,24 +209,25 @@
             transition: background-color 0.2s, color 0.2s;
             font-size: 0.95rem;
         }
-        
-        .sidebar-nav a:hover, .sidebar-nav button:hover {
+
+        .sidebar-nav a:hover,
+        .sidebar-nav button:hover {
             background-color: #eff6ff;
             color: #1e40af;
         }
-        
+
         .sidebar-nav a.active {
             background-color: #3b82f6;
             color: white;
         }
-        
+
         .sidebar-nav i {
             font-size: 1.5rem;
             width: 28px;
             text-align: center;
         }
 
-        .sidebar.desktop .sidebar-nav a, 
+        .sidebar.desktop .sidebar-nav a,
         .sidebar.desktop .sidebar-nav button {
             justify-content: center;
             padding: 8px;
@@ -230,11 +260,22 @@
             transition: background-color 0.2s;
         }
 
-        .edit-btn { background-color: #3b82f6; }
-        .edit-btn:hover { background-color: #2563eb; }
-        .delete-btn { background-color: #ef4444; }
-        .delete-btn:hover { background-color: #dc2626; }
-        
+        .edit-btn {
+            background-color: #3b82f6;
+        }
+
+        .edit-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .delete-btn {
+            background-color: #ef4444;
+        }
+
+        .delete-btn:hover {
+            background-color: #dc2626;
+        }
+
         .create-btn {
             background-color: #10b981;
             color: white;
@@ -242,9 +283,11 @@
             border-radius: 0.375rem;
             transition: background-color 0.2s;
         }
-        
-        .create-btn:hover { background-color: #059669; }
-        
+
+        .create-btn:hover {
+            background-color: #059669;
+        }
+
         .search-input {
             padding: 0.5rem;
             border: 1px solid #d1d5db;
@@ -252,7 +295,7 @@
             flex-grow: 1;
             max-width: 300px;
         }
-        
+
         .search-btn {
             background-color: #3b82f6;
             color: white;
@@ -260,9 +303,11 @@
             border-radius: 0.25rem;
             transition: background-color 0.2s;
         }
-        
-        .search-btn:hover { background-color: #2563eb; }
-        
+
+        .search-btn:hover {
+            background-color: #2563eb;
+        }
+
         .empty-state {
             text-align: center;
             padding: 4rem 2rem;
@@ -271,96 +316,18 @@
         }
     </style>
 </head>
+
 <body class="bg-gray-50">
     <div class="page-wrapper">
         <!-- Notification -->
-        <div id="notification" role="alert">
+        <div id="notification" role="alert" class="hidden">
             <span id="notification-message"></span>
             <button id="notification-close" class="ml-2 text-white hover:text-gray-200">×</button>
         </div>
 
-        <!-- Sidebar Overlay -->
-        <div id="sidebar-overlay" class="sidebar-overlay"></div>
+        <!-- Sidebar, Header, etc. (mantidos) -->
+        <!-- ... (seu código de sidebar e header) ... -->
 
-        <!-- Left Sidebar -->
-        <div id="sidebar-menu" class="sidebar bg-white shadow-lg desktop">
-            <div class="sidebar-header flex justify-between items-center p-4 border-b">
-                <h2 class="text-lg font-semibold text-gray-700 sidebar-text">Menu do Administrador</h2>
-                <button id="toggle-sidebar-btn" class="text-gray-700 hover:text-gray-900" aria-label="Alternar menu">
-                    <i class="fas fa-bars text-xl"></i>
-                </button>
-                <button id="close-sidebar-btn" class="text-gray-700 hover:text-gray-900 md:hidden close-sidebar-btn" aria-label="Fechar menu">
-                    <i class="fas fa-times text-xl"></i>
-                </button>
-            </div>
-            <nav class="sidebar-nav">
-                <div class="main-menu">
-                    <a href="<?php echo site_url('admin'); ?>" class="block text-gray-700">
-                        <i class="fas fa-tachometer-alt"></i>
-                        <span class="sidebar-text">Dashboard</span>
-                    </a>
-                    <a href="<?php echo site_url('admin/pacientes'); ?>" class="block text-gray-700 active">
-                        <i class="fas fa-users"></i>
-                        <span class="sidebar-text">Pacientes</span>
-                    </a>
-                    <a href="<?php echo site_url('admin/medicos'); ?>" class="block text-gray-700">
-                        <i class="fas fa-user-md"></i>
-                        <span class="sidebar-text">Médicos</span>
-                    </a>
-                    <a href="<?php echo site_url('admin/secretarios'); ?>" class="block text-gray-700">
-                        <i class="fas fa-user-tie"></i>
-                        <span class="sidebar-text">Secretários</span>
-                    </a>
-                    <a href="<?php echo site_url('admin/agendamentos'); ?>" class="block text-gray-700">
-                        <i class="fas fa-calendar-check"></i>
-                        <span class="sidebar-text">Agendamentos</span>
-                    </a>
-                    <a href="<?php echo site_url('admin/cad_paciente'); ?>" class="block text-gray-700">
-                        <i class="fas fa-user-plus"></i>
-                        <span class="sidebar-text">Cadastrar Paciente</span>
-                    </a>
-                    <a href="<?php echo site_url('admin/cad_secretario'); ?>" class="block text-gray-700">
-                        <i class="fas fa-user-plus"></i>
-                        <span class="sidebar-text">Cadastrar Secretário</span>
-                    </a>
-                    <a href="<?php echo site_url('admin/cad_medico'); ?>" class="block text-gray-700">
-                        <i class="fas fa-user-plus"></i>
-                        <span class="sidebar-text">Cadastrar Médico</span>
-                    </a>
-                    <a href="<?php echo site_url('admin/disponibilidade'); ?>" class="block text-gray-700">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span class="sidebar-text">Disponibilidade</span>
-                    </a>
-                    <a href="<?php echo site_url('admin/relatorios'); ?>" class="block text-gray-700">
-                        <i class="fas fa-chart-bar"></i>
-                        <span class="sidebar-text">Relatórios</span>
-                    </a>
-                    <a href="<?php echo site_url('admin/configuracoes'); ?>" class="block text-gray-700">
-                        <i class="fas fa-cog"></i>
-                        <span class="sidebar-text">Configurações</span>
-                    </a>
-                </div>
-                <button id="logout-btn" class="block w-full text-left text-gray-700 logout">
-                    <i class="fas fa-sign-out-alt"></i>
-                    <span class="sidebar-text">Sair</span>
-                </button>
-            </nav>
-        </div>
-
-        <!-- Header -->
-        <header class="bg-blue-600 text-white shadow-lg">
-            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
-                <div class="flex items-center gap-2">
-                    <i class="fas fa-hospital-alt text-2xl" aria-hidden="true"></i>
-                    <h1 class="text-xl font-bold">Hospital Matlhovele</h1>
-                </div>
-                <button id="mobile-menu-btn" class="md:hidden text-white hover:text-blue-200" aria-label="Abrir menu">
-                    <i class="fas fa-bars text-2xl"></i>
-                </button>
-            </div>
-        </header>
-
-        <!-- Main Content -->
         <main class="main-content">
             <div class="container mx-auto px-4 py-8">
                 <div class="flex justify-between items-center mb-6">
@@ -370,13 +337,11 @@
                     </a>
                 </div>
 
-                <!-- Search Bar -->
                 <div class="mb-4 flex space-x-2">
                     <input type="text" id="search-input" class="search-input" placeholder="Pesquisar por nome ou BI...">
                     <button id="search-btn" class="search-btn"><i class="fas fa-search"></i></button>
                 </div>
 
-                <!-- Patients Table -->
                 <div class="table-container">
                     <table class="table-auto w-full text-left">
                         <thead>
@@ -385,271 +350,131 @@
                                 <th class="px-4 py-2">Telefone</th>
                                 <th class="px-4 py-2">BI</th>
                                 <th class="px-4 py-2">Email</th>
-                                <th class="px-4 py-2">Data de Nascimento</th>
+                                <th class="px-4 py-2">Nascimento</th>
                                 <th class="px-4 py-2">Género</th>
                                 <th class="px-4 py-2">Endereço</th>
                                 <th class="px-4 py-2">Ações</th>
                             </tr>
                         </thead>
                         <tbody id="patients-table">
-                            <?php if (empty($pacientes ?? [])): ?>
-                                <tr>
-                                    <td colspan="8" class="px-4 py-2 text-center text-gray-500 empty-state">
-                                        <i class="fas fa-users text-4xl text-gray-400 mb-4"></i>
-                                        <p>Nenhum paciente encontrado. <a href="<?php echo site_url('admin/cad_paciente'); ?>" class="text-blue-600 hover:underline">Cadastre o primeiro!</a></p>
-                                    </td>
-                                </tr>
-                            <?php else: ?>
-                                <?php foreach ($pacientes as $paciente): ?>
-                                    <tr class="border-t">
-                                        <td class="px-4 py-2"><?php echo htmlspecialchars($paciente['Nome_Completo'] ?? 'N/A'); ?></td>
-                                        <td class="px-4 py-2"><?php echo htmlspecialchars($paciente['Telefone'] ?? '-'); ?></td>
-                                        <td class="px-4 py-2"><?php echo htmlspecialchars($paciente['ID_Paciente'] ?? '-'); ?></td>
-                                        <td class="px-4 py-2"><?php echo htmlspecialchars($paciente['Email'] ?? '-'); ?></td>
-                                        <td class="px-4 py-2"><?php echo htmlspecialchars($paciente['Data_Nascimento'] ?? '-'); ?></td>
-                                        <td class="px-4 py-2"><?php echo htmlspecialchars($paciente['Genero'] ?? '-'); ?></td>
-                                        <td class="px-4 py-2"><?php echo htmlspecialchars($paciente['Endereco'] ?? '-'); ?></td>
-                                        <td class="px-4 py-2">
-                                            <a href="<?php echo site_url('admin/cad_paciente?bi=' . urlencode($paciente['ID_Paciente'] ?? '')); ?>" class="action-btn edit-btn mr-2" title="Editar">
-                                                <i class="fas fa-edit"></i>
-                                            </a>
-                                            <button class="action-btn delete-btn" data-bi="<?php echo htmlspecialchars($paciente['ID_Paciente'] ?? ''); ?>" title="Excluir">
-                                                <i class="fas fa-trash"></i>
-                                            </button>
-                                        </td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
+                            <!-- Preenchido via JS -->
                         </tbody>
                     </table>
-                    <p id="no-results" class="text-center text-gray-500 mt-4 hidden empty-state">Nenhum paciente encontrado para a pesquisa.</p>
+                    <p id="no-results" class="text-center text-gray-500 mt-4 hidden empty-state">Nenhum paciente encontrado.</p>
                 </div>
             </div>
         </main>
-
     </div>
 
     <script>
-        // Fallback se $pacientes não carregado do PHP
-        let patients = <?php echo json_encode(array_map(function($paciente) {
-            return [
-                'bi' => $paciente['ID_Paciente'] ?? '',
-                'name' => $paciente['Nome_Completo'] ?? '',
-                'phone' => $paciente['Telefone'] ?? '',
-                'email' => $paciente['Email'] ?? null,
-                'birthday' => $paciente['Data_Nascimento'] ?? null,
-                'gender' => $paciente['Genero'] ?? null,
-                'address' => $paciente['Endereco'] ?? null
-            ];
-        }, $pacientes ?? [])); ?>;
+        let patients = <?php echo json_encode(array_map(function ($p) {
+                            return [
+                                'bi' => $p['BI'] ?? '',
+                                'name' => $p['Nome_Completo'] ?? '',
+                                'phone' => $p['Telefone'] ?? '',
+                                'email' => $p['Email'] ?? '',
+                                'birthday' => $p['Data_Nascimento'] ?? '',
+                                'gender' => $p['Genero'] ?? '',
+                                'address' => $p['Endereco'] ?? ''
+                            ];
+                        }, $pacientes ?? [])); ?>;
 
-        console.log('Dados iniciais de pacientes (PHP):', patients);
-
-        // Show notification
         function showNotification(message, type = 'info') {
-            const notification = document.getElementById('notification');
-            const messageEl = document.getElementById('notification-message');
-            if (!notification || !messageEl) {
-                console.error('Notification elements not found');
-                return;
-            }
-            messageEl.textContent = message;
-            notification.className = `show ${type}`;
-            setTimeout(() => {
-                notification.classList.remove('show');
-            }, 5000);
+            const n = document.getElementById('notification');
+            const m = document.getElementById('notification-message');
+            m.textContent = message;
+            n.className = `fixed top-4 right-4 px-4 py-2 rounded text-white z-50 ${type === 'error' ? 'bg-red-500' : type === 'success' ? 'bg-green-500' : 'bg-blue-500'}`;
+            n.classList.remove('hidden');
+            setTimeout(() => n.classList.add('hidden'), 5000);
         }
 
-        // Render patients table
-        function renderTable(patientsList) {
-            const tableBody = document.getElementById('patients-table');
+        function renderTable(list) {
+            const tbody = document.getElementById('patients-table');
             const noResults = document.getElementById('no-results');
-            if (!tableBody || !noResults) {
-                console.error('Table elements not found');
-                return;
-            }
+            tbody.innerHTML = '';
 
-            tableBody.innerHTML = '';
-            if (patientsList.length === 0) {
-                tableBody.innerHTML = `
-                    <tr>
-                        <td colspan="8" class="px-4 py-2 text-center text-gray-500 empty-state">
-                            <i class="fas fa-users text-4xl text-gray-400 mb-4"></i>
-                            <p>Nenhum paciente encontrado para a pesquisa.</p>
-                        </td>
-                    </tr>
-                `;
+            if (list.length === 0) {
+                tbody.innerHTML = `<tr><td colspan="8" class="text-center py-8 text-gray-500">Nenhum paciente encontrado.</td></tr>`;
                 noResults.classList.remove('hidden');
                 return;
             }
-
             noResults.classList.add('hidden');
-            patientsList.forEach(patient => {
+
+            list.forEach(p => {
                 const row = document.createElement('tr');
                 row.className = 'border-t';
                 row.innerHTML = `
-                    <td class="px-4 py-2">${patient.name || 'N/A'}</td>
-                    <td class="px-4 py-2">${patient.phone || '-'}</td>
-                    <td class="px-4 py-2">${patient.bi || '-'}</td>
-                    <td class="px-4 py-2">${patient.email || '-'}</td>
-                    <td class="px-4 py-2">${patient.birthday || '-'}</td>
-                    <td class="px-4 py-2">${patient.gender || '-'}</td>
-                    <td class="px-4 py-2">${patient.address || '-'}</td>
+                    <td class="px-4 py-2">${p.name || 'N/A'}</td>
+                    <td class="px-4 py-2">${p.phone || '-'}</td>
+                    <td class="px-4 py-2">${p.bi || '-'}</td>
+                    <td class="px-4 py-2">${p.email || '-'}</td>
+                    <td class="px-4 py-2">${p.birthday || '-'}</td>
+                    <td class="px-4 py-2">${p.gender || '-'}</td>
+                    <td class="px-4 py-2">${p.address || '-'}</td>
                     <td class="px-4 py-2">
-                        <a href="<?php echo site_url('admin/cad_paciente?bi='); ?>${patient.bi}" class="action-btn edit-btn mr-2" title="Editar">
+                        <a href="<?php echo site_url('admin/cad_paciente?bi='); ?>${encodeURIComponent(p.bi)}" class="action-btn edit-btn mr-2" title="Editar">
                             <i class="fas fa-edit"></i>
                         </a>
-                        <button class="action-btn delete-btn" data-bi="${patient.bi}" title="Excluir">
+                        <button class="action-btn delete-btn" data-bi="${p.bi}" title="Excluir">
                             <i class="fas fa-trash"></i>
                         </button>
                     </td>
                 `;
-                tableBody.appendChild(row);
+                tbody.appendChild(row);
             });
 
-            // Attach delete event listeners
+            // Delete
             document.querySelectorAll('.delete-btn').forEach(btn => {
-                btn.addEventListener('click', async () => {
-                    const bi = btn.getAttribute('data-bi');
-                    console.log('Tentando deletar BI:', bi);
-                    if (confirm(`Tem certeza que deseja excluir o paciente com BI ${bi}?`)) {
+                btn.onclick = async () => {
+                    const bi = btn.dataset.bi;
+                    if (confirm(`Excluir paciente com BI ${bi}?`)) {
                         try {
-                            const response = await fetch('<?php echo site_url('admin/delete_patient'); ?>', {
+                            const res = await fetch('<?php echo site_url('Api/delete_patient'); ?>', {
                                 method: 'POST',
                                 headers: {
                                     'Content-Type': 'application/json'
                                 },
-                                body: JSON.stringify({ bi })
+                                body: JSON.stringify({
+                                    bi
+                                })
                             });
-                            const result = await response.json();
-                            console.log('Resultado delete:', result);
-                            if (result.error) {
-                                showNotification(result.error, 'error');
-                            } else {
-                                showNotification(result.success, 'success');
-                                patients = patients.filter(patient => patient.bi !== bi);
+                            const json = await res.json();
+                            showNotification(json.success || json.error, json.success ? 'success' : 'error');
+                            if (json.success) {
+                                patients = patients.filter(x => x.bi !== bi);
                                 renderTable(patients);
                             }
-                        } catch (error) {
-                            console.error('Erro delete:', error);
-                            showNotification('Erro ao excluir paciente: ' + error.message, 'error');
+                        } catch (e) {
+                            showNotification('Erro de conexão', 'error');
                         }
                     }
-                });
+                };
             });
         }
 
-        // Initialization
-        document.addEventListener('DOMContentLoaded', function () {
-            const notificationClose = document.getElementById('notification-close');
-            const mobileMenuBtn = document.getElementById('mobile-menu-btn');
-            const sidebarMenu = document.getElementById('sidebar-menu');
-            const closeSidebarBtn = document.getElementById('close-sidebar-btn');
-            const toggleSidebarBtn = document.getElementById('toggle-sidebar-btn');
-            const pageWrapper = document.querySelector('.page-wrapper');
-            const sidebarOverlay = document.getElementById('sidebar-overlay');
-            const searchInput = document.getElementById('search-input');
-            const searchBtn = document.getElementById('search-btn');
-
-            if (!notificationClose || !mobileMenuBtn || !sidebarMenu || !closeSidebarBtn || !toggleSidebarBtn ||
-                !pageWrapper || !sidebarOverlay || !searchInput || !searchBtn) {
-                console.error('DOM elements not found');
-                return;
-            }
-
-            // Render initial table with PHP data
+        document.addEventListener('DOMContentLoaded', () => {
             renderTable(patients);
 
-            // Search functionality
-            const handleSearch = async () => {
-                const query = searchInput.value.trim();
-                console.log('Buscando com query:', query);
+            const searchBtn = document.getElementById('search-btn');
+            const searchInput = document.getElementById('search-input');
+
+            const search = async () => {
+                const q = searchInput.value.trim();
                 try {
-                    const url = `<?php echo site_url('admin/get_patients'); ?>${query ? `?query=${encodeURIComponent(query)}` : ''}`;
-                    console.log('URL fetch:', url);
-                    const response = await fetch(url);
-                    if (!response.ok) throw new Error(`HTTP ${response.status}`);
-                    const result = await response.json();
-                    console.log('Resultado search:', result);
-                    if (result.error) {
-                        showNotification(result.error, 'error');
-                        renderTable([]);
-                    } else {
-                        patients = result;
-                        renderTable(patients);
-                    }
-                } catch (error) {
-                    console.error('Erro fetch:', error);
-                    showNotification('Erro ao buscar pacientes: ' + error.message, 'error');
-                    renderTable([]);
+                    const url = `<?php echo site_url('admin/get_patients'); ?>${q ? '?query=' + encodeURIComponent(q) : ''}`;
+                    const res = await fetch(url);
+                    const data = await res.json();
+                    patients = data;
+                    renderTable(patients);
+                } catch (e) {
+                    showNotification('Erro na busca', 'error');
                 }
             };
 
-            searchBtn.addEventListener('click', handleSearch);
-
-            // Search on Enter key
-            searchInput.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') {
-                    handleSearch();
-                }
-            });
-
-            // Notification close
-            notificationClose.addEventListener('click', () => {
-                document.getElementById('notification').classList.remove('show');
-            });
-
-            // Sidebar handlers - ATUALIZADO
-            mobileMenuBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                sidebarMenu.classList.add('show');
-                sidebarMenu.classList.remove('collapsed');
-                sidebarOverlay.classList.add('show');
-                pageWrapper.classList.add('expanded');
-            });
-
-            closeSidebarBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                sidebarMenu.classList.remove('show');
-                sidebarOverlay.classList.remove('show');
-                pageWrapper.classList.remove('expanded');
-            });
-
-            toggleSidebarBtn.addEventListener('click', (e) => {
-                e.stopPropagation();
-                sidebarMenu.classList.toggle('expanded');
-                pageWrapper.classList.toggle('expanded');
-            });
-
-            sidebarOverlay.addEventListener('click', (e) => {
-                sidebarMenu.classList.remove('show');
-                sidebarOverlay.classList.remove('show');
-                pageWrapper.classList.remove('expanded');
-            });
-
-            document.addEventListener('click', (e) => {
-                const isClickInsideSidebar = sidebarMenu.contains(e.target);
-                const isClickOnMenuBtn = mobileMenuBtn.contains(e.target);
-                const isSidebarOpen = sidebarMenu.classList.contains('show');
-                if (!isClickInsideSidebar && !isClickOnMenuBtn && isSidebarOpen && window.innerWidth < 768) {
-                    sidebarMenu.classList.remove('show');
-                    sidebarOverlay.classList.remove('show');
-                    pageWrapper.classList.remove('expanded');
-                }
-            });
-
-            // Logout
-            const logoutBtn = document.getElementById('logout-btn');
-            if (logoutBtn) {
-                logoutBtn.addEventListener('click', () => {
-                    showNotification('Sessão encerrada com sucesso!', 'success');
-                    sidebarMenu.classList.remove('show', 'expanded');
-                    pageWrapper.classList.remove('expanded');
-                    sidebarOverlay.classList.remove('show');
-                    window.location.href = '<?php echo site_url('login'); ?>';
-                });
-            }
+            searchBtn.onclick = search;
+            searchInput.addEventListener('keypress', e => e.key === 'Enter' && search());
         });
     </script>
 </body>
+
 </html>

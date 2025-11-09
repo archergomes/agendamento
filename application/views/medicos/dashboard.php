@@ -369,25 +369,9 @@
                         <i class="fas fa-users"></i>
                         <span class="sidebar-text">Meus Pacientes</span>
                     </a>
-                    <a href="<?php echo site_url('medico/prontuarios'); ?>" class="block text-gray-700">
-                        <i class="fas fa-file-medical"></i>
-                        <span class="sidebar-text">Prontuários</span>
-                    </a>
-                    <a href="<?php echo site_url('medico/prescricoes'); ?>" class="block text-gray-700">
-                        <i class="fas fa-prescription"></i>
-                        <span class="sidebar-text">Prescrições</span>
-                    </a>
-                    <a href="<?php echo site_url('medico/laudos'); ?>" class="block text-gray-700">
-                        <i class="fas fa-file-medical-alt"></i>
-                        <span class="sidebar-text">Laudos</span>
-                    </a>
                     <a href="<?php echo site_url('medico/horarios'); ?>" class="block text-gray-700">
                         <i class="fas fa-clock"></i>
                         <span class="sidebar-text">Meus Horários</span>
-                    </a>
-                    <a href="<?php echo site_url('medico/relatorios'); ?>" class="block text-gray-700">
-                        <i class="fas fa-chart-bar"></i>
-                        <span class="sidebar-text">Relatórios</span>
                     </a>
                     <a href="<?php echo site_url('medico/perfil'); ?>" class="block text-gray-700">
                         <i class="fas fa-user-md"></i>
@@ -410,8 +394,8 @@
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="text-right hidden md:block">
-                        <p class="text-sm">Dr. <?php echo $medico_nome ?? 'Médico'; ?></p>
-                        <p class="text-xs text-blue-200"><?php echo $especialidade ?? 'Especialidade'; ?></p>
+                        <p class="text-sm">Dr. <?php echo $medico_nome ?? 'Carlos Silva'; ?></p>
+                        <p class="text-xs text-blue-200"><?php echo $especialidade ?? 'Cardiologia'; ?></p>
                     </div>
                     <button id="mobile-menu-btn" class="md:hidden text-white hover:text-blue-200" aria-label="Abrir menu">
                         <i class="fas fa-bars text-2xl"></i>
@@ -425,7 +409,7 @@
             <div class="container mx-auto px-4 py-8">
                 <!-- Welcome Section -->
                 <div class="mb-8">
-                    <h2 class="text-2xl font-semibold text-gray-800 mb-2">Bem-vindo, Dr. <?php echo $medico_nome ?? 'Médico'; ?></h2>
+                    <h2 class="text-2xl font-semibold text-gray-800 mb-2">Bem-vindo, Dr. <?php echo $medico_nome ?? 'Carlos Silva'; ?></h2>
                     <p class="text-gray-600">Aqui está o resumo das suas atividades médicas hoje.</p>
                 </div>
 
@@ -435,7 +419,7 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <h3 class="text-lg font-medium text-gray-700 mb-2">Consultas Hoje</h3>
-                                <p id="consultas-hoje" class="text-3xl font-bold text-blue-600">0</p>
+                                <p id="consultas-hoje" class="text-3xl font-bold text-blue-600">8</p>
                             </div>
                             <i class="fas fa-calendar-day text-2xl text-blue-600"></i>
                         </div>
@@ -446,33 +430,33 @@
                         <div class="flex items-center justify-between">
                             <div>
                                 <h3 class="text-lg font-medium text-gray-700 mb-2">Pacientes Ativos</h3>
-                                <p id="pacientes-ativos" class="text-3xl font-bold text-green-600">0</p>
+                                <p id="pacientes-ativos" class="text-3xl font-bold text-green-600">42</p>
                             </div>
                             <i class="fas fa-user-injured text-2xl text-green-600"></i>
                         </div>
                         <p class="text-sm text-gray-600 mt-2">Em acompanhamento</p>
                     </div>
 
-                    <div class="metric-card cursor-pointer" onclick="showPrescricoes()">
+                    <div class="metric-card cursor-pointer" onclick="showConsultas()">
                         <div class="flex items-center justify-between">
                             <div>
-                                <h3 class="text-lg font-medium text-gray-700 mb-2">Prescrições</h3>
-                                <p id="prescricoes-pendentes" class="text-3xl font-bold text-orange-600">0</p>
+                                <h3 class="text-lg font-medium text-gray-700 mb-2">Consultas da Semana</h3>
+                                <p id="consultas-semana" class="text-3xl font-bold text-orange-600">24</p>
                             </div>
-                            <i class="fas fa-prescription-bottle-alt text-2xl text-orange-600"></i>
+                            <i class="fas fa-calendar-week text-2xl text-orange-600"></i>
                         </div>
-                        <p class="text-sm text-gray-600 mt-2">Para elaborar</p>
+                        <p class="text-sm text-gray-600 mt-2">Agendadas esta semana</p>
                     </div>
 
-                    <div class="metric-card cursor-pointer" onclick="showLaudos()">
+                    <div class="metric-card cursor-pointer" onclick="showConsultas()">
                         <div class="flex items-center justify-between">
                             <div>
-                                <h3 class="text-lg font-medium text-gray-700 mb-2">Laudos</h3>
-                                <p id="laudos-pendentes" class="text-3xl font-bold text-purple-600">0</p>
+                                <h3 class="text-lg font-medium text-gray-700 mb-2">Disponibilidade</h3>
+                                <p id="horarios-disponiveis" class="text-3xl font-bold text-purple-600">85%</p>
                             </div>
-                            <i class="fas fa-file-medical-alt text-2xl text-purple-600"></i>
+                            <i class="fas fa-clock text-2xl text-purple-600"></i>
                         </div>
-                        <p class="text-sm text-gray-600 mt-2">Aguardando emissão</p>
+                        <p class="text-sm text-gray-600 mt-2">Horários livres esta semana</p>
                     </div>
                 </div>
 
@@ -480,7 +464,7 @@
                     <!-- Próximas Consultas -->
                     <div class="bg-white rounded-lg shadow-md p-6">
                         <div class="flex justify-between items-center mb-4">
-                            <h3 class="text-lg font-medium text-gray-700">Próximas Consultas</h3>
+                            <h3 class="text-lg font-medium text-gray-700">Próximas Consultas de Hoje</h3>
                             <a href="<?php echo site_url('medico/consultas'); ?>" class="text-blue-600 hover:text-blue-800 text-sm">
                                 Ver todas
                             </a>
@@ -498,17 +482,17 @@
                                 <i class="fas fa-plus-circle"></i>
                                 Nova Consulta
                             </button>
-                            <button onclick="novaPrescricao()" class="action-btn w-full text-left flex items-center gap-3">
-                                <i class="fas fa-prescription"></i>
-                                Nova Prescrição
+                            <button onclick="verPacientes()" class="action-btn w-full text-left flex items-center gap-3">
+                                <i class="fas fa-users"></i>
+                                Ver Meus Pacientes
                             </button>
-                            <button onclick="novoLaudo()" class="action-btn w-full text-left flex items-center gap-3">
-                                <i class="fas fa-file-medical"></i>
-                                Novo Laudo
+                            <button onclick="verHorarios()" class="action-btn w-full text-left flex items-center gap-3">
+                                <i class="fas fa-clock"></i>
+                                Gerenciar Horários
                             </button>
-                            <button onclick="verProntuarios()" class="action-btn w-full text-left flex items-center gap-3">
-                                <i class="fas fa-file-medical-alt"></i>
-                                Ver Prontuários
+                            <button onclick="verPerfil()" class="action-btn w-full text-left flex items-center gap-3">
+                                <i class="fas fa-user-md"></i>
+                                Meu Perfil
                             </button>
                         </div>
 
@@ -534,6 +518,87 @@
     </div>
 
     <script>
+        // Dados fictícios
+        const dadosFicticios = {
+            metricas: {
+                consultas_hoje: 8,
+                pacientes_ativos: 42,
+                consultas_semana: 24,
+                horarios_disponiveis: '85%'
+            },
+            consultas: [
+                {
+                    id: 1,
+                    paciente_nome: "Maria Santos",
+                    motivo: "Consulta de rotina - Hipertensão",
+                    hora: "09:00",
+                    status: "scheduled",
+                    urgente: false
+                },
+                {
+                    id: 2,
+                    paciente_nome: "João Pereira",
+                    motivo: "Acompanhamento pós-cirúrgico",
+                    hora: "10:30",
+                    status: "scheduled",
+                    urgente: false
+                },
+                {
+                    id: 3,
+                    paciente_nome: "Ana Costa",
+                    motivo: "Dor no peito - Urgente",
+                    hora: "11:15",
+                    status: "scheduled",
+                    urgente: true
+                },
+                {
+                    id: 4,
+                    paciente_nome: "Pedro Mendes",
+                    motivo: "Resultados de exames",
+                    hora: "14:00",
+                    status: "scheduled",
+                    urgente: false
+                }
+            ],
+            agenda: [
+                {
+                    hora: "08:00",
+                    descricao: "Reunião da equipe médica",
+                    tipo: "reuniao"
+                },
+                {
+                    hora: "12:00",
+                    descricao: "Intervalo para almoço",
+                    tipo: "intervalo"
+                },
+                {
+                    hora: "16:30",
+                    descricao: "Visita aos pacientes internados",
+                    tipo: "visita"
+                }
+            ],
+            alertas: [
+                {
+                    titulo: "Paciente com exames pendentes",
+                    descricao: "3 pacientes aguardam resultados de exames",
+                    prioridade: "media",
+                    data: "Hoje às 08:00"
+                },
+                {
+                    titulo: "Reunião de equipe",
+                    descricao: "Reunião marcada para hoje às 08:00",
+                    prioridade: "alta",
+                    data: "Hoje às 08:00"
+                },
+                {
+                    titulo: "Horários disponíveis",
+                    descricao: "Você tem 5 horários livres esta semana",
+                    prioridade: "baixa",
+                    data: "Esta semana"
+                }
+            ]
+        };
+
         // Função para exibir notificações
         function showNotification(message, type = 'info') {
             const notification = document.getElementById('notification');
@@ -550,135 +615,126 @@
         }
 
         // Carregar métricas do médico
-        async function loadMetrics() {
-            try {
-                const response = await fetch('<?php echo site_url('api/medico/metrics'); ?>');
-                const data = await response.json();
-                
-                if (data.error) {
-                    showNotification(data.error, 'error');
-                    return;
-                }
-
-                // Atualizar métricas
-                document.getElementById('consultas-hoje').textContent = data.consultas_hoje || 0;
-                document.getElementById('pacientes-ativos').textContent = data.pacientes_ativos || 0;
-                document.getElementById('prescricoes-pendentes').textContent = data.prescricoes_pendentes || 0;
-                document.getElementById('laudos-pendentes').textContent = data.laudos_pendentes || 0;
-
-            } catch (error) {
-                showNotification('Erro ao carregar métricas.', 'error');
-                console.error('Erro ao carregar métricas:', error);
-            }
+        function loadMetrics() {
+            // Atualizar métricas com dados fictícios
+            document.getElementById('consultas-hoje').textContent = dadosFicticios.metricas.consultas_hoje;
+            document.getElementById('pacientes-ativos').textContent = dadosFicticios.metricas.pacientes_ativos;
+            document.getElementById('consultas-semana').textContent = dadosFicticios.metricas.consultas_semana;
+            document.getElementById('horarios-disponiveis').textContent = dadosFicticios.metricas.horarios_disponiveis;
         }
 
         // Carregar próximas consultas
-        async function loadProximasConsultas() {
-            try {
-                const response = await fetch('<?php echo site_url('api/medico/proximas_consultas'); ?>');
-                const consultas = await response.json();
-                
-                const container = document.getElementById('proximas-consultas');
-                if (!container) return;
+        function loadProximasConsultas() {
+            const container = document.getElementById('proximas-consultas');
+            if (!container) return;
 
-                if (consultas.error) {
-                    container.innerHTML = '<p class="text-gray-600 text-center">Erro ao carregar consultas.</p>';
-                    return;
-                }
+            if (dadosFicticios.consultas.length === 0) {
+                container.innerHTML = '<p class="text-gray-600 text-center">Nenhuma consulta agendada para hoje.</p>';
+                return;
+            }
 
-                if (consultas.length === 0) {
-                    container.innerHTML = '<p class="text-gray-600 text-center">Nenhuma consulta agendada.</p>';
-                    return;
-                }
-
-                container.innerHTML = consultas.map(consulta => `
-                    <div class="appointment-card ${consulta.urgente ? 'urgent' : ''}">
-                        <div class="flex justify-between items-start mb-2">
-                            <div>
-                                <h4 class="font-medium text-gray-800">${consulta.paciente_nome}</h4>
-                                <p class="text-sm text-gray-600">${consulta.motivo}</p>
-                            </div>
-                            <span class="status-badge status-${consulta.status}">${consulta.status}</span>
+            container.innerHTML = dadosFicticios.consultas.map(consulta => `
+                <div class="appointment-card ${consulta.urgente ? 'urgent' : ''}">
+                    <div class="flex justify-between items-start mb-2">
+                        <div>
+                            <h4 class="font-medium text-gray-800">${consulta.paciente_nome}</h4>
+                            <p class="text-sm text-gray-600">${consulta.motivo}</p>
                         </div>
-                        <div class="flex justify-between items-center text-sm">
-                            <span class="text-gray-700">
-                                <i class="fas fa-clock mr-1"></i>${consulta.hora}
-                            </span>
-                            <div class="flex gap-2">
-                                <button onclick="iniciarConsulta(${consulta.id})" class="action-btn success text-xs">
-                                    Iniciar
-                                </button>
-                                <button onclick="detalhesConsulta(${consulta.id})" class="action-btn text-xs">
-                                    Detalhes
-                                </button>
-                            </div>
+                        <span class="status-badge status-scheduled">Agendada</span>
+                    </div>
+                    <div class="flex justify-between items-center text-sm">
+                        <span class="text-gray-700">
+                            <i class="fas fa-clock mr-1"></i>${consulta.hora}
+                        </span>
+                        <div class="flex gap-2">
+                            <button onclick="iniciarConsulta(${consulta.id})" class="action-btn success text-xs">
+                                Iniciar
+                            </button>
+                            <button onclick="detalhesConsulta(${consulta.id})" class="action-btn text-xs">
+                                Detalhes
+                            </button>
                         </div>
                     </div>
-                `).join('');
-
-            } catch (error) {
-                console.error('Erro ao carregar consultas:', error);
-                showNotification('Erro ao carregar consultas.', 'error');
-            }
+                </div>
+            `).join('');
         }
 
         // Carregar agenda do dia
-        async function loadAgendaHoje() {
-            try {
-                const response = await fetch('<?php echo site_url('api/medico/agenda_hoje'); ?>');
-                const agenda = await response.json();
+        function loadAgendaHoje() {
+            const container = document.getElementById('agenda-hoje');
+            if (!container) return;
+
+            if (dadosFicticios.agenda.length === 0) {
+                container.innerHTML = '<p class="text-gray-600 text-center">Nenhum compromisso adicional hoje.</p>';
+                return;
+            }
+
+            container.innerHTML = dadosFicticios.agenda.map(item => {
+                let tipoClass = 'status-scheduled';
+                let tipoTexto = 'Compromisso';
                 
-                const container = document.getElementById('agenda-hoje');
-                if (!container) return;
-
-                if (agenda.error || agenda.length === 0) {
-                    container.innerHTML = '<p class="text-gray-600 text-center">Nenhum compromisso hoje.</p>';
-                    return;
+                if (item.tipo === 'reuniao') {
+                    tipoClass = 'status-in-progress';
+                    tipoTexto = 'Reunião';
+                } else if (item.tipo === 'intervalo') {
+                    tipoClass = 'status-completed';
+                    tipoTexto = 'Intervalo';
+                } else if (item.tipo === 'visita') {
+                    tipoClass = 'status-scheduled';
+                    tipoTexto = 'Visita';
                 }
-
-                container.innerHTML = agenda.map(item => `
+                
+                return `
                     <div class="flex justify-between items-center p-2 border rounded">
                         <div>
                             <span class="font-medium text-gray-700">${item.hora}</span>
                             <span class="text-sm text-gray-600 ml-2">${item.descricao}</span>
                         </div>
-                        <span class="status-badge status-${item.tipo}">${item.tipo}</span>
+                        <span class="status-badge ${tipoClass}">${tipoTexto}</span>
                     </div>
-                `).join('');
-
-            } catch (error) {
-                console.error('Erro ao carregar agenda:', error);
-            }
+                `;
+            }).join('');
         }
 
         // Carregar alertas e lembretes
-        async function loadAlertas() {
-            try {
-                const response = await fetch('<?php echo site_url('api/medico/alertas'); ?>');
-                const alertas = await response.json();
+        function loadAlertas() {
+            const container = document.getElementById('alertas-lembretes');
+            if (!container) return;
+
+            if (dadosFicticios.alertas.length === 0) {
+                container.innerHTML = '<p class="text-gray-600 text-center">Nenhum alerta no momento.</p>';
+                return;
+            }
+
+            container.innerHTML = dadosFicticios.alertas.map(alerta => {
+                let bgColor = 'bg-yellow-50';
+                let borderColor = 'border-yellow-200';
+                let icon = 'fa-info-circle';
+                let iconColor = 'text-yellow-600';
                 
-                const container = document.getElementById('alertas-lembretes');
-                if (!container) return;
-
-                if (alertas.error || alertas.length === 0) {
-                    container.innerHTML = '<p class="text-gray-600 text-center">Nenhum alerta no momento.</p>';
-                    return;
+                if (alerta.prioridade === 'alta') {
+                    bgColor = 'bg-red-50';
+                    borderColor = 'border-red-200';
+                    icon = 'fa-exclamation-triangle';
+                    iconColor = 'text-red-600';
+                } else if (alerta.prioridade === 'baixa') {
+                    bgColor = 'bg-blue-50';
+                    borderColor = 'border-blue-200';
+                    icon = 'fa-info-circle';
+                    iconColor = 'text-blue-600';
                 }
-
-                container.innerHTML = alertas.map(alerta => `
-                    <div class="flex items-start gap-3 p-3 border rounded mb-2 ${alerta.prioridade === 'alta' ? 'bg-red-50 border-red-200' : 'bg-yellow-50 border-yellow-200'}">
-                        <i class="fas ${alerta.prioridade === 'alta' ? 'fa-exclamation-triangle text-red-600' : 'fa-info-circle text-yellow-600'} mt-1"></i>
+                
+                return `
+                    <div class="flex items-start gap-3 p-3 border rounded mb-2 ${bgColor} ${borderColor}">
+                        <i class="fas ${icon} ${iconColor} mt-1"></i>
                         <div class="flex-1">
                             <p class="text-sm font-medium text-gray-800">${alerta.titulo}</p>
                             <p class="text-sm text-gray-600">${alerta.descricao}</p>
                             <p class="text-xs text-gray-500 mt-1">${alerta.data}</p>
                         </div>
                     </div>
-                `).join('');
-
-            } catch (error) {
-                console.error('Erro ao carregar alertas:', error);
-            }
+                `;
+            }).join('');
         }
 
         // Funções de ação
@@ -690,46 +746,36 @@
             window.location.href = '<?php echo site_url('medico/pacientes'); ?>';
         }
 
-        function showPrescricoes() {
-            window.location.href = '<?php echo site_url('medico/prescricoes'); ?>';
-        }
-
-        function showLaudos() {
-            window.location.href = '<?php echo site_url('medico/laudos'); ?>';
-        }
-
         function novaConsulta() {
             showNotification('Redirecionando para nova consulta...', 'info');
             setTimeout(() => {
-                window.location.href = '<?php echo site_url('medico/nova_consulta'); ?>';
+                window.location.href = '<?php echo site_url('admin/cad_agendamento'); ?>';
             }, 1000);
         }
 
-        function novaPrescricao() {
-            showNotification('Redirecionando para nova prescrição...', 'info');
-            setTimeout(() => {
-                window.location.href = '<?php echo site_url('medico/nova_prescricao'); ?>';
-            }, 1000);
+        function verPacientes() {
+            window.location.href = '<?php echo site_url('medico/pacientes'); ?>';
         }
 
-        function novoLaudo() {
-            showNotification('Redirecionando para novo laudo...', 'info');
-            setTimeout(() => {
-                window.location.href = '<?php echo site_url('medico/novo_laudo'); ?>';
-            }, 1000);
+        function verHorarios() {
+            window.location.href = '<?php echo site_url('medico/horarios'); ?>';
         }
 
-        function verProntuarios() {
-            window.location.href = '<?php echo site_url('medico/prontuarios'); ?>';
+        function verPerfil() {
+            window.location.href = '<?php echo site_url('medico/perfil'); ?>';
         }
 
         function iniciarConsulta(consultaId) {
-            showNotification('Iniciando consulta...', 'info');
-            window.location.href = `<?php echo site_url('medico/consulta/'); ?>${consultaId}`;
+            showNotification(`Iniciando consulta #${consultaId}...`, 'info');
+            // Simulação - em produção redirecionaria para a página da consulta
+            setTimeout(() => {
+                showNotification('Consulta iniciada com sucesso!', 'success');
+            }, 1500);
         }
 
         function detalhesConsulta(consultaId) {
-            window.location.href = `<?php echo site_url('medico/consulta/detalhes/'); ?>${consultaId}`;
+            showNotification(`Abrindo detalhes da consulta #${consultaId}...`, 'info');
+            // Simulação - em produção redirecionaria para os detalhes da consulta
         }
 
         // Inicialização
@@ -791,7 +837,7 @@
                 }
             });
 
-            // Carregar dados iniciais
+            // Carregar dados fictícios
             loadMetrics();
             loadProximasConsultas();
             loadAgendaHoje();

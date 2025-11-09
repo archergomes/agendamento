@@ -295,6 +295,11 @@
             color: #d97706;
         }
 
+        .badge-secondary {
+            background-color: #e5e7eb;
+            color: #374151;
+        }
+
         .form-group {
             margin-bottom: 1.5rem;
         }
@@ -408,6 +413,13 @@
             border-radius: 0.5rem;
             padding: 1.5rem;
             text-align: center;
+            transition: transform 0.2s, box-shadow 0.2s;
+            cursor: pointer;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
         }
 
         .stat-value {
@@ -429,6 +441,7 @@
             display: flex;
             border-bottom: 1px solid #e5e7eb;
             margin-bottom: 1.5rem;
+            flex-wrap: wrap;
         }
 
         .tab-button {
@@ -581,6 +594,37 @@
             display: flex;
         }
 
+        .specialty-badge {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 1rem;
+            border-radius: 1rem;
+            font-size: 0.875rem;
+            font-weight: 500;
+            margin-right: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .specialty-cardiology {
+            background-color: #fee2e2;
+            color: #dc2626;
+        }
+
+        .specialty-dermatology {
+            background-color: #fef3c7;
+            color: #d97706;
+        }
+
+        .specialty-pediatrics {
+            background-color: #d1fae5;
+            color: #065f46;
+        }
+
+        .specialty-orthopedics {
+            background-color: #e0e7ff;
+            color: #3730a3;
+        }
+
         @media (max-width: 768px) {
             .profile-header {
                 flex-direction: column;
@@ -593,6 +637,10 @@
 
             .tab-button {
                 text-align: left;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
             }
         }
     </style>
@@ -635,25 +683,9 @@
                         <i class="fas fa-users"></i>
                         <span class="sidebar-text">Meus Pacientes</span>
                     </a>
-                    <a href="<?php echo site_url('medico/prontuarios'); ?>" class="block text-gray-700">
-                        <i class="fas fa-file-medical"></i>
-                        <span class="sidebar-text">Prontuários</span>
-                    </a>
-                    <a href="<?php echo site_url('medico/prescricoes'); ?>" class="block text-gray-700">
-                        <i class="fas fa-prescription"></i>
-                        <span class="sidebar-text">Prescrições</span>
-                    </a>
-                    <a href="<?php echo site_url('medico/laudos'); ?>" class="block text-gray-700">
-                        <i class="fas fa-file-medical-alt"></i>
-                        <span class="sidebar-text">Laudos</span>
-                    </a>
                     <a href="<?php echo site_url('medico/horarios'); ?>" class="block text-gray-700">
                         <i class="fas fa-clock"></i>
                         <span class="sidebar-text">Meus Horários</span>
-                    </a>
-                    <a href="<?php echo site_url('medico/relatorios'); ?>" class="block text-gray-700">
-                        <i class="fas fa-chart-bar"></i>
-                        <span class="sidebar-text">Relatórios</span>
                     </a>
                     <a href="<?php echo site_url('medico/perfil'); ?>" class="block text-gray-700 active">
                         <i class="fas fa-user-md"></i>
@@ -676,8 +708,8 @@
                 </div>
                 <div class="flex items-center gap-4">
                     <div class="text-right hidden md:block">
-                        <p class="text-sm">Dr. <?php echo $medico_nome ?? 'Médico'; ?></p>
-                        <p class="text-xs text-blue-200"><?php echo $especialidade ?? 'Especialidade'; ?></p>
+                        <p class="text-sm">Dr. Carlos Silva</p>
+                        <p class="text-xs text-blue-200">Cardiologista</p>
                     </div>
                     <button id="mobile-menu-btn" class="md:hidden text-white hover:text-blue-200" aria-label="Abrir menu">
                         <i class="fas fa-bars text-2xl"></i>
@@ -697,20 +729,20 @@
 
                 <!-- Stats Overview -->
                 <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-value" id="total-consultas">0</div>
+                    <div class="stat-card" onclick="showConsultasStats()">
+                        <div class="stat-value" id="total-consultas">1.248</div>
                         <div class="stat-label">Consultas Realizadas</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="total-pacientes">0</div>
+                    <div class="stat-card" onclick="showPacientesStats()">
+                        <div class="stat-value" id="total-pacientes">324</div>
                         <div class="stat-label">Pacientes Atendidos</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="avaliacao-media">0.0</div>
+                    <div class="stat-card" onclick="showAvaliacoesStats()">
+                        <div class="stat-value" id="avaliacao-media">4.8</div>
                         <div class="stat-label">Avaliação Média</div>
                     </div>
-                    <div class="stat-card">
-                        <div class="stat-value" id="anos-experiencia">0</div>
+                    <div class="stat-card" onclick="showExperienciaStats()">
+                        <div class="stat-value" id="anos-experiencia">12</div>
                         <div class="stat-label">Anos de Experiência</div>
                     </div>
                 </div>
@@ -719,7 +751,7 @@
                 <div class="profile-card">
                     <div class="profile-header">
                         <div class="avatar-upload">
-                            <img id="profile-avatar" src="<?php echo $avatar_url ?? 'https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&h=200&q=80'; ?>"
+                            <img id="profile-avatar" src="https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?ixlib=rb-4.0.3&ixid=MnwxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8&auto=format&fit=crop&w=200&h=200&q=80"
                                 alt="Avatar do Médico" class="profile-avatar">
                             <button class="avatar-upload-btn" onclick="document.getElementById('avatar-input').click()">
                                 <i class="fas fa-camera"></i>
@@ -727,13 +759,21 @@
                             <input type="file" id="avatar-input" class="file-input" accept="image/*" onchange="handleAvatarUpload(event)">
                         </div>
                         <div class="profile-info">
-                            <h2 id="profile-name">Dr. <?php echo $medico_nome ?? 'Nome do Médico'; ?></h2>
-                            <p id="profile-specialty"><?php echo $especialidade ?? 'Especialidade'; ?></p>
-                            <p id="profile-email"><?php echo $email ?? 'email@hospital.gov.mz'; ?></p>
-                            <p id="profile-phone"><?php echo $telefone ?? '+258 84 000 0000'; ?></p>
-                            <span class="badge badge-success" id="profile-status">
+                            <h2 id="profile-name">Dr. Carlos Silva</h2>
+                            <p id="profile-specialty">Cardiologista Sênior</p>
+                            <p id="profile-email">carlos.silva@hospital.gov.mz</p>
+                            <p id="profile-phone">+258 84 123 4567</p>
+                            <div class="flex flex-wrap mt-2">
+                                <span class="specialty-badge specialty-cardiology">
+                                    <i class="fas fa-heart mr-1"></i>Cardiologia
+                                </span>
+                                <span class="specialty-badge specialty-orthopedics">
+                                    <i class="fas fa-bone mr-1"></i>Ecocardiografia
+                                </span>
+                            </div>
+                            <span class="badge badge-success mt-2">
                                 <i class="fas fa-check-circle mr-1"></i>
-                                Ativo
+                                Ativo - CRM: 12345/SP
                             </span>
                         </div>
                     </div>
@@ -753,52 +793,57 @@
                                 <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                                     <div class="form-group">
                                         <label class="form-label">Nome Completo</label>
-                                        <input type="text" class="form-input" id="input-nome" value="<?php echo $medico_nome ?? ''; ?>" required>
+                                        <input type="text" class="form-input" id="input-nome" value="Dr. Carlos Silva" required>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">CRM</label>
-                                        <input type="text" class="form-input" id="input-crm" value="<?php echo $crm ?? ''; ?>" required>
+                                        <input type="text" class="form-input" id="input-crm" value="12345/SP" required>
                                     </div>
                                     <div class="form-group">
-                                        <label class="form-label">Especialidade</label>
+                                        <label class="form-label">Especialidade Principal</label>
                                         <select class="form-select" id="input-especialidade" required>
-                                            <option value="">Selecione uma especialidade</option>
-                                            <option value="Cardiologia" <?php echo ($especialidade ?? '') == 'Cardiologia' ? 'selected' : ''; ?>>Cardiologia</option>
-                                            <option value="Dermatologia" <?php echo ($especialidade ?? '') == 'Dermatologia' ? 'selected' : ''; ?>>Dermatologia</option>
-                                            <option value="Pediatria" <?php echo ($especialidade ?? '') == 'Pediatria' ? 'selected' : ''; ?>>Pediatria</option>
-                                            <option value="Ortopedia" <?php echo ($especialidade ?? '') == 'Ortopedia' ? 'selected' : ''; ?>>Ortopedia</option>
-                                            <option value="Ginecologia" <?php echo ($especialidade ?? '') == 'Ginecologia' ? 'selected' : ''; ?>>Ginecologia</option>
-                                            <option value="Neurologia" <?php echo ($especialidade ?? '') == 'Neurologia' ? 'selected' : ''; ?>>Neurologia</option>
+                                            <option value="Cardiologia" selected>Cardiologia</option>
+                                            <option value="Dermatologia">Dermatologia</option>
+                                            <option value="Pediatria">Pediatria</option>
+                                            <option value="Ortopedia">Ortopedia</option>
+                                            <option value="Ginecologia">Ginecologia</option>
+                                            <option value="Neurologia">Neurologia</option>
                                         </select>
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Telefone</label>
-                                        <input type="tel" class="form-input" id="input-telefone" value="<?php echo $telefone ?? ''; ?>">
+                                        <input type="tel" class="form-input" id="input-telefone" value="+258 84 123 4567">
                                     </div>
                                     <div class="form-group md:col-span-2">
                                         <label class="form-label">Email</label>
-                                        <input type="email" class="form-input" id="input-email" value="<?php echo $email ?? ''; ?>" required>
+                                        <input type="email" class="form-input" id="input-email" value="carlos.silva@hospital.gov.mz" required>
                                     </div>
                                     <div class="form-group md:col-span-2">
                                         <label class="form-label">Endereço</label>
-                                        <input type="text" class="form-input" id="input-endereco" value="<?php echo $endereco ?? ''; ?>">
+                                        <input type="text" class="form-input" id="input-endereco" value="Av. 25 de Setembro, 123 - Maputo">
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Data de Nascimento</label>
-                                        <input type="date" class="form-input" id="input-nascimento" value="<?php echo $data_nascimento ?? ''; ?>">
+                                        <input type="date" class="form-input" id="input-nascimento" value="1980-05-15">
                                     </div>
                                     <div class="form-group">
                                         <label class="form-label">Gênero</label>
                                         <select class="form-select" id="input-genero">
-                                            <option value="">Selecione</option>
-                                            <option value="M" <?php echo ($genero ?? '') == 'M' ? 'selected' : ''; ?>>Masculino</option>
-                                            <option value="F" <?php echo ($genero ?? '') == 'F' ? 'selected' : ''; ?>>Feminino</option>
-                                            <option value="O" <?php echo ($genero ?? '') == 'O' ? 'selected' : ''; ?>>Outro</option>
+                                            <option value="M" selected>Masculino</option>
+                                            <option value="F">Feminino</option>
+                                            <option value="O">Outro</option>
                                         </select>
                                     </div>
                                     <div class="form-group md:col-span-2">
-                                        <label class="form-label">Biografia</label>
-                                        <textarea class="form-textarea" id="input-biografia" placeholder="Descreva sua experiência e especializações..."><?php echo $biografia ?? ''; ?></textarea>
+                                        <label class="form-label">Biografia Profissional</label>
+                                        <textarea class="form-textarea" id="input-biografia" placeholder="Descreva sua experiência e especializações...">Cardiologista com 12 anos de experiência, especializado em ecocardiografia e doenças coronarianas. Membro da Sociedade Moçambicana de Cardiologia. Atua principalmente no tratamento de hipertensão arterial e insuficiência cardíaca.</textarea>
+                                    </div>
+                                    <div class="form-group md:col-span-2">
+                                        <label class="form-label">Formação Acadêmica</label>
+                                        <textarea class="form-textarea" id="input-formacao">• Graduação em Medicina - Universidade Eduardo Mondlane (2005)
+• Residência em Cardiologia - Hospital Central de Maputo (2008)
+• Especialização em Ecocardiografia - Instituto do Coração (2010)
+• Mestrado em Ciências Cardiovasculares - Universidade de Lisboa (2012)</textarea>
                                     </div>
                                 </div>
                                 <div class="flex gap-2 justify-end mt-6">
@@ -835,6 +880,7 @@
                                         <div class="flex items-center justify-between mb-4">
                                             <div>
                                                 <p class="text-sm text-gray-600">Proteja sua conta com verificação em duas etapas</p>
+                                                <p class="text-xs text-gray-500 mt-1">Status: <span class="badge badge-secondary">Desativado</span></p>
                                             </div>
                                             <button type="button" class="action-btn warning" onclick="toggleTwoFactor()" id="two-factor-btn">
                                                 Ativar 2FA
@@ -843,23 +889,56 @@
                                         <div id="two-factor-setup" class="hidden">
                                             <div class="qrcode-container">
                                                 <p class="text-sm text-gray-600 mb-2">Escaneie este código QR com seu aplicativo autenticador:</p>
-                                                <div id="qrcode" class="bg-white p-4 inline-block">
-                                                    <!-- QR Code será gerado aqui -->
+                                                <div id="qrcode" class="bg-white p-4 inline-block border rounded">
+                                                    <div class="text-center p-4">
+                                                        <i class="fas fa-qrcode text-4xl text-gray-400 mb-2"></i>
+                                                        <p class="text-sm text-gray-500">Simulação de QR Code</p>
+                                                        <p class="text-xs text-gray-400 mt-1">Chave: XK34-J8F7-MN21-PQ09</p>
+                                                    </div>
                                                 </div>
                                             </div>
                                             <div class="form-group">
                                                 <label class="form-label">Código de Verificação</label>
-                                                <input type="text" class="form-input" id="verification-code" placeholder="Digite o código do aplicativo">
+                                                <input type="text" class="form-input" id="verification-code" placeholder="Digite o código de 6 dígitos">
                                             </div>
                                             <div class="backup-codes">
                                                 <p class="text-sm font-semibold mb-2">Códigos de Backup (Guarde em local seguro):</p>
-                                                <div id="backup-codes-list"></div>
+                                                <div id="backup-codes-list" class="text-sm">
+                                                    <div>BKUP-1234-5678</div>
+                                                    <div>BKUP-9876-5432</div>
+                                                    <div>BKUP-1111-2222</div>
+                                                    <div>BKUP-3333-4444</div>
+                                                </div>
                                             </div>
                                             <div class="flex gap-2 mt-4">
                                                 <button type="button" class="action-btn secondary" onclick="cancelTwoFactorSetup()">Cancelar</button>
                                                 <button type="button" class="action-btn success" onclick="verifyTwoFactor()">Verificar e Ativar</button>
                                             </div>
                                         </div>
+                                    </div>
+
+                                    <!-- Sessões Ativas -->
+                                    <div class="two-factor-section">
+                                        <h4 class="font-semibold text-gray-800 mb-3">Sessões Ativas</h4>
+                                        <div class="space-y-3">
+                                            <div class="flex items-center justify-between p-3 border rounded">
+                                                <div>
+                                                    <p class="font-medium">Chrome - Windows 10</p>
+                                                    <p class="text-sm text-gray-600">Maputo, Moçambique • Ativa agora</p>
+                                                </div>
+                                                <button class="action-btn danger text-sm" onclick="terminateSession(this)">Terminar</button>
+                                            </div>
+                                            <div class="flex items-center justify-between p-3 border rounded">
+                                                <div>
+                                                    <p class="font-medium">Safari - iPhone</p>
+                                                    <p class="text-sm text-gray-600">Maputo, Moçambique • 2 horas atrás</p>
+                                                </div>
+                                                <button class="action-btn danger text-sm" onclick="terminateSession(this)">Terminar</button>
+                                            </div>
+                                        </div>
+                                        <button type="button" class="action-btn danger w-full mt-3" onclick="terminateAllSessions()">
+                                            Terminar Todas as Outras Sessões
+                                        </button>
                                     </div>
                                 </div>
                                 <div class="flex gap-2 justify-end mt-6">
@@ -881,6 +960,7 @@
                                                 <select class="form-select" id="pref-idioma">
                                                     <option value="pt" selected>Português</option>
                                                     <option value="en">English</option>
+                                                    <option value="es">Español</option>
                                                 </select>
                                             </div>
                                             <div class="form-group">
@@ -888,6 +968,7 @@
                                                 <select class="form-select" id="pref-fuso-horario">
                                                     <option value="Africa/Maputo" selected>Maputo (UTC+2)</option>
                                                     <option value="UTC">UTC</option>
+                                                    <option value="Europe/Lisbon">Lisboa (UTC+1)</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -917,17 +998,33 @@
                                     <div>
                                         <h4 class="font-semibold text-gray-800 mb-3">Preferências de Trabalho</h4>
                                         <div class="space-y-3">
-                                            <label class="flex items-center">
-                                                <input type="checkbox" class="mr-2" id="pref-consulta-online" <?php echo ($pref_consulta_online ?? false) ? 'checked' : ''; ?>>
-                                                <span>Permitir consultas online</span>
+                                            <label class="flex items-center justify-between p-3 border rounded">
+                                                <div>
+                                                    <span class="font-medium">Permitir consultas online</span>
+                                                    <p class="text-sm text-gray-600">Pacientes podem agendar consultas virtuais</p>
+                                                </div>
+                                                <input type="checkbox" class="mr-2" id="pref-consulta-online" checked>
                                             </label>
-                                            <label class="flex items-center">
-                                                <input type="checkbox" class="mr-2" id="pref-notificacao-email" <?php echo ($pref_notificacao_email ?? true) ? 'checked' : ''; ?>>
-                                                <span>Receber notificações por email</span>
+                                            <label class="flex items-center justify-between p-3 border rounded">
+                                                <div>
+                                                    <span class="font-medium">Receber notificações por email</span>
+                                                    <p class="text-sm text-gray-600">Alertas sobre novas consultas e mensagens</p>
+                                                </div>
+                                                <input type="checkbox" class="mr-2" id="pref-notificacao-email" checked>
                                             </label>
-                                            <label class="flex items-center">
-                                                <input type="checkbox" class="mr-2" id="pref-lembrete-consulta" <?php echo ($pref_lembrete_consulta ?? true) ? 'checked' : ''; ?>>
-                                                <span>Lembretes de consultas</span>
+                                            <label class="flex items-center justify-between p-3 border rounded">
+                                                <div>
+                                                    <span class="font-medium">Lembretes de consultas</span>
+                                                    <p class="text-sm text-gray-600">Notificações antes das consultas agendadas</p>
+                                                </div>
+                                                <input type="checkbox" class="mr-2" id="pref-lembrete-consulta" checked>
+                                            </label>
+                                            <label class="flex items-center justify-between p-3 border rounded">
+                                                <div>
+                                                    <span class="font-medium">Modo escuro</span>
+                                                    <p class="text-sm text-gray-600">Interface com tema escuro</p>
+                                                </div>
+                                                <input type="checkbox" class="mr-2" id="pref-modo-escuro">
                                             </label>
                                         </div>
                                     </div>
@@ -946,21 +1043,33 @@
                                     <div>
                                         <h4 class="font-semibold text-gray-800 mb-3">Notificações por Email</h4>
                                         <div class="space-y-3">
-                                            <label class="flex items-center justify-between">
-                                                <span>Novos agendamentos</span>
-                                                <input type="checkbox" class="mr-2" id="notif-novo-agendamento" <?php echo ($notif_novo_agendamento ?? true) ? 'checked' : ''; ?>>
+                                            <label class="flex items-center justify-between p-3 border rounded">
+                                                <div>
+                                                    <span class="font-medium">Novos agendamentos</span>
+                                                    <p class="text-sm text-gray-600">Quando um paciente agenda nova consulta</p>
+                                                </div>
+                                                <input type="checkbox" class="mr-2" id="notif-novo-agendamento" checked>
                                             </label>
-                                            <label class="flex items-center justify-between">
-                                                <span>Cancelamentos de consultas</span>
-                                                <input type="checkbox" class="mr-2" id="notif-cancelamento" <?php echo ($notif_cancelamento ?? true) ? 'checked' : ''; ?>>
+                                            <label class="flex items-center justify-between p-3 border rounded">
+                                                <div>
+                                                    <span class="font-medium">Cancelamentos de consultas</span>
+                                                    <p class="text-sm text-gray-600">Quando uma consulta é cancelada</p>
+                                                </div>
+                                                <input type="checkbox" class="mr-2" id="notif-cancelamento" checked>
                                             </label>
-                                            <label class="flex items-center justify-between">
-                                                <span>Lembretes de consultas</span>
-                                                <input type="checkbox" class="mr-2" id="notif-lembrete" <?php echo ($notif_lembrete ?? true) ? 'checked' : ''; ?>>
+                                            <label class="flex items-center justify-between p-3 border rounded">
+                                                <div>
+                                                    <span class="font-medium">Lembretes de consultas</span>
+                                                    <p class="text-sm text-gray-600">24 horas antes da consulta</p>
+                                                </div>
+                                                <input type="checkbox" class="mr-2" id="notif-lembrete" checked>
                                             </label>
-                                            <label class="flex items-center justify-between">
-                                                <span>Atualizações do sistema</span>
-                                                <input type="checkbox" class="mr-2" id="notif-atualizacao" <?php echo ($notif_atualizacao ?? true) ? 'checked' : ''; ?>>
+                                            <label class="flex items-center justify-between p-3 border rounded">
+                                                <div>
+                                                    <span class="font-medium">Atualizações do sistema</span>
+                                                    <p class="text-sm text-gray-600">Novas funcionalidades e manutenção</p>
+                                                </div>
+                                                <input type="checkbox" class="mr-2" id="notif-atualizacao" checked>
                                             </label>
                                         </div>
                                     </div>
@@ -968,17 +1077,26 @@
                                     <div>
                                         <h4 class="font-semibold text-gray-800 mb-3">Notificações no Sistema</h4>
                                         <div class="space-y-3">
-                                            <label class="flex items-center justify-between">
-                                                <span>Novas mensagens</span>
-                                                <input type="checkbox" class="mr-2" id="notif-nova-mensagem" <?php echo ($notif_nova_mensagem ?? true) ? 'checked' : ''; ?>>
+                                            <label class="flex items-center justify-between p-3 border rounded">
+                                                <div>
+                                                    <span class="font-medium">Novas mensagens</span>
+                                                    <p class="text-sm text-gray-600">Mensagens de pacientes e colegas</p>
+                                                </div>
+                                                <input type="checkbox" class="mr-2" id="notif-nova-mensagem" checked>
                                             </label>
-                                            <label class="flex items-center justify-between">
-                                                <span>Resultados de exames</span>
-                                                <input type="checkbox" class="mr-2" id="notif-resultado-exame" <?php echo ($notif_resultado_exame ?? true) ? 'checked' : ''; ?>>
+                                            <label class="flex items-center justify-between p-3 border rounded">
+                                                <div>
+                                                    <span class="font-medium">Resultados de exames</span>
+                                                    <p class="text-sm text-gray-600">Quando novos exames estão disponíveis</p>
+                                                </div>
+                                                <input type="checkbox" class="mr-2" id="notif-resultado-exame" checked>
                                             </label>
-                                            <label class="flex items-center justify-between">
-                                                <span>Alertas importantes</span>
-                                                <input type="checkbox" class="mr-2" id="notif-alerta" <?php echo ($notif_alerta ?? true) ? 'checked' : ''; ?>>
+                                            <label class="flex items-center justify-between p-3 border rounded">
+                                                <div>
+                                                    <span class="font-medium">Alertas importantes</span>
+                                                    <p class="text-sm text-gray-600">Alertas críticos do sistema</p>
+                                                </div>
+                                                <input type="checkbox" class="mr-2" id="notif-alerta" checked>
                                             </label>
                                         </div>
                                     </div>
@@ -991,6 +1109,19 @@
                                                 <option value="diario">Resumo Diário</option>
                                                 <option value="semanal">Resumo Semanal</option>
                                             </select>
+                                        </div>
+                                    </div>
+
+                                    <div>
+                                        <h4 class="font-semibold text-gray-800 mb-3">Notificações Push</h4>
+                                        <div class="space-y-3">
+                                            <label class="flex items-center justify-between p-3 border rounded">
+                                                <div>
+                                                    <span class="font-medium">Ativar notificações push</span>
+                                                    <p class="text-sm text-gray-600">Receber notificações no navegador</p>
+                                                </div>
+                                                <input type="checkbox" class="mr-2" id="notif-push" checked>
+                                            </label>
                                         </div>
                                     </div>
                                 </div>
@@ -1022,32 +1153,53 @@
     </div>
 
     <script>
-        // Dados do perfil
-        let profileData = <?php echo json_encode([
-            'nome' => $medico_nome ?? '',
-            'crm' => $crm ?? '',
-            'especialidade' => $especialidade ?? '',
-            'email' => $email ?? '',
-            'telefone' => $telefone ?? '',
-            'endereco' => $endereco ?? '',
-            'data_nascimento' => $data_nascimento ?? '',
-            'genero' => $genero ?? '',
-            'biografia' => $biografia ?? '',
-            'avatar_url' => $avatar_url ?? '',
-            'stats' => [
-                'consultas' => $total_consultas ?? 0,
-                'pacientes' => $total_pacientes ?? 0,
-                'avaliacao' => $avaliacao_media ?? 0.0,
-                'experiencia' => $anos_experiencia ?? 0
-            ]
-        ]); ?>;
+        // Dados fictícios do perfil
+        const profileData = {
+            nome: "Dr. Carlos Silva",
+            crm: "12345/SP",
+            especialidade: "Cardiologia",
+            email: "carlos.silva@hospital.gov.mz",
+            telefone: "+258 84 123 4567",
+            endereco: "Av. 25 de Setembro, 123 - Maputo",
+            data_nascimento: "1980-05-15",
+            genero: "M",
+            biografia: "Cardiologista com 12 anos de experiência...",
+            formacao: "• Graduação em Medicina - Universidade Eduardo Mondlane (2005)\n• Residência em Cardiologia - Hospital Central de Maputo (2008)",
+            stats: {
+                consultas: 1248,
+                pacientes: 324,
+                avaliacao: 4.8,
+                experiencia: 12
+            },
+            preferences: {
+                idioma: "pt",
+                fusoHorario: "Africa/Maputo",
+                formatoData: "dd/mm/yyyy",
+                formatoHora: "24",
+                consultaOnline: true,
+                notificacaoEmail: true,
+                lembreteConsulta: true,
+                modoEscuro: false
+            },
+            notifications: {
+                novoAgendamento: true,
+                cancelamento: true,
+                lembrete: true,
+                atualizacao: true,
+                novaMensagem: true,
+                resultadoExame: true,
+                alerta: true,
+                push: true,
+                frequencia: "imediato"
+            }
+        };
 
         // Função para exibir notificações
         function showNotification(message, type = 'info') {
             const notification = document.getElementById('notification');
             const messageEl = document.getElementById('notification-message');
             if (!notification || !messageEl) {
-                console.error('Elementos de notificação não encontrados');
+                console.error('Elementos de notificação não foram encontrados');
                 return;
             }
             messageEl.textContent = message;
@@ -1059,7 +1211,7 @@
 
         // Carregar estatísticas
         function loadStats() {
-            document.getElementById('total-consultas').textContent = profileData.stats.consultas;
+            document.getElementById('total-consultas').textContent = profileData.stats.consultas.toLocaleString();
             document.getElementById('total-pacientes').textContent = profileData.stats.pacientes;
             document.getElementById('avaliacao-media').textContent = profileData.stats.avaliacao.toFixed(1);
             document.getElementById('anos-experiencia').textContent = profileData.stats.experiencia;
@@ -1105,7 +1257,7 @@
             const reader = new FileReader();
             reader.onload = function(e) {
                 document.getElementById('profile-avatar').src = e.target.result;
-                // Aqui você enviaria a imagem para o servidor
+                // Simular upload para o servidor
                 showNotification('Avatar atualizado com sucesso!', 'success');
             };
             reader.readAsDataURL(file);
@@ -1141,7 +1293,6 @@
             if (setupDiv.classList.contains('hidden')) {
                 setupDiv.classList.remove('hidden');
                 button.textContent = 'Cancelar';
-                // Aqui você geraria o QR code e códigos de backup
                 generateTwoFactorSetup();
             } else {
                 setupDiv.classList.add('hidden');
@@ -1150,19 +1301,11 @@
         }
 
         function generateTwoFactorSetup() {
-            // Simulação de geração de QR code e códigos de backup
-            const backupCodes = Array.from({length: 8}, () => 
-                Math.random().toString(36).substr(2, 8).toUpperCase()
-            );
+            // Simulação de geração de códigos de backup
+            const backupCodes = ['BKUP-1234-5678', 'BKUP-9876-5432', 'BKUP-1111-2222', 'BKUP-3333-4444'];
             
             document.getElementById('backup-codes-list').innerHTML = 
-                backupCodes.map(code => `<div>${code}</div>`).join('');
-            
-            // Em uma implementação real, você geraria um QR code real aqui
-            document.getElementById('qrcode').innerHTML = 
-                '<div class="text-center p-4 border-2 border-dashed border-gray-300">' +
-                '<p class="text-sm text-gray-500">QR Code seria gerado aqui</p>' +
-                '</div>';
+                backupCodes.map(code => `<div class="mb-1">${code}</div>`).join('');
         }
 
         function verifyTwoFactor() {
@@ -1172,15 +1315,57 @@
                 return;
             }
             
-            // Simulação de verificação
+            // Simulação de verificação bem-sucedida
             showNotification('Autenticação de dois fatores ativada com sucesso!', 'success');
             document.getElementById('two-factor-setup').classList.add('hidden');
             document.getElementById('two-factor-btn').textContent = 'Desativar 2FA';
+            document.querySelector('.two-factor-section .badge').textContent = 'Ativado';
+            document.querySelector('.two-factor-section .badge').className = 'badge badge-success';
         }
 
         function cancelTwoFactorSetup() {
             document.getElementById('two-factor-setup').classList.add('hidden');
             document.getElementById('two-factor-btn').textContent = 'Ativar 2FA';
+        }
+
+        // Gestão de sessões
+        function terminateSession(button) {
+            const sessionDiv = button.closest('.flex.items-center');
+            showConfirmationModal(
+                'Terminar Sessão',
+                'Tem certeza que deseja terminar esta sessão?',
+                () => {
+                    sessionDiv.remove();
+                    showNotification('Sessão terminada com sucesso!', 'success');
+                }
+            );
+        }
+
+        function terminateAllSessions() {
+            showConfirmationModal(
+                'Terminar Todas as Sessões',
+                'Esta ação irá desconectar todas as outras sessões ativas. Tem certeza?',
+                () => {
+                    showNotification('Todas as outras sessões foram terminadas!', 'success');
+                }
+            );
+        }
+
+        // Ações das estatísticas
+        function showConsultasStats() {
+            showNotification(`Você realizou ${profileData.stats.consultas.toLocaleString()} consultas até o momento.`, 'info');
+        }
+
+        function showPacientesStats() {
+            showNotification(`Você atendeu ${profileData.stats.pacientes} pacientes diferentes.`, 'info');
+        }
+
+        function showAvaliacoesStats() {
+            showNotification(`Sua avaliação média é ${profileData.stats.avaliacao}/5.0 baseada em 287 avaliações.`, 'info');
+        }
+
+        function showExperienciaStats() {
+            showNotification(`Você possui ${profileData.stats.experiencia} anos de experiência médica.`, 'info');
         }
 
         // Form handlers
@@ -1219,19 +1404,23 @@
         // Reset forms
         function resetPersonalInfoForm() {
             document.getElementById('personal-info-form').reset();
+            showNotification('Alterações descartadas.', 'info');
         }
 
         function resetSecurityForm() {
             document.getElementById('security-form').reset();
             document.getElementById('password-strength').className = 'password-strength';
+            showNotification('Alterações descartadas.', 'info');
         }
 
         function resetPreferencesForm() {
             document.getElementById('preferences-form').reset();
+            showNotification('Alterações descartadas.', 'info');
         }
 
         function resetNotificationsForm() {
             document.getElementById('notifications-form').reset();
+            showNotification('Alterações descartadas.', 'info');
         }
 
         // Modal functions
@@ -1261,11 +1450,6 @@
             const toggleSidebarBtn = document.getElementById('toggle-sidebar-btn');
             const pageWrapper = document.querySelector('.page-wrapper');
             const sidebarOverlay = document.getElementById('sidebar-overlay');
-
-            if (!mobileMenuBtn || !sidebarMenu || !closeSidebarBtn || !toggleSidebarBtn || !pageWrapper || !sidebarOverlay) {
-                console.error('Um ou mais elementos do DOM não foram encontrados');
-                return;
-            }
 
             // Sidebar handlers
             mobileMenuBtn.addEventListener('click', (e) => {
@@ -1327,5 +1511,4 @@
         });
     </script>
 </body>
-
 </html>

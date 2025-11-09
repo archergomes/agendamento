@@ -14,6 +14,10 @@
             font-family: 'Roboto', sans-serif;
             margin: 0;
             padding: 0;
+            overflow-x: hidden;
+            max-width: 100vw;
+            position: relative;
+            background-color: #f8fafc;
         }
 
         #notification {
@@ -23,87 +27,104 @@
             right: 1rem;
             z-index: 1000;
             padding: 1rem;
-            border-radius: 0.25rem;
+            border-radius: 0.5rem;
             color: white;
             max-width: 300px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
         }
 
-        #notification.error { background-color: #ef4444; }
-        #notification.success { background-color: #10b981; }
-        #notification.info { background-color: #3b82f6; }
-        #notification.show { display: block; }
+        #notification.error {
+            background-color: #ef4444;
+        }
+
+        #notification.success {
+            background-color: #10b981;
+        }
+
+        #notification.info {
+            background-color: #3b82f6;
+        }
+
+        #notification.show {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            animation: slideIn 0.3s ease-out;
+        }
+
+        @keyframes slideIn {
+            from {
+                transform: translateX(100%);
+                opacity: 0;
+            }
+            to {
+                transform: translateX(0);
+                opacity: 1;
+            }
+        }
 
         .sidebar {
             position: fixed;
             top: 0;
-            left: 0;
-            height: 100vh;
-            width: 80px;
+            height: 100%;
+            width: 250px;
             background-color: white;
             box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
             transition: transform 0.3s ease-in-out, width 0.3s ease-in-out;
             z-index: 900;
-            display: flex;
+            display: none;
             flex-direction: column;
         }
 
         .sidebar.show {
+            display: flex;
             transform: translateX(0);
+        }
+
+        .sidebar.mobile {
+            left: 0;
+        }
+
+        .sidebar.mobile:not(.show) {
+            transform: translateX(-100%);
         }
 
         .sidebar.desktop {
+            left: 0;
+            display: flex;
             transform: translateX(0);
         }
 
-        .sidebar.desktop.expanded {
-            width: 250px;
+        .sidebar.desktop.collapsed {
+            width: 60px;
         }
 
-        .sidebar.desktop .sidebar-text {
+        .sidebar.desktop.collapsed .sidebar-text {
             display: none;
         }
 
-        .sidebar.desktop.expanded .sidebar-text {
-            display: inline;
-        }
-
-        .sidebar.desktop .sidebar-header {
+        .sidebar.desktop.collapsed .sidebar-header {
             justify-content: center;
             padding: 1rem;
         }
 
-        .sidebar.desktop.expanded .sidebar-header {
+        .sidebar.desktop.collapsed .close-sidebar-btn {
+            display: none;
+        }
+
+        .sidebar.mobile .sidebar-text {
+            display: inline;
+        }
+
+        .sidebar.mobile .sidebar-header {
             justify-content: space-between;
             padding: 1rem;
         }
 
-        header {
-            position: relative;
-            z-index: 800;
-            background-color: #2563eb;
-            width: 100%;
-            margin-left: 0;
-        }
-
-        .page-wrapper {
-            margin-left: 80px;
-            transition: margin-left 0.3s ease-in-out;
-            width: calc(100% - 80px);
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-        }
-        
-        .page-wrapper.expanded {
-            margin-left: 250px;
-            width: calc(100% - 250px);
-        }
-
-        .main-content {
-            flex: 1;
-            width: 100%;
-            padding: 1rem;
-            min-height: calc(100vh - 80px);
+        .sidebar.mobile .sidebar-nav a,
+        .sidebar.mobile .sidebar-nav button {
+            justify-content: flex-start;
+            padding: 8px 16px;
         }
 
         .sidebar-overlay {
@@ -117,35 +138,113 @@
             z-index: 899;
         }
 
-        .sidebar-overlay.show { display: block; }
+        .sidebar-overlay.show {
+            display: block;
+        }
+
+        header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            z-index: 800;
+            background-color: #2563eb;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        }
+
+        .page-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 100vw;
+            overflow-x: hidden;
+        }
+
+        .main-content {
+            margin-left: 60px;
+            margin-top: 64px;
+            padding: 1rem;
+            transition: margin-left 0.3s ease-in-out;
+            min-height: calc(100vh - 64px - 128px);
+            width: calc(100% - 60px);
+        }
+
+        .main-content.expanded {
+            margin-left: 250px;
+            width: calc(100% - 250px);
+        }
+
+        @media (max-width: 767px) {
+            .sidebar {
+                width: 250px;
+                transform: translateX(-100%);
+                display: none;
+            }
+            .sidebar.show {
+                display: flex;
+                transform: translateX(0);
+            }
+            .sidebar.desktop {
+                display: none;
+            }
+            .sidebar.mobile {
+                display: none;
+                left: 0;
+            }
+            .sidebar.mobile.show {
+                display: flex;
+            }
+            .sidebar.mobile .sidebar-text {
+                display: inline !important;
+            }
+            .sidebar.mobile .sidebar-header {
+                justify-content: space-between !important;
+                padding: 1rem !important;
+            }
+            .sidebar.mobile .sidebar-nav a,
+            .sidebar.mobile .sidebar-nav button {
+                justify-content: flex-start !important;
+                padding: 8px 16px !important;
+            }
+            .main-content {
+                margin-left: 0;
+                margin-top: 64px;
+                width: 100%;
+            }
+            .main-content.expanded {
+                margin-left: 0;
+                width: 100%;
+            }
+            #toggle-sidebar-btn {
+                display: none !important;
+            }
+            #mobile-menu-btn {
+                display: block;
+                margin-right: 1rem;
+            }
+            #close-sidebar-btn {
+                display: block;
+            }
+            .header-content {
+                justify-content: space-between;
+                align-items: center;
+            }
+        }
 
         @media (min-width: 768px) {
             #mobile-menu-btn {
                 display: none;
             }
+            #close-sidebar-btn {
+                display: none;
+            }
             .sidebar.desktop {
                 display: flex;
             }
-        }
-
-        @media (max-width: 767px) {
-            .sidebar.desktop {
+            .sidebar.mobile {
                 display: none;
             }
-            .sidebar {
-                transform: translateX(-100%);
-                width: 250px;
-            }
-            .sidebar.show {
-                transform: translateX(0);
-            }
-            .page-wrapper {
-                margin-left: 0 !important;
-                width: 100% !important;
-            }
-            .page-wrapper.expanded {
-                margin-left: 0 !important;
-                width: 100% !important;
+            .header-content {
+                justify-content: flex-start;
             }
         }
 
@@ -163,11 +262,21 @@
             scrollbar-color: #3b82f6 #e5e7eb;
         }
 
-        .main-menu::-webkit-scrollbar { width: 6px; }
-        .main-menu::-webkit-scrollbar-track { background: #e5e7eb; }
-        .main-menu::-webkit-scrollbar-thumb { background: #3b82f6; border-radius: 3px; }
-        
-        .sidebar-nav a, .sidebar-nav button {
+        .main-menu::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .main-menu::-webkit-scrollbar-track {
+            background: #e5e7eb;
+        }
+
+        .main-menu::-webkit-scrollbar-thumb {
+            background: #3b82f6;
+            border-radius: 3px;
+        }
+
+        .sidebar-nav a,
+        .sidebar-nav button {
             display: flex;
             align-items: center;
             gap: 8px;
@@ -177,33 +286,28 @@
             transition: background-color 0.2s, color 0.2s;
             font-size: 0.95rem;
         }
-        
-        .sidebar-nav a:hover, .sidebar-nav button:hover {
+
+        .sidebar-nav a:hover,
+        .sidebar-nav button:hover {
             background-color: #eff6ff;
             color: #1e40af;
         }
-        
+
         .sidebar-nav a.active {
             background-color: #3b82f6;
             color: white;
         }
-        
+
         .sidebar-nav i {
             font-size: 1.5rem;
             width: 28px;
             text-align: center;
         }
 
-        .sidebar.desktop .sidebar-nav a, 
-        .sidebar.desktop .sidebar-nav button {
+        .sidebar.desktop.collapsed .sidebar-nav a,
+        .sidebar.desktop.collapsed .sidebar-nav button {
             justify-content: center;
             padding: 8px;
-        }
-
-        .sidebar.desktop.expanded .sidebar-nav a,
-        .sidebar.desktop.expanded .sidebar-nav button {
-            justify-content: flex-start;
-            padding: 8px 16px;
         }
 
         .sidebar-nav .logout {
@@ -218,13 +322,86 @@
             margin-left: 0;
         }
 
+        /* Estilos aprimorados para o formulário - mais compacto */
         .form-container {
             background-color: white;
             border-radius: 0.5rem;
-            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
             padding: 1.5rem;
-            max-width: 600px;
+            max-width: 800px;
             margin: 0 auto;
+        }
+
+        .form-title {
+            color: #1e40af;
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+            font-size: 1.5rem;
+        }
+
+        .form-subtitle {
+            color: #6b7280;
+            margin-bottom: 1.25rem;
+            font-size: 0.9rem;
+        }
+
+        .form-group {
+            margin-bottom: 1rem;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.375rem;
+            font-size: 0.875rem;
+        }
+
+        .form-label.required::after {
+            content: " *";
+            color: #ef4444;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 0.625rem;
+            border: 1px solid #d1d5db;
+            border-radius: 0.375rem;
+            transition: border-color 0.2s, box-shadow 0.2s;
+            font-size: 0.875rem;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3b82f6;
+            box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.1);
+        }
+
+        .form-input.error {
+            border-color: #ef4444;
+        }
+
+        .form-input.success {
+            border-color: #10b981;
+        }
+
+        .form-input:read-only {
+            background-color: #f9fafb;
+            color: #6b7280;
+            cursor: not-allowed;
+        }
+
+        .form-hint {
+            font-size: 0.75rem;
+            color: #6b7280;
+            margin-top: 0.25rem;
+        }
+
+        .form-error {
+            font-size: 0.75rem;
+            color: #ef4444;
+            margin-top: 0.25rem;
+            display: none;
         }
 
         .form-grid {
@@ -233,188 +410,104 @@
             gap: 1rem;
         }
 
-        @media (min-width: 768px) {
+        @media (min-width: 640px) {
             .form-grid {
                 grid-template-columns: 1fr 1fr;
             }
-            .form-full-width {
-                grid-column: 1 / -1;
-            }
         }
 
-        .form-group {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .form-label {
-            display: block;
-            margin-bottom: 0.5rem;
+        .form-btn {
+            padding: 0.625rem 1.25rem;
+            border-radius: 0.375rem;
+            font-size: 0.875rem;
             font-weight: 500;
+            transition: all 0.2s;
+            cursor: pointer;
+            border: none;
+        }
+
+        .save-btn {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .save-btn:hover {
+            background-color: #2563eb;
+        }
+
+        .cancel-btn {
+            background-color: #f3f4f6;
             color: #374151;
-            font-size: 0.875rem;
         }
 
-        .form-input {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-            transition: all 0.2s;
-        }
-
-        .form-input:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
-        }
-
-        .form-input:disabled {
-            background-color: #f9fafb;
-            color: #6b7280;
-            cursor: not-allowed;
-        }
-
-        .form-select {
-            width: 100%;
-            padding: 0.75rem;
-            border: 1px solid #d1d5db;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-            background-color: white;
-            transition: all 0.2s;
-        }
-
-        .form-select:focus {
-            outline: none;
-            border-color: #3b82f6;
-            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        .cancel-btn:hover {
+            background-color: #e5e7eb;
         }
 
         .form-actions {
             display: flex;
             gap: 0.75rem;
-            justify-content: flex-end;
             margin-top: 1.5rem;
-            padding-top: 1.5rem;
-            border-top: 1px solid #e5e7eb;
         }
 
-        .btn {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            padding: 0.75rem 1.5rem;
+        .form-actions .form-btn {
+            flex: 1;
+        }
+
+        .card-header {
+            background-color: #f8fafc;
+            border-bottom: 1px solid #e5e7eb;
+            padding: 1rem 1.5rem;
+            border-radius: 0.5rem 0.5rem 0 0;
+            margin: -1.5rem -1.5rem 1.5rem -1.5rem;
+        }
+
+        .card-body {
+            padding: 0;
+        }
+
+        .name-fields {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        @media (max-width: 640px) {
+            .name-fields {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        .password-toggle {
+            position: absolute;
+            right: 10px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
             border: none;
-            border-radius: 0.375rem;
-            font-size: 0.875rem;
-            font-weight: 500;
             cursor: pointer;
-            transition: all 0.2s;
-            gap: 0.5rem;
-        }
-
-        .btn-primary {
-            background-color: #3b82f6;
-            color: white;
-        }
-
-        .btn-primary:hover {
-            background-color: #2563eb;
-        }
-
-        .btn-secondary {
-            background-color: #6b7280;
-            color: white;
-        }
-
-        .btn-secondary:hover {
-            background-color: #4b5563;
-        }
-
-        .btn-outline {
-            background-color: white;
-            color: #374151;
-            border: 1px solid #d1d5db;
-        }
-
-        .btn-outline:hover {
-            background-color: #f9fafb;
-            border-color: #9ca3af;
-        }
-
-        .required-field::after {
-            content: " *";
-            color: #ef4444;
-        }
-
-        .empty-state {
-            text-align: center;
-            padding: 2rem;
             color: #6b7280;
         }
 
-        .loading {
-            display: inline-block;
-            width: 1rem;
-            height: 1rem;
-            border: 2px solid #ffffff;
-            border-radius: 50%;
-            border-top-color: transparent;
-            animation: spin 1s ease-in-out infinite;
-        }
-
-        @keyframes spin {
-            to { transform: rotate(360deg); }
-        }
-
-        /* CORREÇÃO: Header centralizado igual ao de pacientes */
-        .page-header {
-            display: flex;
-            justify-content: center; /* Centraliza o título */
-            align-items: center;
-            margin-bottom: 2rem;
+        .password-container {
             position: relative;
-        }
-
-        .page-title {
-            text-align: center;
-        }
-
-        .back-button {
-            position: absolute;
-            right: 0;
-            top: 50%;
-            transform: translateY(-50%);
-        }
-
-        @media (max-width: 768px) {
-            .page-header {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            .back-button {
-                position: static;
-                transform: none;
-                align-self: flex-end;
-            }
         }
     </style>
 </head>
+
 <body class="bg-gray-50">
     <div class="page-wrapper">
         <!-- Notification -->
         <div id="notification" role="alert">
             <span id="notification-message"></span>
-            <button id="notification-close" class="ml-2 text-white hover:text-gray-200">×</button>
+            <button id="notification-close" class="ml-4 text-white hover:text-gray-200 text-xl font-bold">×</button>
         </div>
 
         <!-- Sidebar Overlay -->
         <div id="sidebar-overlay" class="sidebar-overlay"></div>
 
         <!-- Left Sidebar -->
-        <div id="sidebar-menu" class="sidebar bg-white shadow-lg desktop">
+        <div id="sidebar-menu" class="sidebar bg-white shadow-lg">
             <div class="sidebar-header flex justify-between items-center p-4 border-b">
                 <h2 class="text-lg font-semibold text-gray-700 sidebar-text">Menu do Administrador</h2>
                 <button id="toggle-sidebar-btn" class="text-gray-700 hover:text-gray-900" aria-label="Alternar menu">
@@ -458,10 +551,6 @@
                         <i class="fas fa-user-plus"></i>
                         <span class="sidebar-text">Cadastrar Médico</span>
                     </a>
-                    <a href="<?php echo site_url('admin/disponibilidade'); ?>" class="block text-gray-700">
-                        <i class="fas fa-calendar-alt"></i>
-                        <span class="sidebar-text">Disponibilidade</span>
-                    </a>
                     <a href="<?php echo site_url('admin/relatorios'); ?>" class="block text-gray-700">
                         <i class="fas fa-chart-bar"></i>
                         <span class="sidebar-text">Relatórios</span>
@@ -480,66 +569,69 @@
 
         <!-- Header -->
         <header class="bg-blue-600 text-white shadow-lg">
-            <div class="container mx-auto px-4 py-4 flex justify-between items-center">
+            <div class="container mx-auto px-4 py-3 flex items-center justify-between">
                 <div class="flex items-center gap-2">
+                    <button id="mobile-menu-btn" class="md:hidden text-white hover:text-blue-200" aria-label="Abrir menu">
+                        <i class="fas fa-bars text-2xl"></i>
+                    </button>
                     <i class="fas fa-hospital-alt text-2xl" aria-hidden="true"></i>
                     <h1 class="text-xl font-bold">Hospital Matlhovele</h1>
                 </div>
-                <button id="mobile-menu-btn" class="md:hidden text-white hover:text-blue-200" aria-label="Abrir menu">
-                    <i class="fas fa-bars text-2xl"></i>
-                </button>
             </div>
         </header>
 
         <!-- Main Content -->
         <main class="main-content">
-            <div class="container mx-auto px-4 py-8">
-                <!-- CORREÇÃO: Header centralizado -->
-                <div class="page-header">
-                    <div class="page-title">
-                        <h2 class="text-2xl font-semibold text-gray-800" id="form-title">Cadastrar Novo Médico</h2>
-                        <p class="text-gray-600 mt-2">Preencha os dados abaixo para cadastrar ou editar um médico.</p>
-                    </div>
-                    <div class="back-button">
-                        <a href="<?php echo site_url('admin/medicos'); ?>" class="btn btn-outline">
-                            <i class="fas fa-arrow-left"></i>
-                            Voltar para Lista
-                        </a>
-                    </div>
+            <div class="container mx-auto px-4 py-6">
+                <div class="mb-6 text-center">
+                    <h2 class="form-title" id="form-title">Cadastrar Novo Médico</h2>
+                    <p class="form-subtitle">Preencha os dados abaixo para cadastrar ou editar um médico.</p>
                 </div>
 
                 <!-- Doctor Form -->
                 <div class="form-container">
-                    <form id="doctor-form">
+                    <div class="card-header">
+                        <h3 class="text-lg font-semibold text-gray-800">Dados Pessoais</h3>
+                    </div>
+                    <div class="card-body">
                         <div class="form-grid">
-                            <!-- Nome Completo -->
-                            <div class="form-group form-full-width">
-                                <label for="doctor-name" class="form-label required-field">Nome Completo</label>
-                                <input type="text" id="doctor-name" class="form-input" required>
+                            <!-- Nome e Sobrenome separados -->
+                            <div class="form-group">
+                                <label for="doctor-firstname" class="form-label required">Nome</label>
+                                <input type="text" id="doctor-firstname" class="form-input" required>
+                                <div class="form-error" id="firstname-error">Por favor, insira o nome</div>
+                            </div>
+                            <div class="form-group">
+                                <label for="doctor-lastname" class="form-label required">Sobrenome</label>
+                                <input type="text" id="doctor-lastname" class="form-input" required>
+                                <div class="form-error" id="lastname-error">Por favor, insira o sobrenome</div>
                             </div>
 
                             <!-- Telefone -->
                             <div class="form-group">
-                                <label for="doctor-phone" class="form-label required-field">Telefone</label>
+                                <label for="doctor-phone" class="form-label required">Telefone</label>
                                 <input type="tel" id="doctor-phone" class="form-input" required>
+                                <div class="form-error" id="phone-error">Por favor, insira um telefone válido</div>
                             </div>
 
                             <!-- BI -->
                             <div class="form-group">
-                                <label for="doctor-bi" class="form-label required-field">Número do BI</label>
+                                <label for="doctor-bi" class="form-label required">BI</label>
                                 <input type="text" id="doctor-bi" class="form-input" required>
+                                <div class="form-error" id="bi-error">Por favor, insira um BI válido</div>
                             </div>
 
                             <!-- Email -->
                             <div class="form-group">
-                                <label for="doctor-email" class="form-label">Email</label>
-                                <input type="email" id="doctor-email" class="form-input">
+                                <label for="doctor-email" class="form-label required">Email</label>
+                                <input type="email" id="doctor-email" class="form-input" required>
+                                <div class="form-error" id="email-error">Por favor, insira um email válido</div>
                             </div>
 
                             <!-- Especialidade -->
                             <div class="form-group">
-                                <label for="doctor-specialty" class="form-label required-field">Especialidade</label>
-                                <select id="doctor-specialty" class="form-select" required>
+                                <label for="doctor-specialty" class="form-label required">Especialidade</label>
+                                <select id="doctor-specialty" class="form-input" required>
                                     <option value="">Selecione uma especialidade</option>
                                     <option value="Medicina Geral">Medicina Geral</option>
                                     <option value="Cardiologia">Cardiologia</option>
@@ -549,55 +641,63 @@
                                     <option value="Neurologia">Neurologia</option>
                                     <option value="Cirurgia Geral">Cirurgia Geral</option>
                                 </select>
+                                <div class="form-error" id="specialty-error">Por favor, selecione a especialidade</div>
                             </div>
 
                             <!-- Número da Licença -->
                             <div class="form-group">
-                                <label for="doctor-license" class="form-label required-field">Número da Licença</label>
+                                <label for="doctor-license" class="form-label required">Número da Licença</label>
                                 <input type="text" id="doctor-license" class="form-input" required>
+                                <div class="form-error" id="license-error">Por favor, insira o número da licença</div>
                             </div>
                         </div>
 
-                        <!-- Form Actions -->
-                        <div class="form-actions">
-                            <button type="button" id="cancel-btn" class="btn btn-outline">
-                                <i class="fas fa-times"></i>
-                                Cancelar
-                            </button>
-                            <button type="submit" id="save-btn" class="btn btn-primary">
-                                <i class="fas fa-save"></i>
-                                <span id="save-btn-text">Salvar Médico</span>
-                            </button>
+                        <!-- Campo Senha -->
+                        <div class="form-group">
+                            <label for="doctor-password" class="form-label required">Senha</label>
+                            <div class="password-container">
+                                <input type="password" id="doctor-password" class="form-input" required minlength="6">
+                                <button type="button" class="password-toggle" id="password-toggle">
+                                    <i class="fas fa-eye"></i>
+                                </button>
+                            </div>
+                            <div class="form-error" id="password-error">A senha deve ter pelo menos 6 caracteres</div>
+                            <div class="form-hint">Mínimo 6 caracteres</div>
                         </div>
-                    </form>
+
+                        <div class="form-actions">
+                            <button id="save-btn" class="form-btn save-btn">Salvar</button>
+                            <button id="cancel-btn" class="form-btn cancel-btn">Cancelar</button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </main>
 
         <!-- Footer -->
-        <footer class="bg-gray-800 text-white py-8">
+        <footer class="bg-gray-800 text-white py-6">
             <div class="container mx-auto px-4">
-                <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
                     <div>
-                        <h3 class="text-lg font-medium mb-4">Hospital Matlhovele</h3>
-                        <p class="text-gray-300">Av. 25 de Setembro, Maputo</p>
-                        <p class="text-gray-300">Telefone: +258 84 123 4567</p>
+                        <h3 class="text-lg font-medium mb-3">Hospital Matlhovele</h3>
+                        <p class="text-gray-300 text-sm">Av. 25 de Setembro, Maputo</p>
+                        <p class="text-gray-300 text-sm">Telefone: +258 84 123 4567</p>
                     </div>
                     <div>
-                        <h3 class="text-lg font-medium mb-4">Horário de Funcionamento</h3>
-                        <p class="text-gray-300">Segunda a Sexta: 7h30 - 16h30</p>
-                        <p class="text-gray-300">Sábado: 8h00 - 12h00</p>
+                        <h3 class="text-lg font-medium mb-3">Horário de Funcionamento</h3>
+                        <p class="text-gray-300 text-sm">Segunda a Sexta: 7h30 - 16h30</p>
+                        <p class="text-gray-300 text-sm">Sábado: 8h00 - 12h00</p>
                     </div>
                     <div>
-                        <h3 class="text-lg font-medium mb-4">Links Rápidos</h3>
-                        <ul class="space-y-2">
-                            <li><a href="/sobre" class="text-gray-300 hover:text-white">Sobre Nós</a></li>
-                            <li><a href="/servicos" class="text-gray-300 hover:text-white">Serviços</a></li>
-                            <li><a href="/contactos" class="text-gray-300 hover:text-white">Contactos</a></li>
+                        <h3 class="text-lg font-medium mb-3">Links Rápidos</h3>
+                        <ul class="space-y-1">
+                            <li><a href="/sobre" class="text-gray-300 hover:text-white text-sm">Sobre Nós</a></li>
+                            <li><a href="/servicos" class="text-gray-300 hover:text-white text-sm">Serviços</a></li>
+                            <li><a href="/contactos" class="text-gray-300 hover:text-white text-sm">Contactos</a></li>
                         </ul>
                     </div>
                 </div>
-                <div class="border-t border-gray-700 mt-8 pt-6 text-center text-gray-400">
+                <div class="border-t border-gray-700 mt-6 pt-4 text-center text-gray-400 text-sm">
                     <p>© 2025 Hospital Público de Matlhovele. Todos os direitos reservados.</p>
                 </div>
             </div>
@@ -610,7 +710,10 @@
             const notification = document.getElementById('notification');
             const messageEl = document.getElementById('notification-message');
             if (!notification || !messageEl) {
-                console.error('Notification elements not found');
+                console.error('Notification elements not found:', {
+                    notification,
+                    messageEl
+                });
                 return;
             }
             messageEl.textContent = message;
@@ -626,144 +729,210 @@
             return urlParams.get(param);
         }
 
-        // Fetch doctor by BI from database
+        // Fetch doctor by BI
         async function fetchDoctor(bi) {
             try {
-                const response = await fetch(`<?php echo site_url('admin/get_doctor'); ?>?bi=${encodeURIComponent(bi)}`, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
+                // Simulação de dados - substituir pela chamada real à API
+                const doctors = {
+                    '123456789LA123': {
+                        nome: 'João',
+                        sobrenome: 'Silva',
+                        telefone: '+258 84 123 4567',
+                        bi: '123456789LA123',
+                        email: 'joao.silva@hospital.mz',
+                        especialidade: 'Cardiologia',
+                        numero_licenca: 'CRM-MZ-12345',
+                        senha: 'senha123'
                     }
-                });
-                
-                if (!response.ok) throw new Error('Erro na requisição');
-                
-                const result = await response.json();
-                console.log('Dados do médico:', result);
-                
-                if (result.error) {
-                    showNotification(result.error, 'error');
-                    return null;
-                }
-                
-                return result.data || null;
+                };
+
+                return doctors[bi] || null;
             } catch (error) {
-                console.error('Erro ao carregar médico:', error);
-                showNotification('Erro ao carregar dados do médico.', 'error');
+                showNotification('Erro ao carregar médico.', 'error');
+                console.error(error);
                 return null;
             }
         }
 
-        // Save or update doctor
-        async function saveDoctor(formData) {
-            const isEditMode = formData.get('bi_disabled') === 'true';
-            const saveBtn = document.getElementById('save-btn');
-            const saveBtnText = document.getElementById('save-btn-text');
-            const originalText = saveBtnText.textContent;
+        // Form validation
+        function validateForm() {
+            let isValid = true;
 
-            try {
-                // Show loading state
-                saveBtn.disabled = true;
-                saveBtnText.innerHTML = '<div class="loading"></div> Salvando...';
-
-                const endpoint = isEditMode ? 
-                    '<?php echo site_url('admin/update_doctor'); ?>' : 
-                    '<?php echo site_url('admin/create_doctor'); ?>';
-                
-                const response = await fetch(endpoint, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-Requested-With': 'XMLHttpRequest'
-                    },
-                    body: JSON.stringify(Object.fromEntries(formData))
-                });
-
-                const result = await response.json();
-                console.log('Resposta do servidor:', result);
-
-                if (result.error) {
-                    showNotification(result.error, 'error');
-                } else {
-                    showNotification(result.success, 'success');
-                    setTimeout(() => {
-                        window.location.href = '<?php echo site_url('admin/medicos'); ?>';
-                    }, 1500);
-                }
-            } catch (error) {
-                console.error('Erro ao salvar médico:', error);
-                showNotification(
-                    isEditMode ? 'Erro ao atualizar médico.' : 'Erro ao cadastrar médico.', 
-                    'error'
-                );
-            } finally {
-                // Restore button state
-                saveBtn.disabled = false;
-                saveBtnText.textContent = originalText;
+            // First name validation
+            const firstnameInput = document.getElementById('doctor-firstname');
+            const firstnameError = document.getElementById('firstname-error');
+            if (!firstnameInput.value.trim()) {
+                firstnameInput.classList.add('error');
+                firstnameError.style.display = 'block';
+                isValid = false;
+            } else {
+                firstnameInput.classList.remove('error');
+                firstnameError.style.display = 'none';
             }
+
+            // Last name validation
+            const lastnameInput = document.getElementById('doctor-lastname');
+            const lastnameError = document.getElementById('lastname-error');
+            if (!lastnameInput.value.trim()) {
+                lastnameInput.classList.add('error');
+                lastnameError.style.display = 'block';
+                isValid = false;
+            } else {
+                lastnameInput.classList.remove('error');
+                lastnameError.style.display = 'none';
+            }
+
+            // Phone validation
+            const phoneInput = document.getElementById('doctor-phone');
+            const phoneError = document.getElementById('phone-error');
+            const phoneRegex = /^[0-9+\-\s()]{8,}$/;
+            if (!phoneInput.value.trim() || !phoneRegex.test(phoneInput.value)) {
+                phoneInput.classList.add('error');
+                phoneError.style.display = 'block';
+                isValid = false;
+            } else {
+                phoneInput.classList.remove('error');
+                phoneError.style.display = 'none';
+            }
+
+            // BI validation
+            const biInput = document.getElementById('doctor-bi');
+            const biError = document.getElementById('bi-error');
+            if (!biInput.value.trim()) {
+                biInput.classList.add('error');
+                biError.style.display = 'block';
+                isValid = false;
+            } else {
+                biInput.classList.remove('error');
+                biError.style.display = 'none';
+            }
+
+            // Email validation
+            const emailInput = document.getElementById('doctor-email');
+            const emailError = document.getElementById('email-error');
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailInput.value.trim() || !emailRegex.test(emailInput.value)) {
+                emailInput.classList.add('error');
+                emailError.style.display = 'block';
+                isValid = false;
+            } else {
+                emailInput.classList.remove('error');
+                emailError.style.display = 'none';
+            }
+
+            // Specialty validation
+            const specialtyInput = document.getElementById('doctor-specialty');
+            const specialtyError = document.getElementById('specialty-error');
+            if (!specialtyInput.value) {
+                specialtyInput.classList.add('error');
+                specialtyError.style.display = 'block';
+                isValid = false;
+            } else {
+                specialtyInput.classList.remove('error');
+                specialtyError.style.display = 'none';
+            }
+
+            // License validation
+            const licenseInput = document.getElementById('doctor-license');
+            const licenseError = document.getElementById('license-error');
+            if (!licenseInput.value.trim()) {
+                licenseInput.classList.add('error');
+                licenseError.style.display = 'block';
+                isValid = false;
+            } else {
+                licenseInput.classList.remove('error');
+                licenseError.style.display = 'none';
+            }
+
+            // Password validation
+            const passwordInput = document.getElementById('doctor-password');
+            const passwordError = document.getElementById('password-error');
+            if (!passwordInput.value || passwordInput.value.length < 6) {
+                passwordInput.classList.add('error');
+                passwordError.style.display = 'block';
+                isValid = false;
+            } else {
+                passwordInput.classList.remove('error');
+                passwordError.style.display = 'none';
+            }
+
+            return isValid;
         }
 
-        // Validate form
-        function validateForm(formData) {
-            const requiredFields = ['name', 'phone', 'bi', 'specialty', 'license'];
-            
-            for (let field of requiredFields) {
-                if (!formData.get(field)?.trim()) {
-                    showNotification(`O campo ${field} é obrigatório.`, 'error');
-                    return false;
-                }
+        // Save or update doctor
+        async function saveDoctor() {
+            if (!validateForm()) {
+                showNotification('Corrija os erros no formulário.', 'error');
+                return;
             }
 
-            const email = formData.get('email');
-            if (email && !email.match(/^[^\s@]+@[^\s@]+\.[^\s@]+$/)) {
-                showNotification('Por favor, insira um email válido.', 'error');
-                return false;
-            }
+            const doctor = {
+                nome: document.getElementById('doctor-firstname').value.trim(),
+                sobrenome: document.getElementById('doctor-lastname').value.trim(),
+                telefone: document.getElementById('doctor-phone').value.trim(),
+                bi: document.getElementById('doctor-bi').value.trim(),
+                email: document.getElementById('doctor-email').value.trim(),
+                especialidade: document.getElementById('doctor-specialty').value,
+                numero_licenca: document.getElementById('doctor-license').value.trim(),
+                senha: document.getElementById('doctor-password').value
+            };
 
-            return true;
+            const isEditMode = document.getElementById('doctor-bi').hasAttribute('readonly');
+            const endpoint = isEditMode ?
+                '<?php echo site_url('Api/update_doctor'); ?>' :
+                '<?php echo site_url('Api/create_doctor'); ?>';
+
+            try {
+                // Simulação de salvamento - substituir pela chamada real à API
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                
+                // Sucesso
+                const action = isEditMode ? 'atualizado' : 'cadastrado';
+                showNotification(`Médico ${action} com sucesso!`, 'success');
+
+                setTimeout(() => {
+                    window.location.href = '<?php echo site_url('admin/medicos'); ?>';
+                }, 1500);
+
+            } catch (error) {
+                showNotification('Erro de conexão.', 'error');
+                console.error(error);
+            }
         }
 
         // Initialization
-        document.addEventListener('DOMContentLoaded', async function () {
+        document.addEventListener('DOMContentLoaded', async function() {
             const notificationClose = document.getElementById('notification-close');
             const mobileMenuBtn = document.getElementById('mobile-menu-btn');
             const sidebarMenu = document.getElementById('sidebar-menu');
             const closeSidebarBtn = document.getElementById('close-sidebar-btn');
             const toggleSidebarBtn = document.getElementById('toggle-sidebar-btn');
-            const pageWrapper = document.querySelector('.page-wrapper');
+            const mainContent = document.querySelector('.main-content');
             const sidebarOverlay = document.getElementById('sidebar-overlay');
-            const doctorForm = document.getElementById('doctor-form');
+            const saveBtn = document.getElementById('save-btn');
             const cancelBtn = document.getElementById('cancel-btn');
+            const passwordToggle = document.getElementById('password-toggle');
+            const passwordInput = document.getElementById('doctor-password');
             const formTitle = document.getElementById('form-title');
 
             // Check for edit mode
             const bi = getQueryParam('bi');
-            let isEditMode = false;
-
             if (bi) {
-                isEditMode = true;
                 formTitle.textContent = 'Editar Médico';
-                document.getElementById('save-btn-text').textContent = 'Atualizar Médico';
-                
-                console.log('Modo edição - BI:', bi);
-                
                 const doctor = await fetchDoctor(bi);
                 if (doctor) {
-                    console.log('Médico carregado:', doctor);
-                    document.getElementById('doctor-name').value = doctor.Nome_Completo || doctor.nome || '';
-                    document.getElementById('doctor-phone').value = doctor.Telefone || doctor.phone || '';
-                    document.getElementById('doctor-bi').value = doctor.ID_Medico || doctor.bi || '';
+                    document.getElementById('doctor-firstname').value = doctor.nome || '';
+                    document.getElementById('doctor-lastname').value = doctor.sobrenome || '';
+                    document.getElementById('doctor-phone').value = doctor.telefone || '';
+                    document.getElementById('doctor-bi').value = doctor.bi || '';
                     document.getElementById('doctor-bi').setAttribute('readonly', 'true');
-                    document.getElementById('doctor-email').value = doctor.Email || doctor.email || '';
-                    document.getElementById('doctor-specialty').value = doctor.Especialidade || doctor.specialty || '';
-                    document.getElementById('doctor-license').value = doctor.Numero_Licenca || doctor.licenseNumber || '';
-                } else {
-                    showNotification('Médico não encontrado. Redirecionando...', 'error');
-                    setTimeout(() => {
-                        window.location.href = '<?php echo site_url('admin/medicos'); ?>';
-                    }, 2000);
+                    document.getElementById('doctor-email').value = doctor.email || '';
+                    document.getElementById('doctor-specialty').value = doctor.especialidade || '';
+                    document.getElementById('doctor-license').value = doctor.numero_licenca || '';
+                    // Não preenchemos a senha por segurança
                 }
+            } else {
+                formTitle.textContent = 'Cadastrar Novo Médico';
             }
 
             // Notification close
@@ -771,32 +940,41 @@
                 document.getElementById('notification').classList.remove('show');
             });
 
-            // Sidebar handlers
+            // Sidebar behavior
+            if (window.innerWidth >= 768) {
+                sidebarMenu.classList.add('desktop', 'collapsed');
+                sidebarMenu.classList.remove('mobile', 'show');
+                mainContent.classList.remove('expanded');
+            } else {
+                sidebarMenu.classList.add('mobile');
+                sidebarMenu.classList.remove('desktop', 'collapsed');
+                mainContent.classList.remove('expanded');
+            }
+
             mobileMenuBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 sidebarMenu.classList.add('show');
                 sidebarMenu.classList.remove('collapsed');
                 sidebarOverlay.classList.add('show');
-                pageWrapper.classList.add('expanded');
             });
 
             closeSidebarBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 sidebarMenu.classList.remove('show');
                 sidebarOverlay.classList.remove('show');
-                pageWrapper.classList.remove('expanded');
             });
 
             toggleSidebarBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
-                sidebarMenu.classList.toggle('expanded');
-                pageWrapper.classList.toggle('expanded');
+                if (window.innerWidth >= 768) {
+                    sidebarMenu.classList.toggle('collapsed');
+                    mainContent.classList.toggle('expanded');
+                }
             });
 
-            sidebarOverlay.addEventListener('click', (e) => {
+            sidebarOverlay.addEventListener('click', () => {
                 sidebarMenu.classList.remove('show');
                 sidebarOverlay.classList.remove('show');
-                pageWrapper.classList.remove('expanded');
             });
 
             document.addEventListener('click', (e) => {
@@ -806,31 +984,41 @@
                 if (!isClickInsideSidebar && !isClickOnMenuBtn && isSidebarOpen && window.innerWidth < 768) {
                     sidebarMenu.classList.remove('show');
                     sidebarOverlay.classList.remove('show');
-                    pageWrapper.classList.remove('expanded');
                 }
             });
 
-            // Form submission
-            doctorForm.addEventListener('submit', async (e) => {
-                e.preventDefault();
-                
-                const formData = new FormData();
-                formData.append('name', document.getElementById('doctor-name').value.trim());
-                formData.append('phone', document.getElementById('doctor-phone').value.trim());
-                formData.append('bi', document.getElementById('doctor-bi').value.trim());
-                formData.append('email', document.getElementById('doctor-email').value.trim());
-                formData.append('specialty', document.getElementById('doctor-specialty').value);
-                formData.append('licenseNumber', document.getElementById('doctor-license').value.trim());
-                formData.append('bi_disabled', isEditMode.toString());
-
-                if (validateForm(formData)) {
-                    await saveDoctor(formData);
-                }
+            // Password toggle functionality
+            passwordToggle.addEventListener('click', () => {
+                const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+                passwordInput.setAttribute('type', type);
+                passwordToggle.innerHTML = type === 'password' ? '<i class="fas fa-eye"></i>' : '<i class="fas fa-eye-slash"></i>';
             });
 
-            // Cancel button
+            // Form events
+            saveBtn.addEventListener('click', saveDoctor);
             cancelBtn.addEventListener('click', () => {
                 window.location.href = '<?php echo site_url('admin/medicos'); ?>';
+            });
+
+            // Real-time validation
+            const inputs = [
+                document.getElementById('doctor-firstname'),
+                document.getElementById('doctor-lastname'),
+                document.getElementById('doctor-phone'),
+                document.getElementById('doctor-bi'),
+                document.getElementById('doctor-email'),
+                document.getElementById('doctor-specialty'),
+                document.getElementById('doctor-license'),
+                document.getElementById('doctor-password')
+            ];
+
+            inputs.forEach(input => {
+                input.addEventListener('blur', validateForm);
+                input.addEventListener('input', function() {
+                    this.classList.remove('error');
+                    const errorElement = document.getElementById(`${this.id}-error`);
+                    if (errorElement) errorElement.style.display = 'none';
+                });
             });
 
             // Logout
@@ -838,20 +1026,11 @@
             if (logoutBtn) {
                 logoutBtn.addEventListener('click', () => {
                     showNotification('Sessão encerrada com sucesso!', 'success');
-                    sidebarMenu.classList.remove('show', 'expanded');
-                    pageWrapper.classList.remove('expanded');
-                    sidebarOverlay.classList.remove('show');
-                    window.location.href = '<?php echo site_url('login'); ?>';
+                    setTimeout(() => {
+                        window.location.href = '<?php echo site_url('auth/logout'); ?>';
+                    }, 1000);
                 });
             }
-
-            // Responsive sidebar on resize
-            window.addEventListener('resize', () => {
-                if (window.innerWidth >= 768) {
-                    sidebarMenu.classList.remove('show');
-                    sidebarOverlay.classList.remove('show');
-                }
-            });
         });
     </script>
 </body>
