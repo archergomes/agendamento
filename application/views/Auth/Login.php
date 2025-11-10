@@ -121,8 +121,8 @@
         <?= form_submit(['type' => 'submit', 'class' => 'w-full bg-blue-600 text-white py-2 rounded-lg font-medium hover:bg-blue-700 transition transform hover:scale-[1.02] duration-150', 'value' => 'Entrar']); ?>
 
         <p class="text-center text-sm text-gray-600 mt-3">
-            Esqueceu a senha?
-            <a href="#" class="text-blue-600 hover:underline">Recuperar</a>
+            Ainda não tem uma conta?
+            <a href="<?= site_url('auth/register'); ?>" class="text-blue-600 hover:underline">Registar</a>
         </p>
         <?= form_close(); ?>
 
